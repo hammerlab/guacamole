@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
-import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.genomics.reads.ReadsUtil
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 
@@ -11,7 +11,7 @@ class AlleleEvidenceSuite
     with PileupUtil
     with ReferenceUtil {
 
-  override lazy val reference = makeReference(sc, "chr1", 0, "NTAGATCGA")
+  override lazy val reference = makeReference("chr1", 0, "NTAGATCGA")
 
   test("allele evidence from pileup, all reads support") {
     val reads =

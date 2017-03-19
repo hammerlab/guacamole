@@ -15,10 +15,10 @@ object AlignmentState extends Enumeration {
    */
   def cigarKey(alignmentOperator: AlignmentState): String = {
     alignmentOperator match {
-      case Match     => "="
-      case Mismatch  => "X"
-      case Insertion => "I"
-      case Deletion  => "D"
+      case Match     ⇒ "="
+      case Mismatch  ⇒ "X"
+      case Insertion ⇒ "I"
+      case Deletion  ⇒ "D"
     }
   }
 }

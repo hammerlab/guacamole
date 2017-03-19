@@ -1,36 +1,31 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.genomics.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.bases.Base.{ A, C, G, T }
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
-import org.hammerlab.guacamole.readsets.ReadSetsUtil
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
+import org.hammerlab.guacamole.data.{ CancerWGS, Celsr1 }
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 class SomaticJointCallerSuite
   extends GuacFunSuite
     with ReadSetsUtil
     with ReferenceUtil {
 
-  val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name => resourcePath("cancer-wgs1/" + name))
-
-  val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name => resourcePath("cancer-wes-and-rna-celsr1/" + name))
-
-  val hg19PartialFasta = resourcePath("hg19.partial.fasta")
+  val hg19PartialFasta = File("hg19.partial.fasta")
 
   def hg19PartialReference =
     ReferenceBroadcast(hg19PartialFasta, sc, partialFasta = true)
 
-  val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
+  val b37Chromosome22Fasta = File("chr22.fa.gz")
 
   def b37Chromosome22Reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
 
   test("force-call a non-variant locus") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readSets, loci) = makeReadSets(inputs, "chr12:65857040")
     val calls =
       makeCalls(
@@ -50,12 +45,12 @@ class SomaticJointCallerSuite
     evidences.length should equal(1)
 
     val allele = evidences.head.allele
-    allele.start should be(65857040)
-    allele.ref should be("G")
+    allele.start should ===(65857040)
+    allele.ref should ===(G)
   }
 
   test("call a somatic deletion") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readsets, loci) = makeReadSets(inputs, "chr5:82649006-82649009")
     val calls =
       makeCalls(
@@ -72,12 +67,12 @@ class SomaticJointCallerSuite
 
     calls.length should equal(1)
     calls.head.singleAlleleEvidences.length should equal(1)
-    calls.head.singleAlleleEvidences.head.allele.ref should equal("TCTTTAGAAA")
-    calls.head.singleAlleleEvidences.head.allele.alt should equal("T")
+    calls.head.singleAlleleEvidences.head.allele.ref should ===("TCTTTAGAAA")
+    calls.head.singleAlleleEvidences.head.allele.alt should ===(T)
   }
 
   test("call germline variants") {
-    val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
+    val inputs = CancerWGS.inputs.take(1)
     val (readSets, loci) = makeReadSets(inputs, "chr1,chr2,chr3")
     val calls =
       makeCalls(
@@ -90,17 +85,17 @@ class SomaticJointCallerSuite
         loci = loci
       )
       .collect
-      .map(call => (call.contigName, call.start) -> call)
+      .map(call ⇒ call.contigName → call.start → call)
       .toMap
 
     calls(("chr1", 179895860)).singleAlleleEvidences.length should equal(1)
 
-    val bestAllele = calls(("chr1", 179895860)).bestAllele()
+    val bestAllele = calls(("chr1", 179895860)).bestAllele
 
     bestAllele.isSomaticCall should be(false)
     bestAllele.isGermlineCall should be(true)
-    bestAllele.allele.ref should equal("T")
-    bestAllele.allele.alt should equal("C")
+    bestAllele.allele.ref should ===(T)
+    bestAllele.allele.alt should ===(C)
     bestAllele.allEvidences.head.annotations.get.strandBias.phredValue should equal(0)
     bestAllele.allEvidences.head.annotations.get.annotationsFailingFilters should equal(Seq.empty)
     bestAllele.annotations.get.annotationsFailingFilters should equal(Seq.empty)
@@ -117,9 +112,9 @@ class SomaticJointCallerSuite
   }
 
   test("don't call variants with N as the reference base") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readsets, loci) = makeReadSets(inputs, "chr12:65857030-65857080")
-    val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
+    val emptyPartialReference = makeReference(70000000, ("chr12", 65856930, "N" * 250))
 
     val calls =
       makeCalls(
@@ -140,7 +135,7 @@ class SomaticJointCallerSuite
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
     val lociStr = "chr22:46931058-46931079"
 
-    val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
+    val inputsWithRNA = Celsr1.inputs
 
     val callsWithRNA = {
       val (readsets, loci) = makeReadSets(inputsWithRNA, lociStr)
@@ -156,7 +151,7 @@ class SomaticJointCallerSuite
       .filter(_.bestAllele.isCall)
     }
 
-    val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Vector("dna", "dna"))
+    val inputsWithoutRNA = Celsr1.inputs.take(2)
 
     val callsWithoutRNA = {
       val (readsets, loci) = makeReadSets(inputsWithoutRNA, lociStr)
@@ -171,33 +166,34 @@ class SomaticJointCallerSuite
       .collect
       .filter(_.bestAllele.isCall)
     }
+
     Map(
-      "with rna" -> callsWithRNA,
-      "without rna" -> callsWithoutRNA
+      "with rna" → callsWithRNA,
+      "without rna" → callsWithoutRNA
     ).foreach {
-      case (description, calls) =>
+      case (description, calls) ⇒
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
-          val filtered46931076 = calls.filter(call => call.start == 46931076 && call.end == 46931077)
+          val filtered46931076 = calls.filter(call ⇒ call.start === 46931076 && call.end === 46931077)
           filtered46931076.length should be(1)
           filtered46931076.head.bestAllele.isGermlineCall should be(true)
-          filtered46931076.head.bestAllele.allele.ref should equal("G")
-          filtered46931076.head.bestAllele.allele.alt should equal("C")
-          filtered46931076.head.bestAllele.germlineAlleles should equal("C", "C")
+          filtered46931076.head.bestAllele.allele.ref should ===(G)
+          filtered46931076.head.bestAllele.allele.alt should ===(C)
+          filtered46931076.head.bestAllele.germlineAlleles should ===(C, C)
         }
     }
 
-    // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
-    callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)
-    val filtered46931061 = callsWithRNA.filter(call => call.start == 46931061 && call.end == 46931062)
+    // RNA should enable a call G→A call at 22:46931062 in one based, which is 22:46931061 in zero based.
+    callsWithoutRNA.exists(call ⇒ call.start === 46931061 && call.end === 46931062) should be(false)
+    val filtered46931061 = callsWithRNA.filter(call ⇒ call.start === 46931061 && call.end === 46931062)
     filtered46931061.length should be(1)
 
     val bestAllele = filtered46931061.head.bestAllele
 
     bestAllele.isSomaticCall should be(true)
-    bestAllele.allele.ref should equal("G")
-    bestAllele.allele.alt should equal("A")
-    bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
-    bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
+    bestAllele.allele.ref should ===(G)
+    bestAllele.allele.alt should ===(A)
+    bestAllele.tumorDNAPooledEvidence.allelicDepths should equal(AllelicDepths(G → 90, A → 2))
+    bestAllele.normalDNAPooledEvidence.allelicDepths should equal(AllelicDepths(G → 51))
   }
 }

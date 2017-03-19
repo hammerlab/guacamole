@@ -9,17 +9,20 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.commands.Args
+import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.io.{ Input, Sample }
+import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleId, SampleName }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.guacamole.readsets.io.Input
+import org.hammerlab.guacamole.readsets.PartitionedReads
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
-import org.hammerlab.guacamole.readsets.{ PartitionedReads, PerSample, ReadSets, SampleId, SampleName }
-import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
 import org.hammerlab.magic.rdd.keyed.SplitByKeyRDD._
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
+
+import scala.math.min
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
@@ -113,7 +116,7 @@ object VAFHistogram {
 
       val partitionedReads =
         PartitionedRegions(
-          readsets.allMappedReads,
+          readsets.sampleIdxKeyedMappedReads,
           loci,
           args
         )
@@ -121,7 +124,7 @@ object VAFHistogram {
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
 
-      val reference = args.reference(sc)
+      val reference = ReferenceBroadcast(args, sc)
 
       val (variantLoci, numVariantsPerSample) =
         variantLociFromReads(
@@ -140,13 +143,13 @@ object VAFHistogram {
       val binSize = 100 / bins
 
       def histogramEntryString(bin: Int, numLoci: NumLoci): String =
-        s"$bin, ${math.min(bin * binSize, 100)}, $numLoci"
+        s"$bin, ${min(bin * binSize, 100)}, $numLoci"
 
       val histogramOutput =
         for {
-          Input(sampleId, sampleName, filename) <- args.inputs
+          Input(sampleId, sampleName, filename) ← args.inputs
           histogram = variantAlleleHistograms(sampleId)
-          (bin, numLoci) <- histogram
+          (bin, numLoci) ← histogram
         } yield
           s"$filename, $sampleName, ${histogramEntryString(bin, numLoci)}"
 
@@ -154,7 +157,7 @@ object VAFHistogram {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
         writer.write("Filename, SampleName, BinStart, BinEnd, Size")
         writer.newLine()
-        histogramOutput.foreach(line => {
+        histogramOutput.foreach(line ⇒ {
           writer.write(line)
           writer.newLine()
         })
@@ -166,8 +169,8 @@ object VAFHistogram {
       } else {
         // Print histograms to standard out
         for {
-          (sampleId, histogram) <- variantAlleleHistograms
-          (bin, numLoci) <- histogram
+          (sampleId, histogram) ← variantAlleleHistograms
+          (bin, numLoci) ← histogram
         } {
           println(histogramEntryString(bin, numLoci))
         }
@@ -176,7 +179,7 @@ object VAFHistogram {
       if (args.cluster) {
         val variantsPerSample = variantLoci.keyBy(_.sampleId).splitByKey(numVariantsPerSample)
         for {
-          (sampleId, variants) <- variantsPerSample
+          (sampleId, variants) ← variantsPerSample
         } {
           buildMixtureModel(variants, args.numClusters)
         }
@@ -192,7 +195,7 @@ object VAFHistogram {
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
   def generateVAFHistograms(variantAlleleFrequencies: RDD[VariantLocus],
-                            bins: Int): Map[SampleId, Vector[(Int, Long)]] = {
+                            bins: Int): Map[SampleId, Vector[(Int, NumLoci)]] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
@@ -201,9 +204,9 @@ object VAFHistogram {
     }
 
     variantAlleleFrequencies
-      .map(vaf => (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
+      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) → NumLoci(1L))
       .reduceByKey(_ + _)
-      .map { case ((sampleId, bin), numLoci) => sampleId -> Map(bin -> numLoci) }
+      .map { case ((sampleId, bin), numLoci) ⇒ sampleId → Map(bin → numLoci) }
       .reduceByKey(_ ++ _)
       .mapValues(_.toVector.sortBy(_._1))
       .collectAsMap
@@ -235,11 +238,11 @@ object VAFHistogram {
         sampleNames,
         partitionedReads,
         skipEmpty = true,
-        pileups =>
+        pileups ⇒
           for {
-            (pileup, sampleId) <- pileups.iterator.zipWithIndex
+            (pileup, sampleId) ← pileups.iterator.zipWithIndex
             if pileup.depth >= minReadDepth
-            variant <- VariantLocus(pileup, sampleId)
+            variant ← VariantLocus(pileup, sampleId)
             if variant.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0)
           } yield
             variant
@@ -259,7 +262,7 @@ object VAFHistogram {
       progress(
         "variant loci per sample:",
         (for {
-          (sampleId, num) <- numVariantsBySample.toVector.sorted
+          (sampleId, num) ← numVariantsBySample.toVector.sorted
         } yield
           s"$sampleId:\t$num"
         ).mkString("\n")
@@ -274,7 +277,7 @@ object VAFHistogram {
             .keyBy(_.sampleId)
             .sampleByKey(
               withReplacement = false,
-              fractions = (0 until numSamples).map(_ -> (samplePercent / 100.0)).toMap
+              fractions = (0 until numSamples).map(_ → (samplePercent / 100.0)).toMap
             )
             .groupByKey()
             .collect()
@@ -284,10 +287,10 @@ object VAFHistogram {
             .collect()
 
       for {
-        (sampleId, variants) <- sampledVAFs
+        (sampleId, variants) ← sampledVAFs
       } {
         val stats = new DescriptiveStatistics()
-        variants.foreach(v => stats.addValue(v.variantAlleleFrequency))
+        variants.foreach(v ⇒ stats.addValue(v.variantAlleleFrequency))
 
         // Print out descriptive statistics for the variant allele frequency distribution
         progress(
@@ -323,7 +326,7 @@ object VAFHistogram {
 
     val vafVectors =
       variantLoci.map(
-        variant =>
+        variant ⇒
           Vectors.dense(variant.variantAlleleFrequency)
       )
 
@@ -334,7 +337,7 @@ object VAFHistogram {
         .setMaxIterations(maxIterations)
         .run(vafVectors)
 
-    for (i <- 0 until model.k) {
+    for (i ← 0 until model.k) {
       println(s"Cluster $i: mean=${model.gaussians(i).mu(0)}, std. deviation=${model.gaussians(i).sigma}, weight=${model.weights(i)}")
     }
 

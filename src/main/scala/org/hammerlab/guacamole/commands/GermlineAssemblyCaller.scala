@@ -1,22 +1,28 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{mean, median}
+import breeze.stats.{ mean, median }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.MappedRead
+import org.hammerlab.genomics.readsets.args.impl.ReferenceArgs
+import org.hammerlab.genomics.readsets.{ ReadSets, SampleName, SampleRead }
+import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
-import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
+import org.hammerlab.guacamole.assembly.AssemblyUtils.{ buildVariantsFromPath, discoverHaplotypes, isActiveRegion }
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood.probabilitiesOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
+import org.hammerlab.guacamole.readsets.PartitionedReads
+import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller}
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
+
+import scala.math.exp
 
 /**
  * Simple assembly based germline variant caller
@@ -48,14 +54,12 @@ object GermlineAssemblyCaller {
     override val description = "call germline variants by assembling the surrounding region of reads"
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
-      val reference = args.reference(sc)
+      val reference = ReferenceBroadcast(args, sc)
       val (readsets, loci) = ReadSets(sc, args)
 
-      val qualityReads = readsets.allMappedReads
-
-      val partitionedReads =
-        PartitionedRegions(
-          qualityReads,
+      val partitionedReads: PartitionedReads =
+        PartitionedRegions[SampleRead, MappedRead](
+          readsets.sampleIdxKeyedMappedReads,
           loci,
           args
         )
@@ -94,30 +98,30 @@ object GermlineAssemblyCaller {
                                  shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
-        windowFlatMapWithState[MappedRead, CalledAllele, Option[Long]](
+        windowFlatMapWithState[SampleRead, MappedRead, CalledAllele, Option[Locus]](
           numSamples = 1,
           partitionedReads,
           skipEmpty = true,
           halfWindowSize = assemblyWindowRange,
           initialState = None,
-          (lastCalledLocus, windows) => {
+          (lastCalledLocus, windows) ⇒ {
             val window = windows.head
             val contigName = window.contigName
             val locus = window.currentLocus
 
-            val referenceStart = (locus - window.halfWindowSize).toInt
-            val referenceEnd = (locus + window.halfWindowSize).toInt
+            val start = locus - window.halfWindowSize
+            val length = 2 * window.halfWindowSize
 
             val currentReference =
               reference.getReferenceSequence(
                 window.contigName,
-                referenceStart,
-                referenceEnd
+                start,
+                length
               )
 
             val referenceContig = reference.getContig(contigName)
 
-            val regionReads = window.currentRegions()
+            val regionReads = window.currentRegions
             // Find the reads the overlap the center locus/ current locus
             val currentLocusReads =
               regionReads
@@ -133,10 +137,10 @@ object GermlineAssemblyCaller {
               )
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
-            val pileupAltReads = (pileup.depth - pileup.referenceDepth)
-            if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
+            val pileupAltReads = pileup.depth - pileup.referenceDepth
+            if (currentLocusReads.isEmpty || pileupAltReads < minAltReads)
               (lastCalledLocus, Iterator.empty)
-            } else if (shortcutAssembly && !isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
+            else if (shortcutAssembly && !isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
               val variants =
                 callPileupVariant(pileup)
                   .filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
@@ -159,9 +163,9 @@ object GermlineAssemblyCaller {
                 )
 
               if (paths.nonEmpty) {
-                def buildVariant(variantLocus: Int,
-                                 referenceBases: Array[Byte],
-                                 alternateBases: Array[Byte]) = {
+                def buildVariant(variantLocus: Locus,
+                                 referenceBases: Bases,
+                                 alternateBases: Bases) = {
                   val allele =
                     Allele(
                       referenceBases,
@@ -193,10 +197,10 @@ object GermlineAssemblyCaller {
 
                 val variants =
                   paths
-                    .flatMap(path =>
+                    .flatMap(path ⇒
                       buildVariantsFromPath[CalledAllele](
                         path,
-                        referenceStart,
+                        start,
                         referenceContig,
                         ReadAlignment(_, currentReference),
                         buildVariant
@@ -204,17 +208,22 @@ object GermlineAssemblyCaller {
                     )
                     .toSet
                     .filter(
-                      variant =>
+                      variant ⇒
                         lastCalledLocus.forall(_ < variant.start)  // Filter variants before last called
                     )
 
-                val lastVariantCallLocus = variants.view.map(_.start).reduceOption(_ max _).orElse(lastCalledLocus)
+                val lastVariantCallLocus: Option[Locus] =
+                  variants
+                    .view
+                    .map(_.start)
+                    .reduceOption(_ max _)
+                    .orElse(lastCalledLocus)
+
                 // Jump to the next region
                 window.setCurrentLocus(window.currentLocus + assemblyWindowRange - kmerSize)
                 (lastVariantCallLocus, variants.iterator)
-              } else {
+              } else
                 (lastCalledLocus, Iterator.empty)
-              }
             }
           }
         )
@@ -244,12 +253,11 @@ object GermlineAssemblyCaller {
       } else {
         val (genotype, logProbability) = genotypeProbabilities.maxBy(_._2)
 
-        val probability = math.exp(logProbability)
+        val probability = exp(logProbability)
         genotype
           .getNonReferenceAlleles
-          .toSet // Collapse homozygous genotypes
           .filter(_.altBases.nonEmpty)
-          .map(allele =>
+          .map(allele ⇒
             CalledAllele(
               pileup.sampleName,
               pileup.contigName,

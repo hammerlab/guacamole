@@ -3,13 +3,14 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.Region
-import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.{MicroPartitionIndex, NumMicroPartitions}
+import org.hammerlab.genomics.reference.{ Locus, NumLoci, Region }
+import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.{ MicroPartitionIndex, NumMicroPartitions }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.spark.{NumPartitions, PartitionIndex}
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 import scala.collection.Map
+import scala.math.{ max, min, round }
 import scala.reflect.ClassTag
 
 trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
@@ -58,7 +59,7 @@ trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
  *                                    more exact but more expensive computation.
  *                                    In the extreme, setting this to greater than the number of loci (per partition)
  *                                    will result in an exact calculation.
- * @return LociMap of locus -> partition assignments.
+ * @return LociMap of locus → partition assignments.
  */
 class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
                                                     numPartitions: NumPartitions,
@@ -68,7 +69,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
   def partition(loci: LociSet): LociPartitioning = {
 
     assume(numPartitions >= 1)
-    assume(loci.count > 0)
+    assume(loci.count > Locus(0))
 
     val sc = regions.sparkContext
 
@@ -94,17 +95,16 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
     // Step 2: total up regions overlapping each micro partition. We keep the totals as an array of Longs.
     val regionsPerMicroPartition: Map[MicroPartitionIndex, Long] =
       regions
-        .flatMap(region =>
+        .flatMap(region ⇒
           broadcastMicroPartitions
-            .value
-            .onContig(region.contigName)
+            .value(region.contigName)
             .getAll(region.start, region.end)
         )
         .countByValue()
 
     // Step 3: assign loci to partitions, taking into account region depth in each micro partition.
     val totalRegions = regionsPerMicroPartition.values.sum
-    val regionsPerPartition = math.max(1, totalRegions / numPartitions.toDouble)
+    val regionsPerPartition = max(1, totalRegions / numPartitions.toDouble)
 
     progress(
       "Done collecting region counts. Total regions with micro partition overlaps: %,d = ~%,.0f regions per partition."
@@ -113,7 +113,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
 
     val maxIndex = regionsPerMicroPartition.maxBy(_._2)._1.toInt
 
-    val counts: Seq[Long] = (0L until numMicroPartitions).map(i => regionsPerMicroPartition.getOrElse(i, 0L))
+    val counts: Seq[Long] = (0L until numMicroPartitions).map(i ⇒ regionsPerMicroPartition.getOrElse(i, 0L))
 
     progress(
       "Regions per micro partition: min=%,d mean=%,.0f max=%,d at %s.".format(
@@ -127,7 +127,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
     var totalRegionsAssigned = 0.0
     var partition = 0
     def regionsRemainingForThisPartition =
-      math.round(
+      round(
         ((partition + 1) * regionsPerPartition) - totalRegionsAssigned
       )
 
@@ -164,27 +164,27 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
            * current partition.
            *
            */
-          val fractionToTake = math.min(1.0, regionsRemainingForThisPartition.toDouble / regionsInSet.toDouble)
+          val fractionToTake = min(1.0, regionsRemainingForThisPartition.toDouble / regionsInSet.toDouble)
 
           /**
            * Based on fractionToTake, we set the number of loci and regions to assign.
            *
            * We always take at least 1 locus to ensure we continue to make progress.
            */
-          val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
+          val lociToTake = NumLoci(max(1, (fractionToTake * set.count).toLong))
           val regionsToTake = (fractionToTake * regionsInSet).toLong
 
           // Add the new partition assignment to the builder, and update bookkeeping info.
           val (currentSet, remainingSet) = set.take(lociToTake)
           builder.put(currentSet, partition)
-          totalRegionsAssigned += math.round(regionsToTake).toLong
-          regionsInSet -= math.round(regionsToTake).toLong
+          totalRegionsAssigned += round(regionsToTake)
+          regionsInSet -= round(regionsToTake)
           set = remainingSet
         }
       }
       microPartition += 1
     }
-    val result = builder.result()
+    val result = builder.result
     assert(result.count == loci.count, s"Expected ${loci.count} loci, got ${result.count}")
     result
   }

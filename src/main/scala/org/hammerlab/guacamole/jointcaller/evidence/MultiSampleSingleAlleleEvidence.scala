@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
-import org.hammerlab.guacamole.jointcaller.Input.{Analyte, TissueType}
-import org.hammerlab.guacamole.jointcaller._
-import org.hammerlab.guacamole.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.MultiplePileupStats
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
-import org.hammerlab.guacamole.readsets.{PerSample, SampleId}
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.readsets.{ PerSample, SampleId }
+import org.hammerlab.guacamole.jointcaller.Sample.{ Analyte, TissueType }
+import org.hammerlab.guacamole.jointcaller.Samples._
+import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, MultiplePileupStats }
+import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, Parameters, Samples }
 
 import scala.collection.Set
 
@@ -16,20 +17,20 @@ import scala.collection.Set
  *
  * @param parameters joint caller parameters
  * @param allele the allele under consideration
- * @param inputs metadata for each sample: is it tumor / normal, is it DNA / RNA
+ * @param samples metadata for each sample: is it tumor / normal, is it DNA / RNA
  * @param normalDNAPooledEvidence evidence for the pooled normal DNA samples
  * @param tumorDNAPooledEvidence evidence for the pooled tumor DNA samples
  * @param sampleEvidences evidences for each sample individually, corresponding to inputs
  */
 case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
                                            allele: AlleleAtLocus,
-                                           inputs: InputCollection,
+                                           samples: Samples,
                                            normalDNAPooledEvidence: NormalDNASingleSampleSingleAlleleEvidence,
                                            tumorDNAPooledEvidence: TumorDNASingleSampleSingleAlleleEvidence,
                                            sampleEvidences: PerSample[SingleSampleSingleAlleleEvidence],
                                            annotations: Option[MultiSampleAnnotations]) {
 
-  assume(inputs.items.map(_.index) == inputs.items.indices)
+  assume(samples.map(_.id) == samples.indices)
 
   /**
    * There are times when we want to treat all the per-sample evidences and pooled evidences together. We do this
@@ -63,18 +64,18 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * @return negative log-base 10 prior probability for that allele. Since log probs are negative, this number will
    *         be *positive* (it's the negative of a negative).
    */
-  def germlinePrior(alleles: (String, String)): Double =
+  def germlinePrior(alleles: (Bases, Bases)): Double =
     Seq(
       alleles._1,
       alleles._2
     ).count(_ == allele.ref) match {
-      case 2                               => 0  // hom ref
-      case 1                               => parameters.germlineNegativeLog10HeterozygousPrior  // het
-      case 0 if (alleles._1 == alleles._2) => parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
+      case 2                             ⇒ 0  // hom ref
+      case 1                             ⇒ parameters.germlineNegativeLog10HeterozygousPrior  // het
+      case 0 if alleles._1 == alleles._2 ⇒ parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
 
       // Compound alt, which we should not hit in the current version of the caller (we currently only consider mixtures
       // involving a reference allele and a single alt allele)
-      case 0                               => throw new AssertionError("Compound alts not supported")
+      case 0                               ⇒ throw new AssertionError("Compound alts not supported")
     }
 
   /**
@@ -85,15 +86,16 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(String, String), Double]] = {
+  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(Bases, Bases), Double]] =
     (
-      inputs
-        .items
-        .filter(_.normalDNA)
-        .map(_.index) ++
+      samples
+
+      .filter(_.normalDNA)
+      .map(_.id) ++
         Seq(normalDNAPooledIndex)
-    ).map(
-      index => {
+    )
+    .map {
+      index ⇒
 
         val likelihoods =
           allEvidences(index)
@@ -102,28 +104,28 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
 
         // These are not true posterior probabilities, but are proportional to posteriors.
         // Map from alleles to log probs.
-        index ->
+        index →
           (
             for {
-              (alleles, likelihood) <- likelihoods
+              (alleles, likelihood) ← likelihoods
             } yield
-              alleles -> (likelihood - germlinePrior(alleles))
+              alleles → (likelihood - germlinePrior(alleles))
           )
-      }
-    ).toMap
-  }
+    }
+    .toMap
+
   val pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
 
   /**
    * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
    */
-  val germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
+  val germlineAlleles: (Bases, Bases) = pooledGermlinePosteriors.maxBy(_._2)._1
 
   /** Are we making a germline call here? */
   val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
 
   /** Negative log10 prior probability for the given mixture in RNA. */
-  private def somaticPriorRna(mixture: Map[String, Double]): Double = {
+  private def somaticPriorRna(mixture: AlleleMixture): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
     if (contents == Set(allele.ref))
       0
@@ -134,27 +136,25 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Log10 posterior probabilities for a somatic variant in each tumor RNA sample.  */
-  val perTumorRnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
-    inputs
-      .items
-      .filter(_.tumorRNA)
-      .map(
-        input => {
+  val perTumorRnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] =
+    samples
+    .filter(_.tumorRNA)
+    .map {
+        input ⇒
           val likelihoods =
-            allEvidences(input.index)
+            allEvidences(input.id)
               .asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence]
               .logLikelihoods
 
-          input.index ->
+          input.id →
             (
               for {
-                (alleles, likelihood) <- likelihoods
+                (alleles, likelihood) ← likelihoods
               } yield
-                alleles -> (likelihood - somaticPriorRna(alleles))
+                alleles → (likelihood - somaticPriorRna(alleles))
             )
-        }
-      ).toMap
-  }
+      }
+    .toMap
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
   val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
@@ -162,14 +162,14 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /** Indices of tumor rna samples with expression */
   val tumorRnaSampleExpressed: PerSample[SampleId] =
     perTumorRnaSampleTopMixtures
-      .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
+      .filter(pair ⇒ pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
       .keys
       .toVector
 
   /**
    * Negative log10 prior probability for a somatic call on a given mixture. See germlinePrior.
    */
-  private def somaticPriorDna(mixture: Map[String, Double]): Double = {
+  private def somaticPriorDna(mixture: AlleleMixture): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
     if (contents == Set(allele.ref))
       0
@@ -185,33 +185,32 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /**
    * Log10 posterior probabilities for a somatic variant in each tumor DNA sample. See perNormalSampleGermlinePosteriors.
    *
-   * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
+   * @return Map {input index → {{Allele → Frequency} → Posterior probability}
    */
-  val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
+  val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] =
     (
-      inputs
-        .items
-        .filter(_.tumorDNA)
-        .map(_.index) ++
+      samples
+      .filter(_.tumorDNA)
+      .map(_.id) ++
         Seq(tumorDNAPooledIndex)
-    ).map(
-      index => {
+    )
+    .map {
+      index ⇒
 
         val likelihoods =
           allEvidences(index)
             .asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence]
             .logLikelihoods
 
-        index ->
+        index →
           (
             for {
-              (alleles, likelihood) <- likelihoods
+              (alleles, likelihood) ← likelihoods
             } yield
-              alleles -> (likelihood - somaticPriorDna(alleles))
+              alleles → (likelihood - somaticPriorDna(alleles))
           )
-      }
-    ).toMap
-  }
+    }
+    .toMap
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
   val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
@@ -219,7 +218,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /** Indices of tumor samples that triggered a call. */
   val tumorDnaSampleIndicesTriggered: PerSample[SampleId] =
     perTumorDnaSampleTopMixtures
-      .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
+      .filter(pair ⇒ pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
       .keys
       .toVector
 
@@ -253,7 +252,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
       if (isGermlineCall)
         Seq(normalDNAPooledEvidence)
       else if (isSomaticCall)
-        tumorDnaSampleIndicesTriggered.map(index => allEvidences(index))
+        tumorDnaSampleIndicesTriggered.map(index ⇒ allEvidences(index))
       else
       Seq.empty
 
@@ -286,7 +285,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
     assume(
       multipleStats
         .singleSampleStats
-        .forall(_.referenceSequence.length == allele.end - allele.start)
+        .forall(allele.start + _.referenceSequence.length == allele.end)
     )
 
     copy(
@@ -313,21 +312,20 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
           .asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence],
 
       sampleEvidences =
-        inputs
-          .items
+        samples
           .zip(multipleStats.singleSampleStats)
           .zip(sampleEvidences)
           .map {
-            case ((input, stats), evidence) =>
-              evidence
-                .withAnnotations(
-                  SingleSampleAnnotations(
-                    stats,
-                    evidence,
-                    parameters
+              case ((_, stats), evidence) ⇒
+                evidence
+                  .withAnnotations(
+                    SingleSampleAnnotations(
+                      stats,
+                      evidence,
+                      parameters
+                    )
                   )
-                )
-          },
+            },
       annotations =
         Some(
           MultiSampleAnnotations(
@@ -360,15 +358,14 @@ object MultiSampleSingleAlleleEvidence {
     val sampleEvidences =
       stats
         .inputs
-        .items
         .zip(stats.singleSampleStats)
         .map {
-          case (input, stats) =>
+          case (input, stats) ⇒
             (input.tissueType, input.analyte) match {
-              case (TissueType.Normal, Analyte.DNA) => NormalDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
-              case (TissueType.Normal, Analyte.RNA) => throw new IllegalArgumentException("Normal RNA not supported")
-              case (TissueType.Tumor, Analyte.DNA)  => TumorDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
-              case (TissueType.Tumor, Analyte.RNA)  => TumorRNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Normal, Analyte.DNA) ⇒ NormalDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Normal, Analyte.RNA) ⇒ throw new IllegalArgumentException("Normal RNA not supported")
+              case (TissueType.Tumor, Analyte.DNA)  ⇒ TumorDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Tumor, Analyte.RNA)  ⇒ TumorRNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
             }
         }
 

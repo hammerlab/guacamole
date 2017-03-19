@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.filters.genotype
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.variants.{AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.variants.{ AlleleEvidence, CalledAllele }
 
 /**
  * Filter to remove genotypes where the number of reads at the locus is too low or too high
@@ -46,7 +46,7 @@ object ReadDepthFilter {
             minReadDepth: Int,
             maxReadDepth: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
+    val filteredGenotypes = genotypes.filter(gt ⇒ withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.genomics.reference.{ContigName, Locus}
+import org.hammerlab.genomics.reads.ReadsUtil
+import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
-import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
-import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.Allele
@@ -16,7 +16,6 @@ class SomaticStandardCallerSuite
 
   override lazy val reference =
     makeReference(
-      sc,
       ("chr1", 0, "TCGATCGACG"),
       ("chr2", 0, "TCGAAGCTTCG"),
       ("chr3", 10, "TCGAATCGATCGATCGA"),

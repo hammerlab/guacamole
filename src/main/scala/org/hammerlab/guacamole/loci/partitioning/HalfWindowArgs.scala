@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.loci.partitioning
 
-import org.kohsuke.args4j.{Option => Args4JOption}
+import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
 
 trait HalfWindowArgs extends HalfWindowConfig {
   @Args4JOption(

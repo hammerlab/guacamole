@@ -1,8 +1,9 @@
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.genomics.reference.{ContigName, ContigSequence, Locus}
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.SampleName
+import org.hammerlab.genomics.bases.Base
+import org.hammerlab.genomics.reads.MappedRead
+import org.hammerlab.genomics.readsets.SampleName
+import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
 import org.hammerlab.guacamole.variants.Allele
 
 /**
@@ -22,7 +23,7 @@ case class Pileup(sampleName: SampleName,
                   contigSequence: ContigSequence,
                   elements: Seq[PileupElement]) {
 
-  val referenceBase: Byte = contigSequence(locus.toInt)
+  val referenceBase: Base = contigSequence(locus)
 
   assume(elements.forall(_.read.contigName == contigName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(
@@ -61,13 +62,16 @@ case class Pileup(sampleName: SampleName,
    * @return A new [[Pileup]] at the given locus.
    */
   def atGreaterLocus(newLocus: Locus, newReads: Iterator[MappedRead]) = {
-    assume(elements.isEmpty || newLocus > locus,
-      "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
-    if (elements.isEmpty && newReads.isEmpty) {
+    assume(
+      elements.isEmpty || newLocus > locus,
+      s"New locus $newLocus not greater than current locus $locus"
+    )
+
+    if (elements.isEmpty && newReads.isEmpty)
       // Optimization for common case.
       // If there are no reads, we won't know what the reference base is
       Pileup(sampleName, contigName, newLocus, contigSequence, Vector.empty[PileupElement])
-    } else {
+    else {
       // This code gets called many times. We are using while loops for performance.
       val builder = Vector.newBuilder[PileupElement]
       builder.sizeHint(elements.size) // We expect to have about the same number of elements as we currently have.

@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.genomics.loci.set.{Contig, LociSet}
-import org.hammerlab.genomics.reference.{ContigIterator, HasLocus, Interval, Locus, Position}
+import org.hammerlab.genomics.loci.set.{ Contig, LociSet }
+import org.hammerlab.genomics.reference.{ ContigIterator, ContigsIterator, HasLocus, Interval, Locus, Position }
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
+import org.hammerlab.guacamole.readsets.iterator.ContigCoverageIterator
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable.ArrayBuffer
@@ -57,7 +57,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         maxRegionsPerPartition - curNumRegions,
         maxRegionsPerPartition
       ) match {
-        case None =>
+        case None ⇒
 
           /**
            * If we failed to get a Contig from `takeLoci` then one or both of the following are true:
@@ -76,7 +76,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
           else
             contigsCoverages.next()
 
-        case Some((numRegions, contig)) =>
+        case Some((numRegions, contig)) ⇒
           /**
            * If we successfully obtained some loci from this contig, add them to our buffer.
            *
@@ -122,7 +122,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         None
       else
         Some(
-          curNumRegions ->
+          curNumRegions →
             Contig(
               it.contigName,
               intervals
@@ -176,13 +176,13 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         curIntervalOpt =
           curIntervalOpt match {
             // Extend the current interval, if possible.
-            case Some((start, end)) if !trimRanges || locus == end =>
-              Some(start -> (locus + 1))
+            case Some((start, end)) if !trimRanges || locus == end ⇒
+              Some(start → locus.next)
 
             // Otherwise, commit the current interval if it exists, and start a new one.
-            case _ =>
+            case _ ⇒
               maybeAddInterval()
-              Some(locus -> (locus + 1))
+              Some(locus → locus.next)
           }
 
         it.next()

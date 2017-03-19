@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.main
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GuacCommand
-import org.hammerlab.guacamole.data.NA12878TestUtil
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.guacamole.data.NA12878
 import org.hammerlab.guacamole.variants.VariantComparisonTest
+import org.hammerlab.test.resources.File
 
 /**
  * Germline assembly caller integration "tests" that output various statistics to stdout.
@@ -20,10 +20,10 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  def main(args: Array[String]): Unit =
+  override def main(args: Array[String]): Unit =
     run(
-      "--reads", NA12878TestUtil.subsetBam,
-      "--reference", NA12878TestUtil.chr1PrefixFasta,
+      "--reads", NA12878.subsetBam.toString,
+      "--reference", NA12878.chr1PrefixFasta,
       "--loci", "chr1:0-6700000",
       "--out", "/tmp/germline-assembly-na12878-guacamole-tests.vcf",
       "--partition-accuracy", "0",
@@ -42,16 +42,18 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
 
     val resultFile = args.variantOutput + "/part-r-00000"
     println("************* GUACAMOLE GermlineAssembly *************")
-    compareToVCF(resultFile, NA12878TestUtil.expectedCallsVCF)
+    compareToVCF(resultFile, NA12878.expectedCallsVCF)
 
     println("************* UNIFIED GENOTYPER *************")
-    compareToVCF(resourcePath(
-      "illumina-platinum-na12878/unified_genotyper.vcf"),
-      NA12878TestUtil.expectedCallsVCF)
+    compareToVCF(
+      File("illumina-platinum-na12878/unified_genotyper.vcf"),
+      NA12878.expectedCallsVCF
+    )
 
     println("************* HaplotypeCaller *************")
-    compareToVCF(resourcePath(
-      "illumina-platinum-na12878/haplotype_caller.vcf"),
-      NA12878TestUtil.expectedCallsVCF)
+    compareToVCF(
+      File("illumina-platinum-na12878/haplotype_caller.vcf"),
+      NA12878.expectedCallsVCF
+    )
   }
 }

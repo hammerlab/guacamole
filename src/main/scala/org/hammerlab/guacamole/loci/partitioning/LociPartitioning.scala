@@ -1,19 +1,19 @@
 package org.hammerlab.guacamole.loci.partitioning
 
-import java.io.{InputStream, OutputStream}
+import java.io.{ InputStream, OutputStream }
 
 import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{NumLoci, Region}
+import org.hammerlab.genomics.reference.{ Locus, NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.strings.TruncatedToString
 import org.hammerlab.iterator.LinesIterator
 import org.hammerlab.magic.util.Saveable
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.stats.Stats
+import org.hammerlab.strings.TruncatedToString
 
 import scala.reflect.ClassTag
 
@@ -41,7 +41,7 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
   @transient lazy val numPartitions = partitionsMap.size
 
-  @transient lazy val partitionSizeStats = Stats(partitionSizesMap.values)
+  @transient lazy val partitionSizeStats = Stats(partitionSizesMap.values.map(_.num))
 
   @transient lazy val partitionContigStats = Stats(partitionContigsMap.values)
 
@@ -52,13 +52,13 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
       partitionSets
         .flatMap(_.contigs)
         .flatMap(_.ranges)
-        .map(_.length)
+        .map(_.length.num)
     )
 
   @transient lazy val partitionRangesStats =
     Stats(
       for {
-        partitionLoci <- partitionSets
+        partitionLoci ← partitionSets
       } yield
         partitionLoci.contigs.map(_.ranges.length).sum
     )
@@ -67,15 +67,15 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
   @transient private lazy val partitionSizesMap: Map[PartitionIndex, NumLoci] =
     for {
-      (partition, loci) <- partitionsMap
+      (partition, loci) ← partitionsMap
     } yield
-      partition -> loci.count
+      partition → loci.count
 
   @transient private lazy val partitionContigsMap: Map[PartitionIndex, Int] =
     for {
-      (partition, loci) <- partitionsMap
+      (partition, loci) ← partitionsMap
     } yield
-      partition -> loci.contigs.length
+      partition → loci.contigs.length
 
   /**
    * Write the wrapped [[map]] to the provided [[OutputStream]].
@@ -96,11 +96,11 @@ object LociPartitioning {
   def apply(lociSets: Iterable[LociSet]): LociPartitioning = {
     val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
     for {
-      (loci, idx) <- lociSets.zipWithIndex
+      (loci, idx) ← lociSets.zipWithIndex
     } {
       lociMapBuilder.put(loci, idx)
     }
-    lociMapBuilder.result()
+    lociMapBuilder.result
   }
 
   def apply[R <: Region: ClassTag](regions: RDD[R],
@@ -111,11 +111,11 @@ object LociPartitioning {
 
     val lociPartitioning: LociPartitioning =
       (for {
-        lociPartitioningPath <- args.lociPartitioningPathOpt
+        lociPartitioningPath ← args.lociPartitioningPathOpt
         path = new Path(lociPartitioningPath)
         fs = path.getFileSystem(hadoopConfiguration)
         // Load LociPartitioning from disk, if it exists…
-        if (fs.exists(path))
+        if fs.exists(path)
       } yield {
         progress(s"Loading loci partitioning from $lociPartitioningPath")
         load(fs.open(path))
@@ -128,7 +128,7 @@ object LociPartitioning {
           .partition(loci)
       })
 
-    for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
+    for (lociPartitioningPath ← args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")
       val path = new Path(lociPartitioningPath)
       val fs = path.getFileSystem(hadoopConfiguration)
@@ -169,16 +169,16 @@ object LociPartitioning {
     val builder = LociMap.newBuilder[PartitionIndex]
     val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
     for {
-      line <- lines
-      m <- re.findFirstMatchIn(line)
+      line ← lines
+      m ← re.findFirstMatchIn(line)
       contig = m.group(1)
-      start = m.group(2).toLong
-      end = m.group(3).toLong
+      start = Locus(m.group(2).toLong)
+      end = Locus(m.group(3).toLong)
       partition = m.group(4).toInt
     } {
       builder.put(contig, start, end, partition)
     }
-    builder.result()
+    builder.result
   }
 
   implicit def lociMapToLociPartitioning(map: LociMap[PartitionIndex]): LociPartitioning = LociPartitioning(map)

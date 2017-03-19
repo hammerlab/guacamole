@@ -1,13 +1,14 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.readsets.ReadSets
+import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
-import org.hammerlab.guacamole.data.NA12878TestUtil
+import org.hammerlab.guacamole.data.NA12878
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
-import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.BeforeAndAfterAll
@@ -24,34 +25,44 @@ class GermlineAssemblyCallerSuite
     reference = ReferenceBroadcast(referencePath, sc)
   }
 
-  val referencePath = NA12878TestUtil.chr1PrefixFasta
+  val referencePath = NA12878.chr1PrefixFasta
 
-  def verifyVariantsAtLocus(locus: Int,
+  case class TestVariant(contigName: ContigName,
+                         locus: Locus,
+                         ref: Bases,
+                         alt: Bases)
+
+  object TestVariant {
+    implicit def fromTuple(t: (String, Int, String, String)): TestVariant = TestVariant(t._1, t._2, t._3, t._4)
+  }
+
+  def verifyVariantsAtLocus(locus: Locus,
                             contig: String = "chr1",
                             kmerSize: Int = 47,
                             assemblyWindowRange: Int = 120,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f,
                             shortcutAssembly: Boolean = false)(
-                             expectedVariants: (String, Int, String, String)*
+                            expectedVariants: TestVariant*
                            ) = {
 
     val windowStart = locus - assemblyWindowRange
     val windowEnd = locus + assemblyWindowRange
 
-    val args = new Arguments {
-      reads = NA12878TestUtil.subsetBam
-      parallelism = 1
-      lociPartitionerName = "uniform"
-      lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")
-      includeDuplicates = false
-    }
+    val args =
+      new Arguments {
+        reads = NA12878.subsetBam
+        parallelism = 1
+        lociPartitionerName = "uniform"
+        lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")
+        includeDuplicates = false
+      }
 
     val (readsets, loci) = ReadSets(sc, args)
 
     val lociPartitioning = LociPartitioning(readsets.allMappedReads, loci, args)
 
-    val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
+    val partitionedReads = partitionReads(readsets.sampleIdxKeyedMappedReads, lociPartitioning)
 
     val variants =
       discoverGermlineVariants(
@@ -70,10 +81,9 @@ class GermlineAssemblyCallerSuite
 
     val actualVariants =
       for {
-        CalledAllele(_, contig, start, allele, _, _, _) <- variants
-      } yield {
-        (contig, start, basesToString(allele.refBases), basesToString(allele.altBases))
-      }
+        CalledAllele(_, contig, start, allele, _, _, _) ← variants
+      } yield
+        TestVariant(contig, start, allele.refBases, allele.altBases)
 
     actualVariants should be(expectedVariants)
   }

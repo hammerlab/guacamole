@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.readsets.rdd
 import org.apache.hadoop.fs.Path
 import org.apache.spark.rdd.RDD
 import org.hammerlab.args4s.StringOptionHandler
-import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
-import org.kohsuke.args4j.{Option => Args4JOption}
+import org.hammerlab.guacamole.loci.partitioning.{ LociPartitionerArgs, LociPartitioning }
+import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
 
 /**
  * Command-line arguments related to partitioning regions according to a [[LociPartitioning]].
@@ -19,9 +19,7 @@ trait PartitionedRegionsArgs extends LociPartitionerArgs {
   @Args4JOption(
     name = "--partitioning-dir",
     usage =
-      "Directory from which to read an existing partition-reads RDD (and accompanying LociPartitioning), if the " +
-        "directory exists; otherwise, save them here. If set, precludes use of --partitioned-reads and " +
-        "--loci-partitioning",
+      "Directory from which to read an existing partition-reads RDD (and accompanying LociPartitioning), if the directory exists; otherwise, save them here. If set, precludes use of --partitioned-reads and --loci-partitioning",
     forbids = Array("--partitioned-reads-path", "--loci-partitioning-path"),
     handler = classOf[StringOptionHandler]
   )

@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.windowing
 
 import org.hammerlab.genomics.loci.iterator.LociIterator
-import org.hammerlab.genomics.reference.{ContigName, Interval, Locus, Region}
-import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.genomics.readsets.PerSample
+import org.hammerlab.genomics.reference.{ ContigName, Interval, Locus, Region }
 
 import scala.collection.mutable
 
@@ -18,7 +18,7 @@ import scala.collection.mutable
  * of objects are sorted.
  *
  * @param halfWindowSize Number of nucleotide bases to either side of the specified locus to provide regions for. For
- *                       example, if [[halfWindowSize]]=5, and our [[currentLocus]]=100, then [[currentRegions]] will
+ *                       example, if [[halfWindowSize]]=5, and our `currentLocus`=100, then [[currentRegions]] will
  *                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
  *                       regions that overlap the exact locus being considered, with no surrounding window.
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
@@ -27,25 +27,27 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
                                       halfWindowSize: Int,
                                       rawSortedRegions: Iterator[R]) {
   /** The locus currently under consideration. */
-  var currentLocus = -1L
+  var currentLocus = Locus(-1)
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
   var newRegions: Seq[R] = Seq.empty
 
-  private var mostRecentRegionStart: Long = 0
-  private val sortedRegions: BufferedIterator[R] = rawSortedRegions.map(region => {
-    require(region.contigName == contigName, "Regions must have the same reference name")
-    require(region.start >= mostRecentRegionStart, "Regions must be sorted by start locus")
-    mostRecentRegionStart = region.start
+  private var mostRecentRegionStart = Locus(0)
+  private val sortedRegions: BufferedIterator[R] =
+    rawSortedRegions
+      .map {
+        region ⇒
+          require(region.contigName == contigName, "Regions must have the same reference name")
+          require(region.start >= mostRecentRegionStart, "Regions must be sorted by start locus")
+          mostRecentRegionStart = region.start
 
-    region
-  }).buffered
+          region
+      }
+      .buffered
 
   private val currentRegionsPriorityQueue = new mutable.PriorityQueue[R]()(Interval.orderByEndDesc)
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
-  def currentRegions(): Vector[R] = {
-    currentRegionsPriorityQueue.toVector
-  }
+  def currentRegions: Vector[R] = currentRegionsPriorityQueue.toVector
 
   /**
    * Advance to the specified locus, which must be greater than the current locus. After calling this, the
@@ -67,19 +69,21 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
       assert(!dropped.overlapsLocus(locus, halfWindowSize))
     }
 
-    newRegions = if (sortedRegions.isEmpty) {
-      Seq.empty
-    } else {
-      // Build up a list of new regions that are now in the window.
-      // Note that the start of a region is inclusive, so e.g. if halfWindowSize=0 and head.start=locus we want to
-      // include it.
-      val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[R]
-      while (sortedRegions.nonEmpty && sortedRegions.head.start <= locus + halfWindowSize) {
-        val region = sortedRegions.next()
-        if (region.overlapsLocus(locus, halfWindowSize)) newRegionsBuilder += region
+    newRegions =
+      if (sortedRegions.isEmpty)
+        Seq.empty
+      else {
+        // Build up a list of new regions that are now in the window.
+        // Note that the start of a region is inclusive, so e.g. if halfWindowSize=0 and head.start=locus we want to
+        // include it.
+        val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[R]
+        while (sortedRegions.nonEmpty && sortedRegions.head.start <= locus + halfWindowSize) {
+          val region = sortedRegions.next()
+          if (region.overlapsLocus(locus, halfWindowSize)) newRegionsBuilder += region
+        }
+        newRegionsBuilder.result
       }
-      newRegionsBuilder.result
-    }
+
     currentRegionsPriorityQueue.enqueue(newRegions: _*)
     newRegions.toVector // We return the newly added regions.
   }
@@ -90,17 +94,15 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
    *
    * @return Some(locus) if such a locus exists, otherwise None
    */
-  def nextLocusWithRegions(): Option[Long] = {
-    if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize))) {
+  def nextLocusWithRegions: Option[Locus] =
+    if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize)))
       Some(currentLocus + 1)
-    } else if (sortedRegions.hasNext) {
-      val result = math.max(0, sortedRegions.head.start - halfWindowSize)
+    else if (sortedRegions.hasNext) {
+      val result = sortedRegions.head.start - halfWindowSize
       assert(result > currentLocus)
       Some(result)
-    } else {
+    } else
       None
-    }
-  }
 }
 
 object SlidingWindow {
@@ -123,10 +125,14 @@ object SlidingWindow {
    */
   def advanceMultipleWindows[R <: Region](windows: PerSample[SlidingWindow[R]],
                                           loci: LociIterator,
-                                          skipEmpty: Boolean = true): Option[Long] = {
+                                          skipEmpty: Boolean = true): Option[Locus] = {
     if (skipEmpty) {
       while (loci.hasNext) {
-        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
+        val nextNonEmptyLocus =
+          windows
+            .flatMap(_.nextLocusWithRegions)
+            .reduceOption(_ min _)
+
         if (nextNonEmptyLocus.isEmpty) {
           // Our windows are out of regions. We're done.
           return None

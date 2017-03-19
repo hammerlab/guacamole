@@ -3,12 +3,11 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ContigName, NumLoci, Region}
+import org.hammerlab.genomics.reference.{ NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
-import org.hammerlab.iterator.GroupRunsIterator
-import org.hammerlab.magic.util.KeyOrdering
-import org.kohsuke.args4j.{Option => Args4JOption}
+import org.hammerlab.iterator.GroupRunsIterator._
+import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
 
 import scala.reflect.ClassTag
 
@@ -24,21 +23,14 @@ trait CappedRegionsPartitionerArgs
   @Args4JOption(
     name = "--explode-coverage",
     usage =
-      "When present, compute coverage-depths by \"exploding\" reads into per-locus, depth-1 tuples before (map-side) " +
-        "reduction. Otherwise / By default, coverage depth is accumulated by a traversal of (assumedly " +
-        "start-pos-sorted) reads, emitting (locus,depth) pairs that have already \"reduced\" contributions to each " +
-        "locus within each partition"
+      "When present, compute coverage-depths by \"exploding\" reads into per-locus, depth-1 tuples before (map-side) reduction. Otherwise / By default, coverage depth is accumulated by a traversal of (assumedly start-pos-sorted) reads, emitting (locus,depth) pairs that have already \"reduced\" contributions to each locus within each partition"
   )
   var explodeCoverage: Boolean = false
 
   @Args4JOption(
     name = "--trim-ranges",
     usage =
-      "When present, store which loci in each partition are actually covered, as opposed to one blanket range (per " +
-        "partition per contig) spanning from the smallest to largest loci assigned to each partition. This can " +
-        "result in more informative statistics being collected/printed about the computed loci-partitioning, but " +
-        "it can also result in a significant performance hit if many discontiguous ranges or coverage must be " +
-        "stored / collected to the driver and processed."
+      "When present, store which loci in each partition are actually covered, as opposed to one blanket range (per partition per contig) spanning from the smallest to largest loci assigned to each partition. This can result in more informative statistics being collected/printed about the computed loci-partitioning, but it can also result in a significant performance hit if many discontiguous ranges or coverage must be stored / collected to the driver and processed."
   )
   var trimRanges: Boolean = false
 }
@@ -88,6 +80,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
   }
 
   private def printStats(coverageRDD: CoverageRDD[R], lociBroadcast: Broadcast[LociSet]): Unit = {
+
     val (depthRunsRDD, validLoci, invalidLoci) =
       coverageRDD.validLociCounts(halfWindowSize, lociBroadcast, maxRegionsPerPartition)
 
@@ -100,16 +93,16 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
         depthRunsRDD.take(numDepthRunsToTake)
 
     val avgRunLength =
-      (for {(_, num) <- depthRuns} yield num.toLong * num).sum.toDouble / validLoci
+      (for { (_, num) ← depthRuns } yield num.toLong * num).sum.toDouble / validLoci
 
     val depthRunsByContig =
       depthRuns
-      .groupBy(_._1._1)
-      .mapValues(_.map {
-        case ((_, valid), num) => num -> valid
-      })
-      .toArray
-      .sorted(new KeyOrdering[ContigName, Array[(NumLoci, Boolean)]](ContigName.ordering))
+        .groupBy(_._1._1)
+        .mapValues(_.map {
+          case ((_, valid), num) ⇒ num → valid
+        })
+        .toArray
+        .sortBy(_._1)
 
     val overflowMsg =
       if (numDepthRuns > numDepthRunsToTake)
@@ -120,7 +113,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
     def runsStr(runsIter: Iterator[(NumLoci, Boolean)]): String = {
       val runs = runsIter.toVector
       val rs =
-        (for ((num, valid) <- runs) yield {
+        (for ((num, valid) ← runs) yield {
           s"$num${if (valid) "↓" else "↑"}"
         }).mkString(" ")
       if (runs.length == 1)
@@ -139,13 +132,16 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
       s"$validLoci (%.1f%%) loci with depth ≤$maxRegionsPerPartition, $invalidLoci other; $totalLoci total of ${loci.count} eligible)$overflowMsg"
       .format(100.0 * validLoci / totalLoci),
       (for {
-        (contig, runs) <- depthRunsByContig
+        (contig, runs) ← depthRunsByContig
       } yield {
 
         val str =
-          GroupRunsIterator[(NumLoci, Boolean)](runs, _._1 < avgRunLength)
-          .map(runsStr)
-          .mkString("\t\n")
+          runs
+            .iterator
+            .buffered
+            .groupBy(x ⇒ x._1 < avgRunLength)
+            .map(runsStr)
+            .mkString("\t\n")
 
         s"$contig:\t$str"
       }).mkString("\n")

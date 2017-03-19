@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.filters.genotype
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object GenotypeFilter {
 
@@ -65,15 +65,15 @@ object GenotypeFilter {
     var filteredGenotypes = genotypes
 
     if (minReadDepth > 0) {
-      filteredGenotypes = filteredGenotypes.filter(gt => ReadDepthFilter.withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
+      filteredGenotypes = filteredGenotypes.filter(gt ⇒ ReadDepthFilter.withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
     }
 
     if (minAlternateReadDepth > 0) {
-      filteredGenotypes = filteredGenotypes.filter(gt => MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
+      filteredGenotypes = filteredGenotypes.filter(gt ⇒ MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
     }
 
     if (minAlternateReadDepth > 0) {
-      filteredGenotypes = filteredGenotypes.filter(gt => MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
+      filteredGenotypes = filteredGenotypes.filter(gt ⇒ MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
     }
 
     filteredGenotypes

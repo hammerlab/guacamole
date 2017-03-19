@@ -1,16 +1,17 @@
 package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils.phredToErrorProbability
-import org.hammerlab.guacamole.likelihood.Likelihood.{uniformPrior, likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup}
-import org.hammerlab.guacamole.pileup.{PileupElement, Util => PileupUtil}
-import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.genomics.bases.Base.C
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.{ MappedRead, ReadsUtil }
+import org.hammerlab.guacamole.likelihood.Likelihood.{ likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup, uniformPrior }
+import org.hammerlab.guacamole.pileup.{ PileupElement, Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.Bases.stringToBases
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-import scala.math.{exp, log}
+import scala.math.{ exp, log }
 
 class LikelihoodSuite
   extends GuacFunSuite
@@ -21,18 +22,18 @@ class LikelihoodSuite
 
   val epsilon = 1e-12
 
-  override lazy val reference = makeReference(sc, "chr1", 1, "C")
+  override lazy val reference = makeReference("chr1", 1, "C")
 
-  val referenceBase = 'C'.toByte
+  val referenceBase = C
 
   def makeGenotype(alleles: String*): Genotype = {
     val alleleFraction = 1.0 / alleles.length
     Genotype(
       (for {
-        alleleStr <- alleles
-        allele = Allele(Seq(referenceBase), stringToBases(alleleStr))
+        alleleStr ← alleles
+        allele = Allele(Bases(referenceBase), alleleStr)
       } yield
-        allele -> alleleFraction
+        allele → alleleFraction
       ).toMap
     )
   }
@@ -94,15 +95,15 @@ class LikelihoodSuite
     var totalExpectedLikelihood = 0.0
     val expectedGenotypeLikelihoods =
       (for {
-        (alleles, likelihood) <- expectedLikelihoods.toList
+        (alleles, likelihood) ← expectedLikelihoods.toList
       } yield {
         totalExpectedLikelihood += (if (logSpace) exp(likelihood) else likelihood)
-        makeGenotype(alleles) -> likelihood
+        makeGenotype(alleles) → likelihood
       }).toMap
 
     val expectedProbabilities =
       expectedGenotypeLikelihoods.mapValues(
-        likelihood =>
+        likelihood ⇒
           if (logSpace)
             likelihood - log(totalExpectedLikelihood)
           else
@@ -119,7 +120,7 @@ class LikelihoodSuite
         expectedProbabilities.toList: _*
       )
     ) {
-      case (genotype, expectedProbability) =>
+      case (genotype, expectedProbability) ⇒
         actualProbabilitiesMap(genotype) should === (expectedProbability +- epsilon)
     }
   }
@@ -141,7 +142,7 @@ class LikelihoodSuite
         genotypesMap: _*
       )
     ) {
-      case (alleles, expectedLikelihood) =>
+      case (alleles, expectedLikelihood) ⇒
         val actualLikelihood =
           likelihoodOfGenotype(
             pileup.elements,

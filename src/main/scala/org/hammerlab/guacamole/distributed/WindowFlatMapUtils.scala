@@ -3,11 +3,11 @@ package org.hammerlab.guacamole.distributed
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.iterator.LociIterator
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.{ HasSampleId, NumSamples, PerSample }
 import org.hammerlab.genomics.reference.Region
-import org.hammerlab.guacamole.reads.SampleRegion
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
-import org.hammerlab.guacamole.readsets.{NumSamples, PerSample}
-import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
+import org.hammerlab.guacamole.windowing.SlidingWindow.advanceMultipleWindows
+import org.hammerlab.guacamole.windowing.{ SlidingWindow, SplitIterator }
 
 import scala.reflect.ClassTag
 
@@ -31,29 +31,29 @@ object WindowFlatMapUtils {
    * @param halfWindowSize if another region overlaps a halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
    * @param initialState initial state to use for each task and each contig analyzed within a task.
-   * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
+   * @param function function to flatmap, of type (state, sliding windows) → (new state, result data)
    * @tparam R region data type (e.g. MappedRead)
    * @tparam T result data type
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[R <: SampleRegion: ClassTag, T: ClassTag, S](
+  def windowFlatMapWithState[M <: HasSampleId, R <: Region: ClassTag, T: ClassTag, S](
     numSamples: NumSamples,
-    partitionedReads: PartitionedRegions[R],
+    partitionedReads: PartitionedRegions[M, R],
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialState: S,
-    function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
+    function: (S, PerSample[SlidingWindow[R]]) ⇒ (S, Iterator[T]))(implicit toR: M ⇒ R): RDD[T] = {
 
-    splitSamplesAndMap(
+    splitSamplesAndMap[M, R, T](
       numSamples,
       partitionedReads,
-      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) ⇒ {
         splitPartitionByContigAndMap[R, T](
           taskRegionsPerSample,
           partitionLoci,
           halfWindowSize,
-          (contigLoci, perSampleWindows) => {
+          (contigLoci, perSampleWindows) ⇒ {
 
             var lastState: S = initialState
 
@@ -62,7 +62,7 @@ object WindowFlatMapUtils {
             // probably worth revisiting.
             val builder = Vector.newBuilder[T]
 
-            while (SlidingWindow.advanceMultipleWindows(perSampleWindows, contigLoci, skipEmpty).isDefined) {
+            while (advanceMultipleWindows(perSampleWindows, contigLoci, skipEmpty).isDefined) {
               val (state, elements) = function(lastState, perSampleWindows)
               lastState = state
               builder ++= elements
@@ -86,21 +86,21 @@ object WindowFlatMapUtils {
    * @param partitionedReads partitioned reads; reads that straddle partition boundaries will occur more than once
    *                         herein.
    * @param function function to apply: (loci, iterators of regions that overlap a window around these loci (one
-   *                 region-iterator per sample)) -> [[Iterator[T]]]
+   *                 region-iterator per sample)) → [[Iterator[T]]]
    * @tparam T type of returned [[RDD]]
    * @return [[RDD[T]]]
    */
-  private[distributed] def splitSamplesAndMap[R <: SampleRegion: ClassTag, T: ClassTag](
+  private[distributed] def splitSamplesAndMap[M <: HasSampleId, R <: Region: ClassTag, T: ClassTag](
     numSamples: NumSamples,
-    partitionedReads: PartitionedRegions[R],
-    function: (LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
+    partitionedReads: PartitionedRegions[M, R],
+    function: (LociSet, PerSample[Iterator[R]]) ⇒ Iterator[T])(implicit toR: M ⇒ R): RDD[T] = {
 
     partitionedReads
       .mapPartitions(
-        (reads, loci) =>
+        (reads, loci) ⇒
           function(
             loci,
-            SplitIterator.split[R](numSamples, reads, _.sampleId)
+            SplitIterator.split[M](numSamples, reads, _.sampleId).map(_.map(toR))
           )
       )
   }
@@ -120,7 +120,7 @@ object WindowFlatMapUtils {
     perSampleTaskRegions: PerSample[Iterator[R]],
     partitionLoci: LociSet,
     halfWindowSize: Int,
-    generateFromWindows: (LociIterator, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
+    generateFromWindows: (LociIterator, PerSample[SlidingWindow[R]]) ⇒ Iterator[T]): Iterator[T] = {
 
     val perSampleRegionsByContig: PerSample[RegionsByContig[R]] =
       perSampleTaskRegions.map(new RegionsByContig(_))
@@ -129,7 +129,7 @@ object WindowFlatMapUtils {
     // repartitionAndSortWithinPartitions above, and also in LociSet.contigs.
     for {
       // For each contig…
-      contigLoci <- partitionLoci.contigs.iterator
+      contigLoci ← partitionLoci.contigs.iterator
 
       // For each sample, an iterator of regions on this contig.
       perSampleContigRegions: PerSample[Iterator[R]] = perSampleRegionsByContig.map(_.next(contigLoci.name))
@@ -139,7 +139,7 @@ object WindowFlatMapUtils {
       windows: PerSample[SlidingWindow[R]] = perSampleContigRegions.map(SlidingWindow(contigLoci.name, halfWindowSize, _))
 
       // Pass this contig's loci and per-sample "windows" to the supplied closure, and emit each resulting object.
-      t <- generateFromWindows(contigLoci.iterator, windows)
+      t ← generateFromWindows(contigLoci.iterator, windows)
     } yield
       t
   }

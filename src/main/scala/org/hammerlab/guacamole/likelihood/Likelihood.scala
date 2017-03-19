@@ -1,10 +1,9 @@
 package org.hammerlab.guacamole.likelihood
 
-import breeze.linalg.{DenseMatrix, DenseVector, logNormalize, sum}
-import breeze.numerics.{exp, log}
-import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.Bases.isStandardBase
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import breeze.linalg.{ DenseMatrix, DenseVector, logNormalize, sum }
+import breeze.numerics.{ exp, log }
+import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
+import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
 /**
  * Functions for calculating the likelihood of a genotype given some read evidence (pileup elements).
@@ -31,21 +30,24 @@ object Likelihood {
   def probabilitiesOfAllPossibleGenotypesFromPileup(
     pileup: Pileup,
     includeAlignment: Boolean = false,
-    prior: Genotype => Double = uniformPrior,
+    prior: Genotype ⇒ Double = uniformPrior,
     logSpace: Boolean = false): Seq[(Genotype, Double)] = {
 
-    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall(isStandardBase))
+    val alleles =
+      pileup
+        .distinctAlleles
+        .filter(_.altBases.allStandardBases)
 
     // Assume the alleles are equivalent fractions in the genotype
     val genotypes =
       for {
-        i <- alleles.indices
-        j <- i until alleles.size
+        i ← alleles.indices
+        j ← i until alleles.size
         mixture =
           if (i == j)
-            Map(alleles(i) -> 1.0)
+            Map(alleles(i) → 1.0)
           else
-            Map(alleles(i) -> 0.5, alleles(j) -> 0.5)
+            Map(alleles(i) → 0.5, alleles(j) → 0.5)
       } yield
         Genotype(mixture)
 
@@ -99,7 +101,7 @@ object Likelihood {
   private[likelihood] def likelihoodsOfGenotypes(elements: Seq[PileupElement],
                                                  genotypes: Array[Genotype],
                                                  includeAlignment: Boolean,
-                                                 prior: Genotype => Double,
+                                                 prior: Genotype ⇒ Double,
                                                  logSpace: Boolean,
                                                  normalize: Boolean): DenseVector[Double] = {
 
@@ -110,7 +112,7 @@ object Likelihood {
         .distinct
         .sorted
 
-    // map from allele -> allele index in our alleles sequence.
+    // map from allele → allele index in our alleles sequence.
     val alleleToIndex =
       alleles
         .zipWithIndex
@@ -125,11 +127,11 @@ object Likelihood {
     // where f_i is the allele fraction
     val logLikelihoods: DenseVector[Double] =
       DenseVector(
-        genotypes.map(genotype => {
+        genotypes.map(genotype ⇒ {
           // For each allele, all elements' probabilities of matching that allele, weighted by that allele's VAF.
           val alleleRows =
             genotype.alleleMixture.map {
-              case (allele, alleleFraction) =>
+              case (allele, alleleFraction) ⇒
                 alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
             }
 
@@ -156,7 +158,7 @@ object Likelihood {
   def probabilitiesOfGenotypes(elements: Seq[PileupElement],
                                genotypes: (Genotype, Genotype),
                                includeAlignment: Boolean,
-                               prior: Genotype => Double,
+                               prior: Genotype ⇒ Double,
                                logSpace: Boolean): (Double, Double) = {
     val likelihoods =
       likelihoodsOfGenotypes(
@@ -188,8 +190,8 @@ object Likelihood {
     val alleleElementProbabilities = new DenseMatrix[Double](alleles.length, depth)
 
     for {
-      (allele, alleleIndex) <- alleles.zipWithIndex
-      (element, elementIndex) <- elements.zipWithIndex
+      (allele, alleleIndex) ← alleles.zipWithIndex
+      (element, elementIndex) ← elements.zipWithIndex
     } {
       val successProbability =
         if (includeAlignment)

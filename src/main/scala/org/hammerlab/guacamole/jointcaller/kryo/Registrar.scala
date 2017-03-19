@@ -2,10 +2,12 @@ package org.hammerlab.guacamole.jointcaller.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
+import org.hammerlab.genomics.bases
 import org.hammerlab.guacamole.jointcaller.Parameters.SomaticGenotypePolicy
-import org.hammerlab.guacamole.jointcaller.annotation.{InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias}
-import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence}
-import org.hammerlab.guacamole.jointcaller.{AlleleAtLocus, Input, InputCollection, Parameters}
+import org.hammerlab.guacamole.jointcaller.annotation.{ InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias }
+import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.AlleleMixture
+import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, Input, InputSerializer, Inputs, Parameters, Sample, Samples }
 
 class Registrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo): Unit = {
@@ -22,10 +24,10 @@ class Registrar extends KryoRegistrator {
     kryo.register(Class.forName("scala.Enumeration$Val"))
     kryo.register(SomaticGenotypePolicy.getClass)
     kryo.register(classOf[MultiSampleAnnotations])
-    kryo.register(classOf[InputCollection])
-    kryo.register(classOf[Input])
-    kryo.register(Input.Analyte.getClass)
-    kryo.register(Input.TissueType.getClass)
+    kryo.register(classOf[Samples])
+    kryo.register(classOf[Sample])
+    kryo.register(Sample.Analyte.getClass)
+    kryo.register(Sample.TissueType.getClass)
     kryo.register(classOf[InsufficientNormal])
     kryo.register(classOf[TumorRNASingleSampleSingleAlleleEvidence])
     kryo.register(classOf[Parameters.SomaticGenotypePolicy.Value])
@@ -35,5 +37,11 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[MultiSampleSingleAlleleEvidence])
     kryo.register(classOf[MultiSampleMultiAlleleEvidence])
     kryo.register(classOf[Array[MultiSampleMultiAlleleEvidence]])
+    kryo.register(classOf[AlleleMixture])
+
+    kryo.register(classOf[Inputs])
+    kryo.register(classOf[Input], new InputSerializer)
+
+    new bases.Registrar().registerClasses(kryo)
   }
 }

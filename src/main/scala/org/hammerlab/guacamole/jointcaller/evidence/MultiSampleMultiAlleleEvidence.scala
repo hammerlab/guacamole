@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
-import org.hammerlab.genomics.reference.{ContigName, Locus, Region}
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
-import org.hammerlab.guacamole.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
+import org.hammerlab.genomics.readsets.PerSample
+import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
+import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
+import org.hammerlab.guacamole.jointcaller.{ Samples, Parameters }
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.Bases.isStandardBase
 
 /**
  * A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.
@@ -28,24 +28,36 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
     if (singleAlleleEvidences.isEmpty)
       start
     else
-      singleAlleleEvidences.map(_.allele.end).max
+      singleAlleleEvidences
+        .map(_.allele.end)
+        .max
 
   /**
    * If we are going to consider only one allele at this site, pick the best one.
    *
    * TODO: this should probably do something more sophisticated.
    */
-  def bestAllele(): MultiSampleSingleAlleleEvidence = {
+  def bestAllele: MultiSampleSingleAlleleEvidence =
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
-    singleAlleleEvidences.sortBy(evidence => {
-      (evidence.isGermlineCall,
-        evidence.isSomaticCall,
-        if (evidence.isGermlineCall)
-          evidence.pooledGermlinePosteriors.maxBy(_._2)._2
-        else
-          evidence.perTumorDnaSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
-    }).last
-  }
+    singleAlleleEvidences
+      .maxBy(
+        evidence ⇒
+          (
+            evidence.isGermlineCall,
+            evidence.isSomaticCall,
+            if (evidence.isGermlineCall)
+              evidence
+                .pooledGermlinePosteriors
+                .maxBy(_._2)
+                ._2
+            else
+              evidence
+                .perTumorDnaSampleSomaticPosteriors
+                .values
+                .map(_.maxBy(_._2)._2)
+                .max
+          )
+      )
 
   /**
    * Return a new instance containing only the calls that pass filters.
@@ -64,7 +76,7 @@ object MultiSampleMultiAlleleEvidence {
    * insufficient evidence for a call).
    *
    * @param pileups pileup instances such that pileups(i) corresponds to sample input i
-   * @param inputs sample inputs description
+   * @param samples sample inputs description
    * @param parameters variant calling parameters
    * @param reference genome reference
    * @param forceCall return an instance for at this site even if there is insufficient evidence for a call
@@ -72,25 +84,24 @@ object MultiSampleMultiAlleleEvidence {
    * @param includeFiltered return calls even if they are filtered
    * @return
    */
-  def make(
-    pileups: PerSample[Pileup],
-    inputs: InputCollection,
-    parameters: Parameters,
-    reference: ReferenceBroadcast,
-    forceCall: Boolean,
-    onlySomatic: Boolean = false,
-    includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
+  def apply(pileups: PerSample[Pileup],
+            samples: Samples,
+            parameters: Parameters,
+            reference: ReferenceBroadcast,
+            forceCall: Boolean,
+            onlySomatic: Boolean = false,
+            includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(
-      pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
-    val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
+      pileup ⇒ pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
+    val normalPileups = samples.normalDNA.map(input ⇒ filteredPileups(input.id))
 
     val contig = normalPileups.head.contigName
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
-    if (!isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
+    if (!reference.getReferenceBase(contig, locus.next).isStandardBase) {
       return None
     }
 
@@ -99,13 +110,15 @@ object MultiSampleMultiAlleleEvidence {
     // This will return an empty seq if there are no alternate alleles sequenced. If we are force calling this site,
     // we require that we always get back at least one allele (which will be N if there are no alternate alleles
     // at all).
-    val possibleAlleles = AlleleAtLocus.variantAlleles(
-      (inputs.normalDNA ++ inputs.tumorDNA).map(input => filteredPileups(input.index)),
-      anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
-      anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
-      maxAlleles = Some(parameters.maxAllelesPerSite),
-      atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
-      onlyStandardBases = true)
+    val possibleAlleles =
+      variantAlleles(
+        (samples.normalDNA ++ samples.tumorDNA).map(input ⇒ filteredPileups(input.id)),
+        anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
+        anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
+        maxAlleles = Some(parameters.maxAllelesPerSite),
+        atLeastOneAllele = forceCall,  // if force calling this site, always get at least one allele
+        onlyStandardBases = true
+      )
 
     // If we have no possible alternate alleles, don't call anything at this site.
     if (possibleAlleles.isEmpty) {
@@ -116,22 +129,39 @@ object MultiSampleMultiAlleleEvidence {
     // We need a MultiplePileupStats instance for each allele. Since PileupStats (and MultiplePileupStats) don't depend
     // on the actual alternate allele, but only its start and end positions, as an optimization we make one
     // MultiplePileupStats per allele (start, end) position.
-    val multiplePileupStatsPerPossibleAlleleLocus = possibleAlleles
-      .map(allele => (allele.start.toInt, allele.end.toInt))
-      .distinct
-      .map(pair => {
-        val referenceSequence = filteredPileups.head.contigSequence.slice(pair._1, pair._2)
-        val stats = filteredPileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
-        pair -> MultiplePileupStats(inputs, stats)
-      }).toMap
+    val multiplePileupStatsPerPossibleAlleleLocus =
+      possibleAlleles
+        .map(allele ⇒ (allele.start, allele.end, allele.ref.length))
+        .distinct
+        .map {
+          case (start, end, length) ⇒
+            val referenceSequence =
+              filteredPileups
+                .head
+                .contigSequence
+                .slice(start, length)
+
+            val stats =
+              filteredPileups
+                .map(
+                  pileup ⇒
+                    PileupStats(pileup.elements, refSequence = referenceSequence)
+                )
+
+            start → end → MultiplePileupStats(samples, stats)
+        }
+        .toMap
 
     // Create a MultiSampleSingleAlleleEvidence for each alternate allele.
-    val allEvidences = possibleAlleles.map(allele => {
-      MultiSampleSingleAlleleEvidence(
-        parameters,
-        allele,
-        multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
-    })
+    val allEvidences =
+      possibleAlleles
+        .map(allele ⇒
+          MultiSampleSingleAlleleEvidence(
+            parameters,
+            allele,
+            multiplePileupStatsPerPossibleAlleleLocus((allele.start, allele.end))
+          )
+        )
 
     val evidencesCalled = allEvidences.filter(_.isCall)
     val evidences = if (evidencesCalled.nonEmpty) evidencesCalled else allEvidences.take(1)
@@ -149,26 +179,33 @@ object MultiSampleMultiAlleleEvidence {
     }
 
     // Create a MultiSampleMultiAlleleEvidence to group all the alleles and their evidence.
-    val calls = MultiSampleMultiAlleleEvidence(
-      contigName = evidences.head.allele.contigName,
-      start = evidences.head.allele.start,
-      singleAlleleEvidences = evidences)
+    val calls =
+      MultiSampleMultiAlleleEvidence(
+        contigName = evidences.head.allele.contigName,
+        start = evidences.head.allele.start,
+        singleAlleleEvidences = evidences
+      )
 
     // Run annotations (e.g. filters).
-    val annotatedEvidences = evidences.map(evidence => {
-      val allele = evidence.allele
-      evidence.annotate(
-        calls,
-        multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
-    })
+    val annotatedEvidences =
+      evidences.map {
+        evidence ⇒
+          val allele = evidence.allele
+          evidence.annotate(
+            calls,
+            multiplePileupStatsPerPossibleAlleleLocus((allele.start, allele.end))
+          )
+      }
+
     val annotatedCalls = calls.copy(singleAlleleEvidences = annotatedEvidences)
 
     // If we are force calling this site or are including filtered calls, then we want to return all alleles resulting
     // in calls. Otherwise, we return only the alleles that pass all the filters.
-    val passingCalls = if (forceCall || includeFiltered)
-      annotatedCalls
-    else
-      annotatedCalls.onlyPassingFilters()
+    val passingCalls =
+      if (forceCall || includeFiltered)
+        annotatedCalls
+      else
+        annotatedCalls.onlyPassingFilters()
 
     // If we have no calls at this point, we aren't calling this site, so return None. Otherwise return the calls.
     if (passingCalls.singleAlleleEvidences.isEmpty)

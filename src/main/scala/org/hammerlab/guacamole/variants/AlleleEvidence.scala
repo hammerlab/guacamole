@@ -1,11 +1,9 @@
 package org.hammerlab.guacamole.variants
 
 import breeze.linalg.DenseVector
-import breeze.stats.{mean, median}
+import breeze.stats.{ mean, median }
+import org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.util.PhredUtils.successProbabilityToPhred
-
-import scala.math.min
 
 /**
  *
@@ -73,14 +71,29 @@ object AlleleEvidence {
         medianMappingQuality = median(alignmentScores),
         meanBaseQuality = mean(baseQualityScores),
         medianBaseQuality = median(baseQualityScores),
-        medianMismatchesPerRead = median(
-          DenseVector(alleleElements.map(_.read.countOfMismatches(pileup.contigSequence)).toArray)
-        )
+        medianMismatchesPerRead =
+          median(
+            DenseVector(
+              alleleElements
+                .map(
+                  _.countOfMismatches
+                )
+                .toArray
+            )
+          )
       )
   }
 
-  def apply(likelihood: Double, allele: Allele, pileup: Pileup): AlleleEvidence = {
+  def apply(likelihood: Double,
+            allele: Allele,
+            pileup: Pileup): AlleleEvidence = {
     val (alleleReadDepth, allelePositiveReadDepth) = pileup.alleleReadDepthAndPositiveDepth(allele)
-    AlleleEvidence(likelihood, allele, alleleReadDepth, allelePositiveReadDepth, pileup)
+    AlleleEvidence(
+      likelihood,
+      allele,
+      alleleReadDepth,
+      allelePositiveReadDepth,
+      pileup
+    )
   }
 }

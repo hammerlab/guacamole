@@ -5,15 +5,16 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.commands.Args
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ ContigName, Locus }
+import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleName }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.guacamole.readsets.io.InputConfig
+import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
-import org.hammerlab.guacamole.readsets.{ PerSample, ReadSets, SampleName }
-import org.hammerlab.guacamole.util.Bases.basesToString
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object VariantSupport {
@@ -38,20 +39,19 @@ object VariantSupport {
     override val name = "variant-support"
     override val description = "Find number of reads that support each variant across BAMs"
 
-    case class AlleleCount(sampleName: SampleName,
-                           contigName: ContigName,
-                           locus: Locus,
-                           reference: String,
-                           alternate: String,
-                           count: Int) {
-      override def toString: String = {
+    case class GenotypeCount(sampleName: SampleName,
+                             contigName: ContigName,
+                             locus: Locus,
+                             reference: Bases,
+                             alternate: Bases,
+                             count: Int) {
+      override def toString: String =
         s"$sampleName, $contigName, $locus, $reference, $alternate, $count"
-      }
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val reference = args.reference(sc)
+      val reference = ReferenceBroadcast(args, sc)
 
       val adamContext: ADAMContext = sc
 
@@ -68,19 +68,25 @@ object VariantSupport {
       val loci =
         LociSet(
           variants
-            .map(variant => (variant.getContigName, variant.getStart: Long, variant.getEnd: Long))
+            .map(variant ⇒
+              Region(
+                variant.getContigName,
+                Locus(variant.getStart),
+                Locus(variant.getEnd)
+              )
+            )
             .collect()
         )
 
       val partitionedReads =
         PartitionedRegions(
-          readsets.allMappedReads,
+          readsets.sampleIdxKeyedMappedReads,
           loci,
           args
         )
 
       val alleleCounts =
-        pileupFlatMapMultipleSamples[AlleleCount](
+        pileupFlatMapMultipleSamples[GenotypeCount](
           readsets.sampleNames,
           partitionedReads,
           skipEmpty = true,
@@ -97,17 +103,17 @@ object VariantSupport {
      * @param pileups Per-sample pileups of reads at a given locus.
      * @return Iterator of AlleleCount which contains pair of reference and alternate with a count.
      */
-    def pileupsToAlleleCounts(pileups: PerSample[Pileup]): Iterator[AlleleCount] =
+    def pileupsToAlleleCounts(pileups: PerSample[Pileup]): Iterator[GenotypeCount] =
       for {
-        pileup <- pileups.iterator
-        (allele, elements) <- pileup.elements.groupBy(_.allele)
+        pileup ← pileups.iterator
+        (allele, elements) ← pileup.elements.groupBy(_.allele)
       } yield
-        AlleleCount(
+        GenotypeCount(
           pileup.sampleName,
           pileup.contigName,
           pileup.locus,
-          basesToString(allele.refBases),
-          basesToString(allele.altBases),
+          allele.refBases,
+          allele.altBases,
           elements.size
         )
   }

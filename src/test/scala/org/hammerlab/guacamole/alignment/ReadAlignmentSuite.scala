@@ -1,11 +1,15 @@
 package org.hammerlab.guacamole.alignment
 
-import org.hammerlab.guacamole.alignment.AlignmentState.{Insertion, Match, Mismatch}
+import org.hammerlab.genomics.bases.BasesUtil
+import org.hammerlab.guacamole.alignment.AlignmentState.{ Insertion, Match, Mismatch }
 import org.hammerlab.guacamole.alignment.ReadAlignment.scoreAlignmentPaths
-import org.hammerlab.guacamole.util.BasesUtil._
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 
-class ReadAlignmentSuite extends FunSuite with Matchers {
+import scala.math.round
+
+class ReadAlignmentSuite
+  extends Suite
+    with BasesUtil {
 
   test("test cigar string: all match") {
     val alignment = ReadAlignment(
@@ -98,7 +102,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         closeGapProbability = 1e-2
       )
 
-    math.round(alignments(0)._3) should be(5)
+    round(alignments(0)._3) should be(5)
   }
 
   test("align exact match") {

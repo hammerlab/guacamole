@@ -18,7 +18,7 @@ object LoggingUtils {
       else
         "%.2f sec. later".format((current - lastProgressTime) / 1000.0)
 
-    println("--> [%15s]: %s".format(time, messages.mkString("\n")))
+    println("⟶ [%15s]: %s".format(time, messages.mkString("\n")))
     System.out.flush()
     lastProgressTime = current
   }

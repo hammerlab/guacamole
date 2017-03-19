@@ -2,42 +2,46 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.loci.set.test.TestLociSet
+import org.hammerlab.genomics.loci.set.test.LociSetUtil
+import org.hammerlab.genomics.reference.test.LenientContigNameConversions
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.spark.{NumPartitions, PartitionIndex}
+import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
 
-class UniformPartitionerSuite extends GuacFunSuite {
+class UniformPartitionerSuite
+  extends GuacFunSuite
+    with LenientContigNameConversions
+    with LociSetUtil {
 
   def partition(numPartitions: NumPartitions, loci: LociSet): LociPartitioning =
     UniformPartitioner(numPartitions).partition(loci)
 
   test("partitionLociUniformly") {
-    val set = TestLociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
+    val set = lociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
     val result1 = partition(1, set).inverse
     result1(0) should equal(set)
 
     val result2 = partition(2, set).inverse
-    result2(0).count should equal(set.count / 2)
-    result2(1).count should equal(set.count / 2)
+    result2(0).count should ===(set.count / 2)
+    result2(1).count should ===(set.count / 2)
     result2(0) should not equal result2(1)
 
-    val result3 = partition(4, TestLociSet("chrM:0-16571"))
+    val result3 = partition(4, lociSet("chrM:0-16571"))
     result3.toString should equal("chrM:0-4143=0,chrM:4143-8286=1,chrM:8286-12428=2,chrM:12428-16571=3")
 
-    val result4 = partition(100, TestLociSet("chrM:1000-1100"))
+    val result4 = partition(100, lociSet("chrM:1000-1100"))
     val expectedBuilder4 = LociMap.newBuilder[PartitionIndex]
-    for (i <- 0 until 100) {
+    for (i ← 0 until 100) {
       expectedBuilder4.put("chrM", i + 1000, i + 1001, i)
     }
-    result4.map should equal(expectedBuilder4.result())
+    result4.map should equal(expectedBuilder4.result)
 
-    val result5 = partition(3, TestLociSet("chrM:0-10"))
+    val result5 = partition(3, lociSet("chrM:0-10"))
     result5.toString should equal("chrM:0-3=0,chrM:3-7=1,chrM:7-10=2")
 
-    val result6 = partition(4, TestLociSet("chrM:0-3"))
+    val result6 = partition(4, lociSet("chrM:0-3"))
     result6.toString should equal("chrM:0-1=0,chrM:1-2=1,chrM:2-3=2")
 
-    val result7 = partition(4, TestLociSet("empty:10-10"))
+    val result7 = partition(4, lociSet("empty:10-10"))
     result7.toString should equal("")
   }
 
@@ -45,10 +49,10 @@ class UniformPartitionerSuite extends GuacFunSuite {
     // TODO: actually check things here.
 
     // These two calls should not take a noticeable amount of time.
-    val bigSet = TestLociSet("chr21:0-3000000000")
+    val bigSet = lociSet("chr21:0-3000000000")
     partition(2000, bigSet).inverse
 
-    val giantSet = TestLociSet(
+    val giantSet = lociSet(
       List(
         "1:0-249250621",
         "10:0-135534747",

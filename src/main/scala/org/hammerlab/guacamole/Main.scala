@@ -29,7 +29,7 @@ object Main extends Logging {
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
     println("Available commands:")
-    commands.foreach(caller => {
+    commands.foreach(caller ⇒ {
       println("%25s: %s".format(caller.name, caller.description))
     })
     println("\nTry java ... <command> -h for help on a particular variant caller.")
@@ -47,12 +47,12 @@ object Main extends Logging {
     }
     val commandName = args(0)
     commands.find(_.name == commandName) match {
-      case Some(command) => {
+      case Some(command) ⇒ {
         progress("Guacamole starting.")
         ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
         command.run(args.drop(1))
       }
-      case None => {
+      case None ⇒ {
         println("Unknown variant caller: %s".format(commandName))
         printUsage()
         System.exit(1)

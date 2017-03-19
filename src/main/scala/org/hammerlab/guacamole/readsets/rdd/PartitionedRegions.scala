@@ -1,13 +1,13 @@
 package org.hammerlab.guacamole.readsets.rdd
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Accumulable, SparkContext}
+import org.apache.spark.{ Accumulable, SparkContext }
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.Region
+import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.magic.accumulables.{HistogramParam, HashMap => MagicHashMap}
+import org.hammerlab.magic.accumulables.{ HistogramParam, HashMap ⇒ MagicHashMap }
 import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.spark.util.KeyPartitioner
@@ -28,8 +28,8 @@ import scala.reflect.ClassTag
  * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
  * [[mapPartitions]] is called.
  */
-class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
-                                                        partitioning: LociPartitioning)
+class PartitionedRegions[T: ClassTag, R <: Region: ClassTag] private(regions: RDD[T],
+                                                                     partitioning: LociPartitioning)(implicit toR: T ⇒ R)
   extends Serializable {
 
   @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
@@ -53,13 +53,13 @@ class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
    * @return [[RDD[V]]], with partitions comprised of the [[Iterator[V]]]'s returned by application of `f` to each
    *        partition.
    */
-  def mapPartitions[V: ClassTag](f: (Iterator[R], LociSet) => Iterator[V]): RDD[V] =
+  def mapPartitions[V: ClassTag](f: (Iterator[T], LociSet) ⇒ Iterator[V]): RDD[V] =
     regions
       .zipPartitions(
         lociSetsRDD,
         preservesPartitioning = true
       )(
-        (regionsIter, lociIter) => {
+        (regionsIter, lociIter) ⇒ {
           val loci = lociIter.next()
           if (lociIter.hasNext) {
             throw new Exception(s"Expected 1 LociSet, found ${1 + lociIter.size}.\n$loci")
@@ -93,11 +93,11 @@ object PartitionedRegions {
   /**
    * Load an [[RDD]] of partitioned regions from a file.
    */
-  def load[R <: Region: ClassTag](sc: SparkContext,
-                                  filename: String,
-                                  partitioning: LociPartitioning): PartitionedRegions[R] = {
+  def load[T: ClassTag, R <: Region: ClassTag](sc: SparkContext,
+                                               filename: String,
+                                               partitioning: LociPartitioning)(implicit toR: T ⇒ R): PartitionedRegions[T, R] = {
     progress(s"Loading partitioned reads from $filename")
-    val regions = sc.fromSequenceFile[R](filename, splittable = false)
+    val regions = sc.fromSequenceFile[T](filename, splittable = false)
     new PartitionedRegions(regions, partitioning)
   }
 
@@ -113,12 +113,12 @@ object PartitionedRegions {
    * @param args Parameters dictating how `loci` should be partitioned.
    * @tparam R Region type.
    */
-  def apply[R <: Region: ClassTag](regions: RDD[R],
-                                   loci: LociSet,
-                                   args: PartitionedRegionsArgs): PartitionedRegions[R] =
+  def apply[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                loci: LociSet,
+                                                args: PartitionedRegionsArgs)(implicit toR: T ⇒ R): PartitionedRegions[T, R] =
     apply(
       regions,
-      LociPartitioning(regions, loci, args),
+      LociPartitioning(regions.map(toR), loci, args),
       args.halfWindowSize,
       args.partitionedReadsPathOpt,
       args.compressReadPartitions,
@@ -132,14 +132,14 @@ object PartitionedRegions {
    * If `partitionedRegionsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
    * path doesn't exist, compute them and save to that path.
    */
-  private[rdd] def apply[R <: Region: ClassTag](regions: RDD[R],
-                                                lociPartitioning: LociPartitioning,
-                                                halfWindowSize: Int,
-                                                partitionedRegionsPathOpt: Option[String],
-                                                compress: Boolean,
-                                                printStats: Boolean): PartitionedRegions[R] =
+  private[rdd] def apply[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                             lociPartitioning: LociPartitioning,
+                                                             halfWindowSize: Int,
+                                                             partitionedRegionsPathOpt: Option[String],
+                                                             compress: Boolean,
+                                                             printStats: Boolean)(implicit toR: T ⇒ R): PartitionedRegions[T, R] =
     partitionedRegionsPathOpt match {
-      case Some(partitionedRegionsPath) =>
+      case Some(partitionedRegionsPath) ⇒
 
         val sc = regions.sparkContext
         val fs = FileSystem.get(sc.hadoopConfiguration)
@@ -150,18 +150,18 @@ object PartitionedRegions {
           compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
             .save(partitionedRegionsPath, compressed = compress)
 
-      case None =>
+      case None ⇒
         compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
     }
 
   /**
    * Construct a [[PartitionedRegions]] for above constructors, ignoring loading/saving considerations.
    */
-  private def compute[R <: Region: ClassTag](regions: RDD[R],
-                                             lociPartitioning: LociPartitioning,
-                                             halfWindowSize: Int,
-                                             compress: Boolean,
-                                             printStats: Boolean): PartitionedRegions[R] = {
+  private def compute[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                          lociPartitioning: LociPartitioning,
+                                                          halfWindowSize: Int,
+                                                          compress: Boolean,
+                                                          printStats: Boolean)(implicit toR: T ⇒ R): PartitionedRegions[T, R] = {
 
     val sc = regions.sparkContext
 
@@ -171,7 +171,7 @@ object PartitionedRegions {
 
     progress(
       s"Partitioning reads into $numPartitions partitions according to loci partitioning:",
-      lociPartitioning.truncatedString()
+      lociPartitioning.toString(10000000)
     )
 
     implicit val accumulableParam = new HistogramParam[Int, Long]
@@ -183,26 +183,29 @@ object PartitionedRegions {
     // Histogram of the number of regions assigned to each partition.
     val partitionRegionsHistogram: Accumulable[IntHist, Int] = sc.accumulable(IntHist(), "regions-per-partition")
 
+    // Needed for repartitionAndSortWithinPartitions below.
+    implicit val tupleOrdering = Ordering.Tuple3[PartitionIndex, ContigName, Locus]
+
     val partitionedRegions =
       (for {
         // For each region…
-        r <- regions
+        r ← regions
 
         // Partitions to send a copy of this region to.
         partitions = partitioningBroadcast.value.getAll(r, halfWindowSize)
 
         // Add number of copies to histogram accumulator.
-        _ = (regionCopiesHistogram += partitions.size)
+        _ = regionCopiesHistogram += partitions.size
 
         // For each partition/copy…
-        partition <- partitions
+        partition ← partitions
       } yield {
         // Update "regions-per-partition" accumulator.
         partitionRegionsHistogram += partition
 
         // Key this region with its destination partition, plus secondary and tertiary fields for intra-partition
         // sorting.
-        (partition, r.contigName, r.start) -> r
+        (partition, r.contigName, r.start) → r
       })
       .repartitionAndSortWithinPartitions(KeyPartitioner(numPartitions))  // Shuffle all region copies
       .values  // Drop keys, leaving just regions.
@@ -216,13 +219,13 @@ object PartitionedRegions {
       // Number of reads before partitioning / selective copying.
       val originalReads = regions.count
 
-      // Sorted array of [number of read copies "K"] -> [number of reads that were copied "K" times].
+      // Sorted array of [number of read copies "K"] → [number of reads that were copied "K" times].
       val regionCopies: Array[(Int, Long)] = regionCopiesHistogram.value.toArray.sortBy(_._1)
 
       // Number of distinct reads that were sent to at least one partition.
       val readsPlaced = regionCopies.filter(_._1 > 0).map(_._2).sum
 
-      // Sorted array: [partition index "K"] -> [number of reads assigned to partition "K"].
+      // Sorted array: [partition index "K"] → [number of reads assigned to partition "K"].
       val regionsPerPartition: Array[(PartitionIndex, Long)] = partitionRegionsHistogram.value.toArray.sortBy(_._1)
 
       progress(

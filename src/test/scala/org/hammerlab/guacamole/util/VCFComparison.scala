@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.util
 
 import htsjdk.variant.variantcontext.VariantContext
 import org.hammerlab.genomics.loci.map.LociMap
+import org.hammerlab.genomics.reference.Locus
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -29,7 +30,7 @@ case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[Varian
   def sensitivity = exactMatch.size * 100.0 / expected.size
   def specificity = exactMatch.size * 100.0 / experimental.size
 
-  def summary(): String = {
+  def summary: String =
     Seq(
       "exact match: %,d".format(exactMatch.size),
       "partial match: %,d".format(partialMatch.size),
@@ -37,10 +38,11 @@ case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[Varian
       "unique to experimental: %,d".format(uniqueToExperimental.size),
       "sensitivity: %1.2f%%".format(sensitivity),
       "specificity: %1.2f%%".format(specificity)
-    ).mkString("\n")
-  }
+    )
+    .mkString("\n")
 
 }
+
 object VCFComparison {
   private def accumulate(
     records: Seq[VariantContext],
@@ -48,33 +50,40 @@ object VCFComparison {
     exactMatch: ArrayBuffer[(VariantContext, VariantContext)],
     partialMatch: ArrayBuffer[(VariantContext, VariantContext)],
     unique: ArrayBuffer[VariantContext]): Unit = {
-    records.foreach(record1 => {
-      map.onContig(record1.getContig).get(record1.getStart) match {
-        case Some(record2) => {
-          if (variantToString(record1) == variantToString(record2)) {
-            exactMatch += ((record1, record2))
-          } else {
-            partialMatch += ((record1, record2))
-          }
+    records.foreach {
+      record1 ⇒
+        map(record1.getContig).get(Locus(record1.getStart)) match {
+          case Some(record2) ⇒
+            if (variantToString(record1) == variantToString(record2))
+              exactMatch += ((record1, record2))
+            else
+              partialMatch += ((record1, record2))
+          case None ⇒
+            unique += record1
         }
-        case None => unique += record1
-      }
-    })
+    }
   }
 
   private def makeLociMap(records: Seq[VariantContext]): LociMap[VariantContext] = {
     val builder = LociMap.newBuilder[VariantContext]
-    records.foreach(record => {
-      // Switch from zero based inclusive to interbase coordinates.
-      builder.put(record.getContig, record.getStart, record.getEnd + 1, record)
-    })
+    records.foreach {
+      record ⇒
+        // Switch from zero based inclusive to interbase coordinates.
+        builder.put(
+          record.getContig,
+          Locus(record.getStart),
+          Locus(record.getEnd + 1),
+          record
+        )
+    }
+
     builder.result
   }
 
   def variantToString(variant: VariantContext, verbose: Boolean = false): String = {
     // We always use the non-hom-ref genotype when there is one.
-    val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype _)
-    val genotype = genotypes.sortBy(_.getType.toString == "HOM_REF").head
+    val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype)
+    val genotype = genotypes.minBy(_.getType.toString == "HOM_REF")
     val trigger = Option(variant.getAttribute("TRIGGER"))
     val calledString = if (trigger.isEmpty) {
       // If there is no TRIGGER field (e.g. a VCF from a non-guacamole caller) then we use the genotype.

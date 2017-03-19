@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.filters.genotype
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.variants.{AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.variants.{ AlleleEvidence, CalledAllele }
 
 /**
  * Filter to remove genotypes where the likelihood is low
@@ -25,7 +25,7 @@ object MinimumLikelihoodFilter {
   def apply(genotypes: RDD[CalledAllele],
             minLikelihood: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt.evidence, minLikelihood))
+    val filteredGenotypes = genotypes.filter(gt ⇒ hasMinimumLikelihood(gt.evidence, minLikelihood))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

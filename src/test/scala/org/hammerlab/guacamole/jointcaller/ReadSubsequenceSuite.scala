@@ -1,11 +1,14 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
-import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
-import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
+import org.hammerlab.genomics.bases.Base.{ C, G }
+import org.hammerlab.genomics.reads.ReadsUtil
+import org.hammerlab.guacamole.data.CancerWGS
+import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence.{ nextAlts, ofFixedReferenceLength, ofNextAltAllele }
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 class ReadSubsequenceSuite
   extends GuacFunSuite
@@ -13,15 +16,9 @@ class ReadSubsequenceSuite
     with PileupUtil
     with ReferenceUtil {
 
-  val cancerWGS1Bams =
-    Vector("normal.bam", "primary.bam", "recurrence.bam")
-      .map(
-        name => s"cancer-wgs1/$name"
-      )
+  override lazy val reference = makeReference("chr1", 0, "NTCGATCGACG")
 
-  override lazy val reference = makeReference(sc, "chr1", 0, "NTCGATCGACG")
-
-  val partialFasta = resourcePath("hg19.partial.fasta")
+  val partialFasta = File("hg19.partial.fasta")
   def partialReference =
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
 
@@ -34,12 +31,12 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N base
       )
 
-    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
+    val pileups = reads.map(read ⇒ makePileup(Seq(read), "chr1", 1))
 
-    ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should equal("C")
-    ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 2).get.sequence should equal("CG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(1).elements.head, 6).get.sequence should equal("CGACCCTCG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(3).elements.head, 1).get.sequenceIsAllStandardBases should equal(false)
+    ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should ===("C")
+    ofFixedReferenceLength(pileups(0).elements.head, 2).get.sequence should ===("CG")
+    ofFixedReferenceLength(pileups(1).elements.head, 6).get.sequence should ===("CGACCCTCG")
+    ofFixedReferenceLength(pileups(3).elements.head, 1).get.allStandardBases should equal(false)
   }
 
   test("ofNextAltAllele") {
@@ -53,53 +50,52 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N
       )
 
-    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
+    val pileups = reads.map(read ⇒ makePileup(Seq(read), "chr1", 1))
 
-    ReadSubsequence.ofNextAltAllele(pileups(0).elements(0)) should equal(None)
+    ofNextAltAllele(pileups(0).elements(0)) should equal(None)
 
-    ReadSubsequence.ofNextAltAllele(
-      pileups(1).atGreaterLocus(4, Iterator.empty).elements(0)).get.sequence should equal("G")
+    ofNextAltAllele(
+      pileups(1).atGreaterLocus(4, Iterator.empty).elements(0)).get.sequence should ===("G")
 
-    ReadSubsequence.ofNextAltAllele(
-      pileups(2).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should equal("ACCC")
+    ofNextAltAllele(
+      pileups(2).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should ===("ACCC")
 
-    ReadSubsequence.ofNextAltAllele(
-      pileups(3).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should equal("GCCC")
+    ofNextAltAllele(
+      pileups(3).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should ===("GCCC")
 
-    ReadSubsequence.ofNextAltAllele(
-      pileups(4).atGreaterLocus(2, Iterator.empty).elements(0)).get.sequence should equal("AGCCC")
+    ofNextAltAllele(
+      pileups(4).atGreaterLocus(2, Iterator.empty).elements(0)).get.sequence should ===("AGCCC")
 
-    ReadSubsequence.ofNextAltAllele(pileups(5).elements(0)).get.sequenceIsAllStandardBases should equal(false)
+    ofNextAltAllele(pileups(5).elements(0)).get.allStandardBases should equal(false)
   }
 
   test("gathering possible alleles") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val parameters = Parameters.defaults
-    val contigLocus = ("chr12", 65857039)
-    val pileups = cancerWGS1Bams.map(
-      path =>
+    val pileups = CancerWGS.bams.map(
+      path ⇒
         loadPileup(
           sc,
           path,
-          maybeContig = Some(contigLocus._1),
-          locus = contigLocus._2,
+          maybeContig = Some("chr12"),
+          locus = 65857039,
           reference = partialReference
         )
     )
 
-    val subsequences = ReadSubsequence.nextAlts(pileups(1).elements)
+    val subsequences = nextAlts(pileups(1).elements)
     assert(subsequences.nonEmpty)
 
     val alleles =
-      AlleleAtLocus.variantAlleles(
-        (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
+      variantAlleles(
+        (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ pileups(input.id)),
         anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
         anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent
       )
 
     assert(alleles.nonEmpty)
 
-    alleles.map(_.alt) should equal(Seq("C"))
-    alleles.map(_.ref) should equal(Seq("G"))
+    alleles.map(_.alt) should ===(Vector(C))
+    alleles.map(_.ref) should ===(Vector(G))
   }
 }

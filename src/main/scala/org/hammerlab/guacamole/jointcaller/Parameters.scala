@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
  * Model parameters for the joint caller. Anything that affects the math for the joint caller should go here.
@@ -31,7 +31,7 @@ case class Parameters(
     // We use reflection to avoid re-specifying all the parameters.
     // See: http://stackoverflow.com/questions/7457972/getting-public-fields-and-their-respective-values-of-an-instance-in-scala-java
     val fields = this.getClass.getDeclaredFields
-    for (field <- fields) yield {
+    for (field ← fields) yield {
       field.setAccessible(true)
       (field.getName, field.get(this).toString)
     }
@@ -89,10 +89,8 @@ object Parameters {
     var somaticMaxGermlineErrorRatePercent: Double = 4.0
 
     @Args4jOption(name = "--somatic-genotype-policy",
-      usage = "how to genotype (e.g. 0/0 vs. 0/1) somatic calls. Valid options: 'presence' (default), 'trigger'. " +
-        "'presence' will genotype as a het (0/1) if there is any evidence for that call in the sample " +
-        "(num variant reads > 0 and num variant reads > any other non-reference allele). " +
-        "'trigger' will genotype a call as a het only if that sample actually triggered the call.")
+      usage = "how to genotype (e.g. 0/0 vs. 0/1) somatic calls. Valid options: 'presence' (default), 'trigger'. 'presence' will genotype as a het (0/1) if there is any evidence for that call in the sample (num variant reads > 0 and num variant reads > any other non-reference allele). 'trigger' will genotype a call as a het only if that sample actually triggered the call."
+    )
     var somaticGenotypePolicy: String = "presence"
 
     @Args4jOption(name = "--filter-strand-bias-phred",

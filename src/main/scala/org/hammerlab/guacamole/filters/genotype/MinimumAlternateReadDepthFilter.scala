@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.filters.genotype
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.variants.{AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.variants.{ AlleleEvidence, CalledAllele }
 
 /**
  * Filter to remove genotypes where the number of reads to support the alternate allele is low
@@ -20,7 +20,7 @@ object MinimumAlternateReadDepthFilter {
   def apply(genotypes: RDD[CalledAllele],
             minAlternateReadDepth: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
+    val filteredGenotypes = genotypes.filter(gt ⇒ hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

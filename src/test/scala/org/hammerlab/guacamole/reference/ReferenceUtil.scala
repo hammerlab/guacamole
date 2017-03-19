@@ -1,13 +1,16 @@
 package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
-import org.hammerlab.genomics.reference.ContigName
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.util.Bases.stringToBases
+import org.hammerlab.genomics.bases.{ Base, Bases, BasesUtil }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
+import org.hammerlab.genomics.reference.test.LociConversions.intToLocus
 
 import scala.collection.mutable
 
-trait ReferenceUtil {
+trait ReferenceUtil
+  extends BasesUtil {
+
+  def sc: SparkContext
 
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
@@ -16,18 +19,17 @@ trait ReferenceUtil {
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
-  def makeReference(sc: SparkContext,
-                    contigLengths: Int,
-                    contigStartSequences: (ContigName, Int, String)*): ReferenceBroadcast = {
+  def makeReference(contigLengths: Int,
+                    contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast = {
 
-    val basesMap = mutable.HashMap[String, mutable.Map[Int, Byte]]()
+    val basesMap = mutable.HashMap[ContigName, mutable.Map[Locus, Base]]()
 
     for {
-      (contigName, start, sequence) <- contigStartSequences
+      (contigName, start, sequence) ← contigStartSequences
     } {
       val contigBasesMap = basesMap.getOrElseUpdate(contigName, mutable.Map())
       for {
-        (base, offset) <- stringToBases(sequence).zipWithIndex
+        (base, offset) ← sequence.zipWithIndex
         locus = start + offset
       } {
         contigBasesMap(locus) = base
@@ -36,21 +38,24 @@ trait ReferenceUtil {
 
     val contigsMap =
       for {
-        (contigName, contigBasesMap) <- basesMap.toMap
+        (contigName, contigBasesMap) ← basesMap.toMap
       } yield
-        contigName ->
+        contigName →
           MapBackedReferenceSequence(
             contigName,
-            contigLengths,
+            NumLoci(contigLengths),
             sc.broadcast(contigBasesMap.toMap)
           )
 
     new ReferenceBroadcast(contigsMap, source = Some("test_values"))
   }
 
-  def makeReference(sc: SparkContext, contigStartSequences: (ContigName, Int, String)*): ReferenceBroadcast =
-    makeReference(sc, 1000, contigStartSequences: _*)
+  implicit def makeContigLocusBases(t: (String, Int, String))(implicit cf: ContigName.Factory): (ContigName, Locus, Bases) =
+    (t._1, t._2, t._3)
 
-  def makeReference(sc: SparkContext, contigName: ContigName, start: Int, sequence: String): ReferenceBroadcast =
-    makeReference(sc, (contigName, start, sequence))
+  def makeReference(contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast =
+    makeReference(1000, contigStartSequences: _*)
+
+  def makeReference(contigName: ContigName, start: Locus, sequence: Bases): ReferenceBroadcast =
+    makeReference((contigName, start, sequence))
 }

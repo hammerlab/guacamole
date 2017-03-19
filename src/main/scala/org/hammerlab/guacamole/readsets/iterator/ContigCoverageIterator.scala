@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.iterator
 
-import org.hammerlab.genomics.loci.iterator.{SkippableLociIterator, SkippableLocusKeyedIterator}
-import org.hammerlab.genomics.reference.{ContigIterator, Interval, Locus}
+import org.hammerlab.genomics.loci.iterator.{ SkippableLociIterator, SkippableLocusKeyedIterator }
+import org.hammerlab.genomics.reference.{ ContigIterator, Interval, Locus }
 import org.hammerlab.guacamole.loci.Coverage
 
 import scala.collection.mutable
@@ -40,17 +40,17 @@ case class ContigCoverageIterator(halfWindowSize: Int,
    * counted towards [[Coverage.starts]] on the first locus where it contributes to [[Coverage.depth]] (that this
    * iterator is evaluated at, as opposed to skipped over), and only that locus.
    */
-  private val startEnds = mutable.PriorityQueue[Long]()(implicitly[Ordering[Long]].reverse)
-  private val depthEnds = mutable.PriorityQueue[Long]()(implicitly[Ordering[Long]].reverse)
+  private val startEnds = mutable.PriorityQueue[Locus]()(implicitly[Ordering[Locus]].reverse)
+  private val depthEnds = mutable.PriorityQueue[Locus]()(implicitly[Ordering[Locus]].reverse)
 
   /**
    * Record the last-seen interval-start, to verify that the intervals are sorted by `start`.
    */
-  private var lastStart: Locus = 0
+  private var lastStart = Locus(0)
 
   override def _advance: Option[(Locus, Coverage)] = {
     // Intervals whose ends are below (or equal to) this bound will be paged out of the queues.
-    val endLowerBound = math.max(0, locus - halfWindowSize)
+    val endLowerBound = locus - halfWindowSize
 
     while (depthEnds.headOption.exists(_ <= endLowerBound)) {
       depthEnds.dequeue()
@@ -110,7 +110,7 @@ case class ContigCoverageIterator(halfWindowSize: Int,
        * Return a valid ([[Locus]], [[Coverage]]) tuple, indicating the number of intervals covering (and starting at /
        * covering for the first time) the current [[locus]].
        */
-      Some(locus -> Coverage(depthEnds.size, startEnds.size))
+      Some(locus → Coverage(depthEnds.size, startEnds.size))
   }
 
   override def postNext(): Unit = {
