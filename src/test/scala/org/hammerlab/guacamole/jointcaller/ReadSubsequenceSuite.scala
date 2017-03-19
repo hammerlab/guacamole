@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.genomics.bases.Base.{ C, G }
 import org.hammerlab.genomics.reads.ReadsUtil
+import org.hammerlab.guacamole.data.CancerWGS
 import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence.{ nextAlts, ofFixedReferenceLength, ofNextAltAllele }
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
@@ -14,12 +15,6 @@ class ReadSubsequenceSuite
     with ReadsUtil
     with PileupUtil
     with ReferenceUtil {
-
-  val cancerWGS1Bams =
-    Vector("normal.bam", "primary.bam", "recurrence.bam")
-      .map(
-        name ⇒ s"cancer-wgs1/$name"
-      )
 
   override lazy val reference = makeReference("chr1", 0, "NTCGATCGACG")
 
@@ -75,9 +70,9 @@ class ReadSubsequenceSuite
   }
 
   test("gathering possible alleles") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val parameters = Parameters.defaults
-    val pileups = cancerWGS1Bams.map(
+    val pileups = CancerWGS.bams.map(
       path ⇒
         loadPileup(
           sc,
@@ -93,7 +88,7 @@ class ReadSubsequenceSuite
 
     val alleles =
       variantAlleles(
-        (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ pileups(input.index)),
+        (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ pileups(input.id)),
         anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
         anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent
       )

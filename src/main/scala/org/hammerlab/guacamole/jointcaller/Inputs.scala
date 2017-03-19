@@ -1,46 +1,49 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.genomics.readsets.args.{ Base ⇒ ReadSetsArgsBase }
+import org.apache.hadoop.fs.Path
+import org.hammerlab.args4s.StringsOptionHandler
+import org.hammerlab.genomics.readsets.args.base.Base
 import org.hammerlab.genomics.readsets.{ PerSample, SampleName }
-import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
-import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
+import org.hammerlab.guacamole.jointcaller.Sample.{ Analyte, TissueType }
+import org.kohsuke.args4j
 
-/**
- * Convenience container for zero or more Input instances.
- */
-case class InputCollection(items: PerSample[Input]) {
-  val normalDNA = items.filter(_.normalDNA)
-  val normalRNA = items.filter(_.normalRNA)
-  val tumorDNA = items.filter(_.tumorDNA)
-  val tumorRNA = items.filter(_.tumorRNA)
+case class Inputs(inputs: PerSample[Input])
+  extends SamplesI[Input] {
+  override def samples: PerSample[Input] = inputs
 }
 
-object InputCollection {
+object Inputs {
 
-  implicit def unpackInputs(inputCollection: InputCollection): PerSample[Input] = inputCollection.items
+  implicit def make(inputs: PerSample[Input]): Inputs = Inputs(inputs)
+  implicit def unmake(inputs: Inputs): PerSample[Input] = inputs.inputs
 
-  trait Arguments extends ReadSetsArgsBase {
-    @Args4jOption(name = "--tissue-types", handler = classOf[StringArrayOptionHandler],
-      usage = "[normal|tumor] ... [normal|tumor]")
-    var tissueTypes: Array[String] = Array.empty
+  trait Arguments
+    extends Base {
+    @args4j.Option(
+      name = "--tissue-types",
+      handler = classOf[StringsOptionHandler],
+      usage = "[normal|tumor],…,[normal|tumor]"
+    )
+    var tissueTypes: Array[String] = Array()
 
-    @Args4jOption(name = "--analytes", handler = classOf[StringArrayOptionHandler],
-      usage = "[dna|rna] ... [dna|rna]")
-    var analytes: Array[String] = Array.empty
+    @args4j.Option(
+      name = "--analytes",
+      handler = classOf[StringsOptionHandler],
+      usage = "[dna|rna],…,[dna|rna]"
+    )
+    var analytes: Array[String] = Array()
   }
 
   /**
    * Create an InputCollection from parsed commandline arguments.
    */
-  def apply(args: Arguments): InputCollection = {
+  def apply(args: Arguments): Inputs =
     apply(
       paths = args.paths.toVector,
       sampleNames = args.sampleNames.toVector,
       tissueTypes = args.tissueTypes.toVector,
       analytes = args.analytes.toVector
     )
-  }
 
   /**
    * Create an InputCollection of one or more inputs.
@@ -55,10 +58,10 @@ object InputCollection {
    * @param analytes "dna" or "rna" for each input
    * @return resulting InputCollection
    */
-  def apply(paths: PerSample[String],
+  def apply(paths: PerSample[Path],
             sampleNames: PerSample[SampleName] = Vector.empty,
             tissueTypes: PerSample[String] = Vector.empty,
-            analytes: PerSample[String] = Vector.empty): InputCollection = {
+            analytes: PerSample[String] = Vector.empty): Inputs = {
 
     def checkLength(name: String, items: Seq[String]) = {
       if (items.length != paths.length) {
@@ -84,22 +87,23 @@ object InputCollection {
     checkLength("analytes", defaultedAnalytes)
 
     val defaultedSampleNames: PerSample[SampleName] = sampleNames match {
-      case Seq() ⇒ paths.map(filepath ⇒ filepath.split('/').last.stripSuffix(".bam"))
+      case Seq() ⇒ paths.map(path ⇒ path.getName.stripSuffix(".bam"))
       case other ⇒ other
     }
     checkLength("sample names", defaultedSampleNames)
 
     val inputs =
-      paths.indices.map(index ⇒ {
-        Input(
-          index = index,
-          sampleName = defaultedSampleNames(index),
-          path = paths(index),
-          tissueType = TissueType.withName(defaultedTissueTypes(index)),
-          analyte = Analyte.withName(defaultedAnalytes(index))
-        )
-      })
+      paths.indices.map {
+        id ⇒
+          Input(
+            id = id,
+            name = defaultedSampleNames(id),
+            path = paths(id),
+            tissueType = TissueType.withName(defaultedTissueTypes(id)),
+            analyte = Analyte.withName(defaultedAnalytes(id))
+          )
+      }
 
-    InputCollection(inputs)
+    inputs
   }
 }

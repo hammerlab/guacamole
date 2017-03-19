@@ -26,9 +26,9 @@ class SomaticJointCallerEndToEndSuite
         "--force-call-loci-file", File("tiny.vcf"),
         "--reference", File("hg19.partial.fasta"),
         "--partial-reference",
-        "--analytes", "dna", "dna", "dna",
-        "--tissue-types", "normal", "tumor", "tumor",
-        "--sample-names", "normal", "primary", "recurrence",
+        "--analytes", "dna,dna,dna",
+        "--tissue-types", "normal,tumor,tumor",
+        "--sample-names", "normal,primary,recurrence",
         "--include-duplicates",
         "--include-failed-quality-checks",
         "--out-dir", outDir

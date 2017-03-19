@@ -1,18 +1,20 @@
 package org.hammerlab.guacamole.commands
 
+
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
 import org.hammerlab.genomics.readsets.{ PerSample, ReadSets }
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
+import org.hammerlab.guacamole.jointcaller.Samples._
 import org.hammerlab.guacamole.jointcaller.VCFOutput.writeVcf
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence }
-import org.hammerlab.guacamole.jointcaller.{ Input, InputCollection, Parameters }
+import org.hammerlab.guacamole.jointcaller.{ Inputs, Parameters, Samples }
 import org.hammerlab.guacamole.loci.args.ForceCallLociArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -27,7 +29,7 @@ object SomaticJoint {
       with ReadSetsArguments
       with PartitionedRegionsArgs
       with Parameters.CommandlineArguments
-      with InputCollection.Arguments
+      with Inputs.Arguments
       with ForceCallLociArgs
       with ReferenceArgs {
 
@@ -58,12 +60,12 @@ object SomaticJoint {
     override val description = "call germline and somatic variants based on any number of samples from the same patient"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val inputs = InputCollection(args)
+      val inputs = Inputs(args)
 
       val (readsets, loci) = ReadSets(sc, args)
 
       info(
-        (s"Running on ${inputs.items.length} inputs:" :: inputs.items.toList).mkString("\n")
+        (s"Running on ${inputs.length} inputs:" :: inputs.toList).mkString("\n")
       )
 
       val forceCallLoci =
@@ -92,18 +94,19 @@ object SomaticJoint {
 
       val reference = ReferenceBroadcast(args, sc)
 
-      val calls = makeCalls(
-        sc,
-        inputs,
-        readsets,
-        parameters,
-        reference,
-        loci,
-        forceCallLoci,
-        args.onlySomatic,
-        args.includeFiltered,
-        args
-      )
+      val calls =
+        makeCalls(
+          sc,
+          inputs,
+          readsets,
+          parameters,
+          reference,
+          loci,
+          forceCallLoci,
+          args.onlySomatic,
+          args.includeFiltered,
+          args
+        )
 
       calls.cache()
 
@@ -156,7 +159,7 @@ object SomaticJoint {
     )
 
   def makeCalls(sc: SparkContext,
-                inputs: InputCollection,
+                inputs: Inputs,
                 readsets: ReadSets,
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
@@ -177,6 +180,8 @@ object SomaticJoint {
 
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
+    val inputsBroadcast = sc.broadcast(inputs)
+
     def callPileups(pileups: PerSample[Pileup]): Iterator[MultiSampleMultiAlleleEvidence] = {
       val forceCall =
         broadcastForceCallLoci
@@ -185,7 +190,7 @@ object SomaticJoint {
 
       MultiSampleMultiAlleleEvidence(
         pileups,
-        inputs,
+        inputsBroadcast.value,
         parameters,
         reference,
         forceCall,
@@ -205,7 +210,7 @@ object SomaticJoint {
   }
 
   def writeCalls(calls: Seq[MultiSampleMultiAlleleEvidence],
-                 inputs: InputCollection,
+                 samples: Samples,
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
                  forceCallLoci: LociSet = LociSet(),
@@ -217,12 +222,12 @@ object SomaticJoint {
 
     def writeSome(out: String,
                   filteredCalls: Seq[MultiSampleMultiAlleleEvidence],
-                  filteredInputs: PerSample[Input],
+                  samples: Samples,
                   includePooledNormal: Option[Boolean] = None,
                   includePooledTumor: Option[Boolean] = None): Unit = {
 
-      val actuallyIncludePooledNormal = includePooledNormal.getOrElse(filteredInputs.count(_.normalDNA) > 1)
-      val actuallyIncludePooledTumor = includePooledTumor.getOrElse(filteredInputs.count(_.tumorDNA) > 1)
+      val actuallyIncludePooledNormal = includePooledNormal.getOrElse(samples.count(_.normalDNA) > 1)
+      val actuallyIncludePooledTumor = includePooledTumor.getOrElse(samples.count(_.tumorDNA) > 1)
 
       val numPooled = Seq(actuallyIncludePooledNormal, actuallyIncludePooledTumor).count(identity)
       val extra =
@@ -233,14 +238,14 @@ object SomaticJoint {
 
       progress(
         "Writing %,d calls across %,d samples %s to %s".format(
-          filteredCalls.length, filteredInputs.length, extra, out
+          filteredCalls.length, samples.length, extra, out
         )
       )
 
       writeVcf(
         path = out,
         calls = filteredCalls,
-        inputs = InputCollection(filteredInputs),
+        samples = samples,
         includePooledNormal = actuallyIncludePooledNormal,
         includePooledTumor = actuallyIncludePooledTumor,
         parameters = parameters,
@@ -252,7 +257,7 @@ object SomaticJoint {
     }
 
     if (out.nonEmpty) {
-      writeSome(out, calls, inputs.items)
+      writeSome(out, calls, samples)
     }
     if (outDir.nonEmpty) {
       def path(filename: String) = outDir + "/" + filename + ".vcf"
@@ -266,7 +271,7 @@ object SomaticJoint {
         progress(s"Created directory: $dir")
       }
 
-      writeSome(path("all"), calls, inputs.items)
+      writeSome(path("all"), calls, samples)
 
       if (!onlySomatic)
         writeSome(
@@ -276,7 +281,7 @@ object SomaticJoint {
               evidence ⇒ evidence.isGermlineCall || anyForced(evidence)
             )
           ),
-          inputs.items
+          samples
         )
 
       val somaticCallsOrForced =
@@ -286,37 +291,36 @@ object SomaticJoint {
           )
         )
 
-      writeSome(path("somatic.all_samples"), somaticCallsOrForced, inputs.items)
+      writeSome(path("somatic.all_samples"), somaticCallsOrForced, samples)
 
-      inputs.items.foreach(
-        input ⇒ {
+      samples.foreach {
+        sample ⇒
           if (!onlySomatic) {
             writeSome(
               path("all.%s.%s.%s".format(
-                input.sampleName, input.tissueType.toString, input.analyte.toString)),
+                sample.name, sample.tissueType.toString, sample.analyte.toString)),
               calls,
-              Vector(input)
+              Vector(sample)
             )
           }
 
           writeSome(
             path(
               "somatic.%s.%s.%s".format(
-                input.sampleName,
-                input.tissueType.toString,
-                input.analyte.toString
+                sample.name,
+                sample.tissueType.toString,
+                sample.analyte.toString
               )
             ),
             somaticCallsOrForced,
-            Vector(input)
+            Vector(sample)
           )
-        }
-      )
+      }
 
       writeSome(
         path("all.tumor_pooled_dna"),
         somaticCallsOrForced,
-        Vector.empty,
+        Vector(),
         includePooledTumor = Some(true)
       )
     }

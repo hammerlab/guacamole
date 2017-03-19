@@ -5,7 +5,7 @@ import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
-import org.hammerlab.guacamole.data.NA12878TestUtil
+import org.hammerlab.guacamole.data.NA12878
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -25,7 +25,7 @@ class GermlineAssemblyCallerSuite
     reference = ReferenceBroadcast(referencePath, sc)
   }
 
-  val referencePath = NA12878TestUtil.chr1PrefixFasta
+  val referencePath = NA12878.chr1PrefixFasta
 
   case class TestVariant(contigName: ContigName,
                          locus: Locus,
@@ -51,7 +51,7 @@ class GermlineAssemblyCallerSuite
 
     val args =
       new Arguments {
-        reads = NA12878TestUtil.subsetBam
+        reads = NA12878.subsetBam
         parallelism = 1
         lociPartitionerName = "uniform"
         lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")

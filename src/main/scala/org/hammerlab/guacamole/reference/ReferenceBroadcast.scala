@@ -1,15 +1,17 @@
 package org.hammerlab.guacamole.reference
 
 import java.io.File
+import java.net.URI
 import java.util.NoSuchElementException
 
 import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
+import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRange }
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.readsets.args.HasReference
+import org.hammerlab.genomics.readsets.args.base.HasReference
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
 
 import scala.collection.mutable

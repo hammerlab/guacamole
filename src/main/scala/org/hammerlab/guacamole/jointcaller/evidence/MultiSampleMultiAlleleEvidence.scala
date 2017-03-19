@@ -4,7 +4,7 @@ import org.hammerlab.genomics.readsets.PerSample
 import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
-import org.hammerlab.guacamole.jointcaller.{ InputCollection, Parameters }
+import org.hammerlab.guacamole.jointcaller.{ Samples, Parameters }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
@@ -76,7 +76,7 @@ object MultiSampleMultiAlleleEvidence {
    * insufficient evidence for a call).
    *
    * @param pileups pileup instances such that pileups(i) corresponds to sample input i
-   * @param inputs sample inputs description
+   * @param samples sample inputs description
    * @param parameters variant calling parameters
    * @param reference genome reference
    * @param forceCall return an instance for at this site even if there is insufficient evidence for a call
@@ -84,19 +84,18 @@ object MultiSampleMultiAlleleEvidence {
    * @param includeFiltered return calls even if they are filtered
    * @return
    */
-  def apply(
-    pileups: PerSample[Pileup],
-    inputs: InputCollection,
-    parameters: Parameters,
-    reference: ReferenceBroadcast,
-    forceCall: Boolean,
-    onlySomatic: Boolean = false,
-    includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
+  def apply(pileups: PerSample[Pileup],
+            samples: Samples,
+            parameters: Parameters,
+            reference: ReferenceBroadcast,
+            forceCall: Boolean,
+            onlySomatic: Boolean = false,
+            includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(
       pileup ⇒ pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
-    val normalPileups = inputs.normalDNA.map(input ⇒ filteredPileups(input.index))
+    val normalPileups = samples.normalDNA.map(input ⇒ filteredPileups(input.id))
 
     val contig = normalPileups.head.contigName
     val locus = normalPileups.head.locus
@@ -113,7 +112,7 @@ object MultiSampleMultiAlleleEvidence {
     // at all).
     val possibleAlleles =
       variantAlleles(
-        (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ filteredPileups(input.index)),
+        (samples.normalDNA ++ samples.tumorDNA).map(input ⇒ filteredPileups(input.id)),
         anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
         anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
         maxAlleles = Some(parameters.maxAllelesPerSite),
@@ -149,7 +148,7 @@ object MultiSampleMultiAlleleEvidence {
                     PileupStats(pileup.elements, refSequence = referenceSequence)
                 )
 
-            start → end → MultiplePileupStats(inputs, stats)
+            start → end → MultiplePileupStats(samples, stats)
         }
         .toMap
 

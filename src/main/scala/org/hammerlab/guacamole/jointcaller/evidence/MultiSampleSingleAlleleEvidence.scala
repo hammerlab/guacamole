@@ -2,10 +2,11 @@ package org.hammerlab.guacamole.jointcaller.evidence
 
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.readsets.{ PerSample, SampleId }
-import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.jointcaller.Sample.{ Analyte, TissueType }
+import org.hammerlab.guacamole.jointcaller.Samples._
 import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, MultiplePileupStats }
-import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
+import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, Parameters, Samples }
 
 import scala.collection.Set
 
@@ -16,20 +17,20 @@ import scala.collection.Set
  *
  * @param parameters joint caller parameters
  * @param allele the allele under consideration
- * @param inputs metadata for each sample: is it tumor / normal, is it DNA / RNA
+ * @param samples metadata for each sample: is it tumor / normal, is it DNA / RNA
  * @param normalDNAPooledEvidence evidence for the pooled normal DNA samples
  * @param tumorDNAPooledEvidence evidence for the pooled tumor DNA samples
  * @param sampleEvidences evidences for each sample individually, corresponding to inputs
  */
 case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
                                            allele: AlleleAtLocus,
-                                           inputs: InputCollection,
+                                           samples: Samples,
                                            normalDNAPooledEvidence: NormalDNASingleSampleSingleAlleleEvidence,
                                            tumorDNAPooledEvidence: TumorDNASingleSampleSingleAlleleEvidence,
                                            sampleEvidences: PerSample[SingleSampleSingleAlleleEvidence],
                                            annotations: Option[MultiSampleAnnotations]) {
 
-  assume(inputs.items.map(_.index) == inputs.items.indices)
+  assume(samples.map(_.id) == samples.indices)
 
   /**
    * There are times when we want to treat all the per-sample evidences and pooled evidences together. We do this
@@ -85,16 +86,16 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(Bases, Bases), Double]] = {
+  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(Bases, Bases), Double]] =
     (
-      inputs
-        .items
-        .filter(_.normalDNA)
-        .map(_.index) ++
+      samples
+
+      .filter(_.normalDNA)
+      .map(_.id) ++
         Seq(normalDNAPooledIndex)
     )
-    .map(
-      index ⇒ {
+    .map {
+      index ⇒
 
         val likelihoods =
           allEvidences(index)
@@ -110,10 +111,8 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
             } yield
               alleles → (likelihood - germlinePrior(alleles))
           )
-      }
-    )
+    }
     .toMap
-  }
 
   val pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
 
@@ -137,27 +136,25 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Log10 posterior probabilities for a somatic variant in each tumor RNA sample.  */
-  val perTumorRnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
-    inputs
-      .items
-      .filter(_.tumorRNA)
-      .map(
-        input ⇒ {
+  val perTumorRnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] =
+    samples
+    .filter(_.tumorRNA)
+    .map {
+        input ⇒
           val likelihoods =
-            allEvidences(input.index)
+            allEvidences(input.id)
               .asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence]
               .logLikelihoods
 
-          input.index →
+          input.id →
             (
               for {
                 (alleles, likelihood) ← likelihoods
               } yield
                 alleles → (likelihood - somaticPriorRna(alleles))
             )
-        }
-      ).toMap
-  }
+      }
+    .toMap
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
   val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
@@ -190,15 +187,15 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    *
    * @return Map {input index → {{Allele → Frequency} → Posterior probability}
    */
-  val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
+  val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] =
     (
-      inputs
-        .items
-        .filter(_.tumorDNA)
-        .map(_.index) ++
+      samples
+      .filter(_.tumorDNA)
+      .map(_.id) ++
         Seq(tumorDNAPooledIndex)
-    ).map(
-      index ⇒ {
+    )
+    .map {
+      index ⇒
 
         val likelihoods =
           allEvidences(index)
@@ -212,9 +209,8 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
             } yield
               alleles → (likelihood - somaticPriorDna(alleles))
           )
-      }
-    ).toMap
-  }
+    }
+    .toMap
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
   val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
@@ -316,21 +312,20 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
           .asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence],
 
       sampleEvidences =
-        inputs
-          .items
+        samples
           .zip(multipleStats.singleSampleStats)
           .zip(sampleEvidences)
           .map {
-            case ((_, stats), evidence) ⇒
-              evidence
-                .withAnnotations(
-                  SingleSampleAnnotations(
-                    stats,
-                    evidence,
-                    parameters
+              case ((_, stats), evidence) ⇒
+                evidence
+                  .withAnnotations(
+                    SingleSampleAnnotations(
+                      stats,
+                      evidence,
+                      parameters
+                    )
                   )
-                )
-          },
+            },
       annotations =
         Some(
           MultiSampleAnnotations(
@@ -363,7 +358,6 @@ object MultiSampleSingleAlleleEvidence {
     val sampleEvidences =
       stats
         .inputs
-        .items
         .zip(stats.singleSampleStats)
         .map {
           case (input, stats) ⇒

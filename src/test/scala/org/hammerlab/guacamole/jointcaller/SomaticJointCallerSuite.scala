@@ -4,6 +4,7 @@ import org.hammerlab.genomics.bases.Base.{ A, C, G, T }
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
+import org.hammerlab.guacamole.data.{ CancerWGS, Celsr1 }
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.test.resources.File
@@ -12,12 +13,6 @@ class SomaticJointCallerSuite
   extends GuacFunSuite
     with ReadSetsUtil
     with ReferenceUtil {
-
-  val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name ⇒ File("cancer-wgs1/" + name))
-
-  val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name ⇒ File("cancer-wes-and-rna-celsr1/" + name))
 
   val hg19PartialFasta = File("hg19.partial.fasta")
 
@@ -30,7 +25,7 @@ class SomaticJointCallerSuite
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
 
   test("force-call a non-variant locus") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readSets, loci) = makeReadSets(inputs, "chr12:65857040")
     val calls =
       makeCalls(
@@ -55,7 +50,7 @@ class SomaticJointCallerSuite
   }
 
   test("call a somatic deletion") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readsets, loci) = makeReadSets(inputs, "chr5:82649006-82649009")
     val calls =
       makeCalls(
@@ -77,7 +72,7 @@ class SomaticJointCallerSuite
   }
 
   test("call germline variants") {
-    val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
+    val inputs = CancerWGS.inputs.take(1)
     val (readSets, loci) = makeReadSets(inputs, "chr1,chr2,chr3")
     val calls =
       makeCalls(
@@ -117,7 +112,7 @@ class SomaticJointCallerSuite
   }
 
   test("don't call variants with N as the reference base") {
-    val inputs = InputCollection(cancerWGS1Bams)
+    val inputs = CancerWGS.inputs
     val (readsets, loci) = makeReadSets(inputs, "chr12:65857030-65857080")
     val emptyPartialReference = makeReference(70000000, ("chr12", 65856930, "N" * 250))
 
@@ -140,7 +135,7 @@ class SomaticJointCallerSuite
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
     val lociStr = "chr22:46931058-46931079"
 
-    val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
+    val inputsWithRNA = Celsr1.inputs
 
     val callsWithRNA = {
       val (readsets, loci) = makeReadSets(inputsWithRNA, lociStr)
@@ -156,7 +151,7 @@ class SomaticJointCallerSuite
       .filter(_.bestAllele.isCall)
     }
 
-    val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Vector("dna", "dna"))
+    val inputsWithoutRNA = Celsr1.inputs.take(2)
 
     val callsWithoutRNA = {
       val (readsets, loci) = makeReadSets(inputsWithoutRNA, lociStr)

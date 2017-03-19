@@ -1,8 +1,12 @@
 package org.hammerlab.guacamole
 
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.readsets.PerSample
 
 package object jointcaller {
+
+  type Samples = SamplesI[Sample]
+
   implicit class AllelicDepths(val map: Map[Bases, Int]) extends AnyVal {
     def take(num: Int): AllelicDepths =
       map

@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.kryo.Registrar
 import org.hammerlab.spark.test.suite.{ KryoSparkSuite, SparkSerialization }
 import org.hammerlab.test.resources.File
 
-class GuacFunSuite
+abstract class GuacFunSuite
   extends KryoSparkSuite(classOf[Registrar], referenceTracking = true)
     with SparkSerialization
     with BasesUtil
@@ -18,3 +18,6 @@ class GuacFunSuite
   implicit def unwrapFiles(files: PerSample[File]): PerSample[String] = files.map(_.path)
 }
 
+object Foo {
+  def apply(n: Int, s: String = ""): Int = n * 2
+}

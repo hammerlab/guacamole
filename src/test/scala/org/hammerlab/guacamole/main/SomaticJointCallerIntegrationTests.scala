@@ -5,7 +5,7 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.{ Locus, Region }
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
-import org.hammerlab.guacamole.data.{ CancerWGSTestUtil, NA12878TestUtil }
+import org.hammerlab.guacamole.data.{ CancerWGS, NA12878 }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.VariantComparisonTest
 import org.hammerlab.test.resources.File
@@ -42,7 +42,7 @@ object SomaticJointCallerIntegrationTests
 
     val forceCallLoci =
       LociSet(
-        csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
+        csvRecords(CancerWGS.expectedSomaticCallsCSV)
           .filterNot(_.tumor.contains("decoy"))
           .map {
             record ⇒
@@ -54,9 +54,9 @@ object SomaticJointCallerIntegrationTests
           }
       )
 
-    val args = new Arguments() {
-      paths = CancerWGSTestUtil.bams
-      referencePath = CancerWGSTestUtil.referencePath
+    val args = new Arguments {
+      override val paths = CancerWGS.bams
+      referencePath = CancerWGS.referencePath
       referenceIsPartial = true
       somaticGenotypePolicy = "trigger"
       lociStrOpt =
@@ -86,8 +86,8 @@ object SomaticJointCallerIntegrationTests
 
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
-        CancerWGSTestUtil.expectedSomaticCallsCSV,
-        ReferenceBroadcast(CancerWGSTestUtil, sc),
+        CancerWGS.expectedSomaticCallsCSV,
+        ReferenceBroadcast(CancerWGS, sc),
         Set("primary", "recurrence")
       )
     }
@@ -99,30 +99,30 @@ object SomaticJointCallerIntegrationTests
 
       if (true) {
         val args = new SomaticJoint.Arguments() {
+          override val paths = Array(NA12878.subsetBam)
           out = resultFile
-          paths = Seq(NA12878TestUtil.subsetBam.path).toArray
           lociStrOpt = Some("chr1:0-6700000")
-          forceCallLociFileOpt = Some(NA12878TestUtil.expectedCallsVCF)
-          referencePath = NA12878TestUtil.chr1PrefixFasta
+          forceCallLociFileOpt = Some(NA12878.expectedCallsVCF)
+          referencePath = NA12878.chr1PrefixFasta
         }
 
         SomaticJoint.Caller.run(args, sc)
       }
 
       println("************* GUACAMOLE *************")
-      compareToVCF(resultFile, NA12878TestUtil.expectedCallsVCF)
+      compareToVCF(resultFile, NA12878.expectedCallsVCF)
 
       if (false) {
         println("************* UNIFIED GENOTYPER *************")
         compareToVCF(
           File("illumina-platinum-na12878/unified_genotyper.vcf"),
-          NA12878TestUtil.expectedCallsVCF
+          NA12878.expectedCallsVCF
         )
 
         println("************* HaplotypeCaller *************")
         compareToVCF(
           File("illumina-platinum-na12878/haplotype_caller.vcf"),
-          NA12878TestUtil.expectedCallsVCF
+          NA12878.expectedCallsVCF
         )
       }
     }

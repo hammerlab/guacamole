@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.pileup
 
+import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.reads.MappedRead
@@ -40,14 +41,14 @@ trait Util
   }
 
   def loadPileup(sc: SparkContext,
-                 filename: String,
+                 path: Path,
                  locus: Locus = Locus(0),
                  maybeContig: Option[ContigName] = None,
                  reference: ReferenceBroadcast = reference): Pileup = {
     val records =
       loadReadsRDD(
         sc,
-        filename,
+        path,
         config = InputConfig(
           overlapsLociOpt = maybeContig.map(
             contig ⇒ ParsedLoci(s"$contig:$locus-${locus + 1}")
@@ -67,7 +68,7 @@ trait Util
 
     Pileup(
       localReads,
-      filename,
+      path.toString,
       actualContig,
       locus,
       reference.getContig(actualContig)

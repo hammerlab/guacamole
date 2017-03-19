@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reads.MappedRead
-import org.hammerlab.genomics.readsets.args.ReferenceArgs
+import org.hammerlab.genomics.readsets.args.impl.ReferenceArgs
 import org.hammerlab.genomics.readsets.{ ReadSets, SampleName, SampleRead }
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.alignment.ReadAlignment

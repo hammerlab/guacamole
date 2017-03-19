@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.ReadSets
-import org.hammerlab.genomics.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
 import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.genomics.reference.Interval
 import org.hammerlab.guacamole.commands.GuacCommand
