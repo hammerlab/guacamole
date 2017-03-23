@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export JAR=gs://hammerlab-lib/guacamole-21379977.jar
+export MAIN=org.hammerlab.guacamole.Main
+export CLUSTER=guacamole
+"$(dirname "${BASH_SOURCE[0]}")"/../dataproc/dataproc "$@"

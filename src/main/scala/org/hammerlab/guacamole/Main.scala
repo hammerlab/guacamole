@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole
 
+import java.nio.file.spi.FileSystemProvider
 import java.util.logging.Level
 
 import grizzled.slf4j.Logging
@@ -29,9 +30,9 @@ object Main extends Logging {
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
     println("Available commands:")
-    commands.foreach(caller ⇒ {
+    commands.foreach { caller ⇒
       println("%25s: %s".format(caller.name, caller.description))
-    })
+    }
     println("\nTry java ... <command> -h for help on a particular variant caller.")
   }
 
@@ -45,6 +46,15 @@ object Main extends Logging {
       printUsage()
       System.exit(1)
     }
+
+    /** Hack to pick up [[FileSystemProvider]] implementations; see https://issues.scala-lang.org/browse/SI-10247. */
+    val scl = classOf[ClassLoader].getDeclaredField("scl")
+    scl.setAccessible(true)
+    val prevClassLoader = ClassLoader.getSystemClassLoader
+    scl.set(null, Thread.currentThread().getContextClassLoader)
+    FileSystemProvider.installedProviders()
+    scl.set(null, prevClassLoader)
+
     val commandName = args(0)
     commands.find(_.name == commandName) match {
       case Some(command) ⇒ {

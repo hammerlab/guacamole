@@ -1,3 +1,5 @@
+import sbtassembly.PathList
+
 name := "guacamole"
 version := "0.1.0-SNAPSHOT"
 
@@ -14,6 +16,7 @@ deps ++= Seq(
   libs.value('breeze),
   libs.value('commons_math),
   libs.value('hadoop_bam),
+  "com.google.cloud" % "google-cloud-nio" % "0.10.0-alpha",
   libs.value('htsjdk),
   libs.value('iterators),
   libs.value('magic_rdds),
@@ -36,6 +39,11 @@ compileAndTestDeps ++= Seq(
 providedDeps += libs.value('mllib)
 
 takeFirstLog4JProperties
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
+  case x => (assemblyMergeStrategy in assembly).value(x)
+}
 
 main := "org.hammerlab.guacamole.Main"
 
