@@ -2,11 +2,11 @@ package org.hammerlab.guacamole.reference
 
 import java.io.File
 import java.net.URI
+import java.nio.file.Paths
 import java.util.NoSuchElementException
 
 import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
-import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRange }
@@ -51,7 +51,8 @@ object ReferenceBroadcast extends Logging {
    * @return a ReferenceBroadcast instance containing ArrayBackedReferenceSequence objects.
    */
   def readFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
-    val referenceFasta = new FastaSequenceFile(new File(fastaPath), true)
+    val path = Paths.get(new URI(fastaPath))
+    val referenceFasta = new FastaSequenceFile(path, true)
     var nextSequence = referenceFasta.nextSequence()
     val broadcastedSequences = Map.newBuilder[ContigName, ContigSequence]
     while (nextSequence != null) {

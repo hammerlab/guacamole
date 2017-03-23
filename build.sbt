@@ -47,7 +47,15 @@ assemblyMergeStrategy in assembly := {
 
 main := "org.hammerlab.guacamole.Main"
 
-shadedDeps += "org.scalanlp" %% "breeze" % "0.12"
-shadeRenames += "breeze.**" -> "org.hammerlab.breeze.@1"
+//logLevel in assembly := Level.Debug
+
+shadedDeps ++= Seq(
+  "org.scalanlp" %% "breeze" % "0.12"
+)
+
+shadeRenames ++= Seq(
+  "breeze.**" -> "org.hammerlab.breeze.@1",
+  "com.google.common.**" -> "org.hammerlab.guava.common.@1"
+)
 
 //publishThinShadedJar

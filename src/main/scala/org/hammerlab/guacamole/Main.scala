@@ -9,6 +9,8 @@ import org.hammerlab.commands.Command
 import org.hammerlab.guacamole.commands._
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 
+import scala.collection.JavaConverters._
+
 /**
  * Guacamole main class.
  */
@@ -36,6 +38,20 @@ object Main extends Logging {
     println("\nTry java ... <command> -h for help on a particular variant caller.")
   }
 
+  def loadFileSystems(): Unit = {
+    /** Hack to pick up [[FileSystemProvider]] implementations; see https://issues.scala-lang.org/browse/SI-10247. */
+    val scl = classOf[ClassLoader].getDeclaredField("scl")
+    scl.setAccessible(true)
+    val prevClassLoader = ClassLoader.getSystemClassLoader
+    scl.set(null, Thread.currentThread().getContextClassLoader)
+
+    println(
+      s"Loaded filesystems for schemes: ${FileSystemProvider.installedProviders().asScala.map(_.getScheme).mkString(",")}"
+    )
+
+    scl.set(null, prevClassLoader)
+  }
+
   /**
    * Entry point into Guacamole.
    *
@@ -47,13 +63,7 @@ object Main extends Logging {
       System.exit(1)
     }
 
-    /** Hack to pick up [[FileSystemProvider]] implementations; see https://issues.scala-lang.org/browse/SI-10247. */
-    val scl = classOf[ClassLoader].getDeclaredField("scl")
-    scl.setAccessible(true)
-    val prevClassLoader = ClassLoader.getSystemClassLoader
-    scl.set(null, Thread.currentThread().getContextClassLoader)
-    FileSystemProvider.installedProviders()
-    scl.set(null, prevClassLoader)
+    loadFileSystems()
 
     val commandName = args(0)
     commands.find(_.name == commandName) match {
