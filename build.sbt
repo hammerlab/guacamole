@@ -55,7 +55,9 @@ shadedDeps ++= Seq(
 
 shadeRenames ++= Seq(
   "breeze.**" -> "org.hammerlab.breeze.@1",
-  "com.google.common.**" -> "org.hammerlab.guava.common.@1"
+  "com.google.common.**" -> "org.hammerlab.guava.common.@1",
+  "com.google.api.services.**" -> "hammerlab.google.api.services.@1"
+  //"com.google.cloud.storage.**" -> "org.hammerlab.google.cloud.storage.@1"
 )
 
 //publishThinShadedJar
