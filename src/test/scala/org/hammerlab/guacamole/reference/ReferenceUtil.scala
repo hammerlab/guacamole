@@ -47,7 +47,7 @@ trait ReferenceUtil
             sc.broadcast(contigBasesMap.toMap)
           )
 
-    new ReferenceBroadcast(contigsMap, source = Some("test_values"))
+    new ReferenceBroadcast(contigsMap, source = None)
   }
 
   implicit def makeContigLocusBases(t: (String, Int, String))(implicit cf: ContigName.Factory): (ContigName, Locus, Bases) =

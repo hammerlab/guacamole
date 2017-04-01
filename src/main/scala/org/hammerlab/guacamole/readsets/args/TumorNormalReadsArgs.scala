@@ -15,6 +15,7 @@ trait TumorNormalReadsArgs
 
   @Args4jOption(
     name = "--normal-reads",
+    aliases = Array("-n"),
     metaVar = "X",
     required = true,
     handler = classOf[UnprefixedPathHandler],
@@ -24,6 +25,7 @@ trait TumorNormalReadsArgs
 
   @Args4jOption(
     name = "--tumor-reads",
+    aliases = Array("-t"),
     metaVar = "X",
     required = true,
     handler = classOf[UnprefixedPathHandler],
@@ -31,7 +33,11 @@ trait TumorNormalReadsArgs
   )
   var tumorReads: UnprefixedPath = _
 
-  override protected def unprefixedPaths: Array[UnprefixedPath] = Array(normalReads, tumorReads)
+  override protected def unprefixedPaths: Array[UnprefixedPath] =
+    Array(
+      normalReads,
+      tumorReads
+    )
 
   val normalSampleName = "normal"
   val tumorSampleName = "tumor"

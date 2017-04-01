@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.pileup
 
-import org.apache.hadoop.fs.Path
+import java.nio.file.Path
+
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.reads.MappedRead

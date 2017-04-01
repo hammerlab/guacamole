@@ -7,22 +7,21 @@ import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
  *
  * See CommandlineArguments for descriptions of these parameters.
  */
-case class Parameters(
-    maxAllelesPerSite: Int,
-    maxCallsPerSite: Int,
-    anyAlleleMinSupportingReads: Int,
-    anyAlleleMinSupportingPercent: Double,
-    germlineNegativeLog10HeterozygousPrior: Double,
-    germlineNegativeLog10HomozygousAlternatePrior: Double,
-    somaticNegativeLog10VariantPrior: Double,
-    somaticNegativeLog10VariantPriorRna: Double,
-    somaticNegativeLog10VariantPriorWithRnaEvidence: Double,
-    somaticVafFloor: Double,
-    somaticMaxGermlineErrorRatePercent: Double,
-    somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
-    filterStrandBiasPhred: Double,
-    filterSomaticNormalNonreferencePercent: Double,
-    filterSomaticNormalDepth: Int) {
+case class Parameters(maxAllelesPerSite: Int,
+                      maxCallsPerSite: Int,
+                      anyAlleleMinSupportingReads: Int,
+                      anyAlleleMinSupportingPercent: Double,
+                      germlineNegativeLog10HeterozygousPrior: Double,
+                      germlineNegativeLog10HomozygousAlternatePrior: Double,
+                      somaticNegativeLog10VariantPrior: Double,
+                      somaticNegativeLog10VariantPriorRna: Double,
+                      somaticNegativeLog10VariantPriorWithRnaEvidence: Double,
+                      somaticVafFloor: Double,
+                      somaticMaxGermlineErrorRatePercent: Double,
+                      somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
+                      filterStrandBiasPhred: Double,
+                      filterSomaticNormalNonreferencePercent: Double,
+                      filterSomaticNormalDepth: Int) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -106,7 +105,7 @@ object Parameters {
     var filterSomaticNormalDepth: Int = 30
   }
 
-  def apply(args: CommandlineArguments): Parameters = {
+  def apply(args: CommandlineArguments): Parameters =
     new Parameters(
       maxAllelesPerSite = args.maxAllelesPerSite,
       maxCallsPerSite = args.maxCallsPerSite,
@@ -124,7 +123,6 @@ object Parameters {
       filterSomaticNormalNonreferencePercent = args.filterSomaticNormalNonreferencePercent,
       filterSomaticNormalDepth = args.filterSomaticNormalDepth
     )
-  }
 
   val defaults = Parameters(new CommandlineArguments {})
 }

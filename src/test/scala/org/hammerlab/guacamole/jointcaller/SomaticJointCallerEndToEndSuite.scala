@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.variants.VCFCmpTest
+import org.hammerlab.paths.pathToString
 import org.hammerlab.test.Suite
-import org.hammerlab.test.files.TmpFiles
 import org.hammerlab.test.resources.File
 
 class SomaticJointCallerEndToEndSuite
@@ -14,7 +14,7 @@ class SomaticJointCallerEndToEndSuite
 
   val cancerWGS1Bams =
     Vector("normal.tiny.bam", "primary.tiny.bam", "recurrence.tiny.bam")
-      .map(name ⇒ File("cancer-wgs1/" + name).path)
+      .map(name ⇒ File("cancer-wgs1/" + name).pathStr)
 
   val outDir = tmpPath()
 
@@ -32,9 +32,10 @@ class SomaticJointCallerEndToEndSuite
         "--include-duplicates",
         "--include-failed-quality-checks",
         "--out-dir", outDir
-      ) ++ cancerWGS1Bams
+      ) ++
+        cancerWGS1Bams
     )
 
-    checkVCFs(s"$outDir/all.vcf", File("tiny-sjc-output/all.vcf"))
+    checkVCFs(outDir.resolve("all.vcf"), "tiny-sjc-output/all.vcf")
   }
 }

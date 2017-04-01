@@ -1,8 +1,6 @@
 package org.hammerlab.guacamole.reference
 
-import java.io.File
-import java.net.URI
-import java.nio.file.Paths
+import java.nio.file.Path
 import java.util.NoSuchElementException
 
 import grizzled.slf4j.Logging
@@ -17,7 +15,7 @@ import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, Num
 import scala.collection.mutable
 
 case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence],
-                              source: Option[String])
+                              source: Option[Path])
   extends ReferenceGenome {
 
   override def getContig(contigName: ContigName): ContigSequence =
@@ -46,12 +44,11 @@ object ReferenceBroadcast extends Logging {
 
   /**
    * Read a regular fasta file
-   * @param fastaPath local path to fasta
+   * @param path local path to fasta
    * @param sc the spark context
    * @return a ReferenceBroadcast instance containing ArrayBackedReferenceSequence objects.
    */
-  def readFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
-    val path = Paths.get(new URI(fastaPath))
+  def readFasta(path: Path, sc: SparkContext): ReferenceBroadcast = {
     val referenceFasta = new FastaSequenceFile(path, true)
     var nextSequence = referenceFasta.nextSequence()
     val broadcastedSequences = Map.newBuilder[ContigName, ContigSequence]
@@ -63,7 +60,7 @@ object ReferenceBroadcast extends Logging {
       broadcastedSequences += ((contigName, broadcastedSequence))
       nextSequence = referenceFasta.nextSequence()
     }
-    ReferenceBroadcast(broadcastedSequences.result, Some(fastaPath))
+    ReferenceBroadcast(broadcastedSequences.result, Some(path))
   }
 
   /**
@@ -75,12 +72,12 @@ object ReferenceBroadcast extends Logging {
    *
    * Partial fastas are used for testing to avoid distributing full reference genomes.
    *
-   * @param fastaPath local path to partial fasta
+   * @param path path to partial fasta
    * @param sc the spark context
    * @return a ReferenceBroadcast instance containing MapBackedReferenceSequence objects
    */
-  def readPartialFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
-    val raw = readFasta(fastaPath, sc)
+  def readPartialFasta(path: Path, sc: SparkContext): ReferenceBroadcast = {
+    val raw = readFasta(path, sc)
 
     val result = mutable.HashMap[ContigName, mutable.HashMap[Locus, Base]]()
 
@@ -156,24 +153,24 @@ object ReferenceBroadcast extends Logging {
         contigName → MapBackedReferenceSequence(contigName, contigLength, baseMapBroadcast)
       )
       .toMap,
-      Some(fastaPath)
+      source = Some(path)
     )
   }
 
   /**
    * Load a ReferenceBroadcast, caching the result.
    *
-   * @param fastaPath Local path to a FASTA file
+   * @param path path to a FASTA file
    * @param sc the spark context
    * @param partialFasta is this a "partial fasta"? Partial fastas are used in tests to load only a subset of the
    *                     reference. In production runs this will usually be false.
    * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
    */
-  def apply(fastaPath: String, sc: SparkContext, partialFasta: Boolean = false): ReferenceBroadcast =
+  def apply(path: Path, sc: SparkContext, partialFasta: Boolean = false): ReferenceBroadcast =
     if (partialFasta)
-      readPartialFasta(fastaPath, sc)
+      readPartialFasta(path, sc)
     else
-      readFasta(fastaPath, sc)
+      readFasta(path, sc)
 }
 
 case class ContigNotFound(contigName: ContigName, availableContigs: Iterable[ContigName])

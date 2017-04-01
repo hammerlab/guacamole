@@ -55,9 +55,13 @@ shadedDeps ++= Seq(
 
 shadeRenames ++= Seq(
   "breeze.**" -> "org.hammerlab.breeze.@1",
+
+  // google-cloud-nio uses Guava 19.0 and at least one API (Splitter.splitToList) that succeeds Spark's Guava (14.0.1).
   "com.google.common.**" -> "org.hammerlab.guava.common.@1",
+
+  // GCS Connector uses an older google-api-services-storage than google-cloud-nio and breaks us without shading it in
+  // here; see http://stackoverflow.com/a/39521403/544236.
   "com.google.api.services.**" -> "hammerlab.google.api.services.@1"
-  //"com.google.cloud.storage.**" -> "org.hammerlab.google.cloud.storage.@1"
 )
 
 //publishThinShadedJar

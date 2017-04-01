@@ -20,10 +20,12 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
+  import NA12878._
+
   override def main(args: Array[String]): Unit =
     run(
-      "--reads", NA12878.subsetBam.toString,
-      "--reference", NA12878.chr1PrefixFasta,
+      "--reads", subsetBam.buildPath.toString,
+      "--reference", chr1PrefixFasta.buildPath.toString,
       "--loci", "chr1:0-6700000",
       "--out", "/tmp/germline-assembly-na12878-guacamole-tests.vcf",
       "--partition-accuracy", "0",
@@ -40,20 +42,20 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
 
     println("Germline assembly calling on subset of illumina platinum NA12878")
 
-    val resultFile = args.variantOutput + "/part-r-00000"
+    val resultFile = args.outputPathOpt.get.resolve("part-r-00000")
     println("************* GUACAMOLE GermlineAssembly *************")
-    compareToVCF(resultFile, NA12878.expectedCallsVCF)
+    compareToVCF(resultFile, expectedCallsVCF)
 
     println("************* UNIFIED GENOTYPER *************")
     compareToVCF(
       File("illumina-platinum-na12878/unified_genotyper.vcf"),
-      NA12878.expectedCallsVCF
+      expectedCallsVCF
     )
 
     println("************* HaplotypeCaller *************")
     compareToVCF(
       File("illumina-platinum-na12878/haplotype_caller.vcf"),
-      NA12878.expectedCallsVCF
+      expectedCallsVCF
     )
   }
 }

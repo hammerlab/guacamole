@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.jointcaller
 
+import java.nio.file.Path
 import java.util
 
 import htsjdk.samtools.SAMSequenceDictionary
@@ -31,7 +32,7 @@ object VCFOutput {
    * @param sequenceDictionary contig lengths
    * @param reference reference genome
    */
-  def writeVcf(path: String,
+  def writeVcf(path: Path,
                calls: Seq[MultiSampleMultiAlleleEvidence],
                samples: Samples,
                includePooledNormal: Boolean,
@@ -43,7 +44,7 @@ object VCFOutput {
 
     val writer =
       new VariantContextWriterBuilder()
-        .setOutputFile(path)
+        .setOutputFile(path.toFile)
         .setReferenceDictionary(sequenceDictionary)
         .build
 
@@ -94,7 +95,7 @@ object VCFOutput {
     }
 
     if (reference.source.isDefined) {
-      header.addMetaDataLine(new VCFHeaderLine("reference", reference.source.get))
+      header.addMetaDataLine(new VCFHeaderLine("reference", reference.source.get.toString))
     }
 
     writer.writeHeader(header)

@@ -1,9 +1,12 @@
 package org.hammerlab.guacamole.commands
 
 
+import java.nio.file.Path
+
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.hammerlab.args4s.PathOptionHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
@@ -33,13 +36,19 @@ object SomaticJoint {
       with ForceCallLociArgs
       with ReferenceArgs {
 
-    @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
-    var out: String = ""
+    @Args4jOption(
+      name = "--out",
+      handler = classOf[PathOptionHandler],
+      usage = "Output path for all variants in VCF. Default: no output"
+    )
+    var outOpt: Option[Path] = None
 
     @Args4jOption(
       name = "--out-dir",
-      usage = "Output dir for all variants, split into separate files for somatic/germline")
-    var outDir: String = ""
+      handler = classOf[PathOptionHandler],
+      usage = "Output dir for all variants, split into separate files for somatic/germline"
+    )
+    var outDirOpt: Option[Path] = None
 
     @Args4jOption(name = "--only-somatic", usage = "Output only somatic calls, no germline calls")
     var onlySomatic: Boolean = false
@@ -137,8 +146,8 @@ object SomaticJoint {
         forceCallLoci,
         reference,
         onlySomatic = args.onlySomatic,
-        out = args.out,
-        outDir = args.outDir,
+        outOpt = args.outOpt,
+        outDirOpt = args.outDirOpt,
         extraHeaderMetadata = extraHeaderMetadata
       )
     }
@@ -216,11 +225,11 @@ object SomaticJoint {
                  forceCallLoci: LociSet = LociSet(),
                  reference: ReferenceBroadcast,
                  onlySomatic: Boolean = false,
-                 out: String = "",
-                 outDir: String = "",
+                 outOpt: Option[Path],
+                 outDirOpt: Option[Path],
                  extraHeaderMetadata: Seq[(String, String)] = Seq.empty): Unit = {
 
-    def writeSome(out: String,
+    def writeSome(out: Path,
                   filteredCalls: Seq[MultiSampleMultiAlleleEvidence],
                   samples: Samples,
                   includePooledNormal: Option[Boolean] = None,
@@ -256,73 +265,74 @@ object SomaticJoint {
       progress("Done.")
     }
 
-    if (out.nonEmpty) {
-      writeSome(out, calls, samples)
-    }
-    if (outDir.nonEmpty) {
-      def path(filename: String) = outDir + "/" + filename + ".vcf"
+    outOpt.foreach(out ⇒ writeSome(out, calls, samples))
 
-      def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean =
-        forceCallLoci.intersects(evidence.allele)
+    outDirOpt foreach {
+      outDir ⇒
 
-      val dir = new java.io.File(outDir)
-      val dirCreated = dir.mkdir()
-      if (dirCreated) {
-        progress(s"Created directory: $dir")
-      }
+        def path(filename: String) = outDir.resolve(s"$filename.vcf")
 
-      writeSome(path("all"), calls, samples)
+        def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean =
+          forceCallLoci.intersects(evidence.allele)
 
-      if (!onlySomatic)
-        writeSome(
-          path("germline"),
-          calls.filter(
-            _.singleAlleleEvidences.exists(
-              evidence ⇒ evidence.isGermlineCall || anyForced(evidence)
-            )
-          ),
-          samples
-        )
+        val dirFile = outDir.toFile
+        val dirCreated = dirFile.mkdir()
+        if (dirCreated) {
+          progress(s"Created directory: $outDir")
+        }
 
-      val somaticCallsOrForced =
-        calls.filter(
-          _.singleAlleleEvidences.exists(
-            evidence ⇒ evidence.isSomaticCall || anyForced(evidence)
-          )
-        )
+        writeSome(path("all"), calls, samples)
 
-      writeSome(path("somatic.all_samples"), somaticCallsOrForced, samples)
-
-      samples.foreach {
-        sample ⇒
-          if (!onlySomatic) {
-            writeSome(
-              path("all.%s.%s.%s".format(
-                sample.name, sample.tissueType.toString, sample.analyte.toString)),
-              calls,
-              Vector(sample)
-            )
-          }
-
+        if (!onlySomatic)
           writeSome(
-            path(
-              "somatic.%s.%s.%s".format(
-                sample.name,
-                sample.tissueType.toString,
-                sample.analyte.toString
+            path("germline"),
+            calls.filter(
+              _.singleAlleleEvidences.exists(
+                evidence ⇒ evidence.isGermlineCall || anyForced(evidence)
               )
             ),
-            somaticCallsOrForced,
-            Vector(sample)
+            samples
           )
-      }
 
-      writeSome(
-        path("all.tumor_pooled_dna"),
-        somaticCallsOrForced,
-        Vector(),
-        includePooledTumor = Some(true)
-      )
+        val somaticCallsOrForced =
+          calls.filter(
+            _.singleAlleleEvidences.exists(
+              evidence ⇒ evidence.isSomaticCall || anyForced(evidence)
+            )
+          )
+
+        writeSome(path("somatic.all_samples"), somaticCallsOrForced, samples)
+
+        samples.foreach {
+          sample ⇒
+            if (!onlySomatic) {
+              writeSome(
+                path("all.%s.%s.%s".format(
+                  sample.name, sample.tissueType.toString, sample.analyte.toString)),
+                calls,
+                Vector(sample)
+              )
+            }
+
+            writeSome(
+              path(
+                "somatic.%s.%s.%s".format(
+                  sample.name,
+                  sample.tissueType.toString,
+                  sample.analyte.toString
+                )
+              ),
+              somaticCallsOrForced,
+              Vector(sample)
+            )
+        }
+
+        writeSome(
+          path("all.tumor_pooled_dna"),
+          somaticCallsOrForced,
+          Vector(),
+          includePooledTumor = Some(true)
+        )
     }
   }
 }

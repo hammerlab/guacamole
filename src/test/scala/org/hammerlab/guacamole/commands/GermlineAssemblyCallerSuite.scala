@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.commands
 
+import java.nio.file.{ Path, Paths }
+
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
@@ -11,21 +13,23 @@ import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.BeforeAndAfterAll
+import org.hammerlab.test.resources.{ File, PathUtil }
 
 class GermlineAssemblyCallerSuite
   extends GuacFunSuite
-    with BeforeAndAfterAll
+    with PathUtil
     with PartitionedRegionsUtil {
+
+  import NA12878._
 
   var reference: ReferenceBroadcast = _
 
+  implicit def fileToPath(file: File): Path = Paths.get(file)
+
   override def beforeAll() {
     super.beforeAll()
-    reference = ReferenceBroadcast(referencePath, sc)
+    reference = ReferenceBroadcast(chr1PrefixFasta, sc)
   }
-
-  val referencePath = NA12878.chr1PrefixFasta
 
   case class TestVariant(contigName: ContigName,
                          locus: Locus,
@@ -51,7 +55,8 @@ class GermlineAssemblyCallerSuite
 
     val args =
       new Arguments {
-        reads = NA12878.subsetBam
+        pathPrefixOpt = prefixOpt
+        reads = subsetBam
         parallelism = 1
         lociPartitionerName = "uniform"
         lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")

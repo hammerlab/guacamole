@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.main
 
+import java.nio.file.{ Path, Paths }
+
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.{ Locus, Region }
@@ -24,15 +26,15 @@ object SomaticJointCallerIntegrationTests
 
   var tempFileNum = 0
 
-  def tempFile(suffix: String): String = {
+  def tempFile: Path = {
     tempFileNum += 1
-    "/tmp/test-somatic-joint-caller-%d.vcf".format(tempFileNum)
+    Paths.get(s"/tmp/test-somatic-joint-caller-$tempFileNum.vcf")
   }
 
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  val outDir = "/tmp/guacamole-somatic-joint-test"
+  val outDir = Paths.get("/tmp/guacamole-somatic-joint-test")
 
   // The NA12878 tests use a 100MB BAM and ship all reads to executors, which makes for too-large tasks if we don't
   // increase the parallelism.
@@ -54,25 +56,28 @@ object SomaticJointCallerIntegrationTests
           }
       )
 
-    val args = new Arguments {
-      override val paths = CancerWGS.bams
-      referencePath = CancerWGS.referencePath
-      referenceIsPartial = true
-      somaticGenotypePolicy = "trigger"
-      lociStrOpt =
-        Some(
-          (
-            (1 until 22).map(i ⇒ s"chr$i")
-              ++ Seq("chrX", "chrY")
+    val args =
+      new Arguments {
+        override val paths = CancerWGS.bams
+        override val referencePath = CancerWGS.referencePath
+        referenceIsPartial = true
+        somaticGenotypePolicy = "trigger"
+        lociStrOpt =
+          Some(
+            (
+              (1 until 22).map(i ⇒ s"chr$i")
+                ++ Seq("chrX", "chrY")
+              )
+            .mkString(",")
           )
-          .mkString(",")
-        )
-      forceCallLociFileOpt = Some(forceCallLoci.toString(100000))
-      outDir = outDir
-    }
+        forceCallLociStrOpt = Some(forceCallLoci.toString(100000))
+        outDirOpt = Some(outDir)
+      }
 
     run(args)
   }
+
+  import NA12878._
 
   override def run(args: Arguments, sc: SparkContext): Unit = {
 
@@ -94,35 +99,36 @@ object SomaticJointCallerIntegrationTests
 
     println("germline calling on subset of illumina platinum NA12878")
     if (true) {
-      val resultFile = tempFile(".vcf")
+      val resultFile = tempFile
       println(resultFile)
 
       if (true) {
-        val args = new SomaticJoint.Arguments() {
-          override val paths = Array(NA12878.subsetBam)
-          out = resultFile
-          lociStrOpt = Some("chr1:0-6700000")
-          forceCallLociFileOpt = Some(NA12878.expectedCallsVCF)
-          referencePath = NA12878.chr1PrefixFasta
-        }
+        val args =
+          new SomaticJoint.Arguments() {
+            unprefixedPaths = Array(subsetBam)
+            outOpt = Some(resultFile)
+            lociStrOpt = Some("chr1:0-6700000")
+            forceCallLociFileOpt = Some(expectedCallsVCF.buildPath)
+            override val referencePath: Path = chr1PrefixFasta.buildPath
+          }
 
         SomaticJoint.Caller.run(args, sc)
       }
 
       println("************* GUACAMOLE *************")
-      compareToVCF(resultFile, NA12878.expectedCallsVCF)
+      compareToVCF(resultFile, expectedCallsVCF)
 
       if (false) {
         println("************* UNIFIED GENOTYPER *************")
         compareToVCF(
           File("illumina-platinum-na12878/unified_genotyper.vcf"),
-          NA12878.expectedCallsVCF
+          expectedCallsVCF
         )
 
         println("************* HaplotypeCaller *************")
         compareToVCF(
           File("illumina-platinum-na12878/haplotype_caller.vcf"),
-          NA12878.expectedCallsVCF
+          expectedCallsVCF
         )
       }
     }

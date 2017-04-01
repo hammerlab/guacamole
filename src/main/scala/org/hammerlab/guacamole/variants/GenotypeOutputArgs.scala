@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.variants
 
 import java.io.OutputStream
+import java.nio.file.Files.{ exists, newOutputStream }
+import java.nio.file.Path
 
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ HashPartitioner, SparkContext }
@@ -13,6 +13,7 @@ import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
+import org.hammerlab.args4s.PathOptionHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
@@ -31,11 +32,10 @@ trait GenotypeOutputArgs
     name = "--out",
     metaVar = "VARIANTS_OUT",
     required = false,
+    handler = classOf[PathOptionHandler],
     usage = "Variant output path. If not specified, print to screen."
   )
-  var variantOutput: String = ""
-
-  lazy val outputPathStr = variantOutput.stripMargin
+  var outputPathOpt: Option[Path] = None
 
   @Args4jOption(
     name = "--out-chunks",
@@ -56,12 +56,11 @@ trait GenotypeOutputArgs
    * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
    */
   override def validate(sc: SparkContext): Unit = {
-    if (outputPathStr.toLowerCase.endsWith(".vcf")) {
-      val outputPath = new Path(outputPathStr)
-      val filesystem = outputPath.getFileSystem(sc.hadoopConfiguration)
-      if (filesystem.exists(outputPath)) {
-        throw new FileAlreadyExistsException("Output directory " + outputPath + " already exists")
-      }
+    outputPathOpt foreach {
+      outputPath ⇒
+        if (exists(outputPath)) {
+          throw new FileAlreadyExistsException(s"Output directory $outputPath already exists")
+        }
     }
   }
 
@@ -74,7 +73,7 @@ trait GenotypeOutputArgs
 
     val subsetGenotypes =
       if (maxGenotypes > 0) {
-        progress(s"Subsetting to ${maxGenotypes} genotypes.")
+        progress(s"Subsetting to $maxGenotypes genotypes.")
         genotypes.copy(rdd = genotypes.rdd.sample(withReplacement = false, maxGenotypes, 0))
       } else {
         genotypes
@@ -85,43 +84,45 @@ trait GenotypeOutputArgs
 
   private def writeSortedSampledVariants(genotypes: GenotypeRDD): Unit = {
 
-    if (outputPathStr.isEmpty || outputPathStr.toLowerCase.endsWith(".json")) {
-      writeJSONVariants(genotypes.rdd)
-    } else if (outputPathStr.toLowerCase.endsWith(".vcf")) {
-      progress(s"Writing genotypes to VCF file: $outputPathStr")
-      val variantsRDD = genotypes.toVariantContextRDD
-      val sortedCoalescedRDD =
-        variantsRDD
-          .rdd
-          .keyBy(v ⇒ (v.variant.variant.getStart, v.variant.variant.getEnd))
-          .repartitionAndSortWithinPartitions(new HashPartitioner(1))
-          .values
+    outputPathOpt match {
+      case Some(outputPath) if !outputPath.toString.endsWith(".json") ⇒
+        if (outputPath.toString.endsWith(".vcf")) {
+          progress(s"Writing genotypes to VCF file: $outputPath")
+          val variantsRDD = genotypes.toVariantContextRDD
+          val sortedCoalescedRDD =
+            variantsRDD
+              .rdd
+              .keyBy(v ⇒ (v.variant.variant.getStart, v.variant.variant.getEnd))
+              .repartitionAndSortWithinPartitions(new HashPartitioner(1))
+              .values
 
-      variantsRDD
-        .copy(rdd = sortedCoalescedRDD)
-        .saveAsVcf(outputPathStr)
-    } else {
-      progress(s"Writing genotypes to: $outputPathStr.")
-      genotypes.saveAsParquet(
-        outputPathStr,
-        blockSize,
-        pageSize,
-        compressionCodec,
-        disableDictionaryEncoding
-      )
+          variantsRDD
+            .copy(rdd = sortedCoalescedRDD)
+            .saveAsVcf(outputPath)
+        } else {
+          progress(s"Writing genotypes to: $outputPath.")
+          genotypes.saveAsParquet(
+            outputPath,
+            blockSize,
+            pageSize,
+            compressionCodec,
+            disableDictionaryEncoding
+          )
+        }
+      case _ ⇒
+        writeJSONVariants(genotypes.rdd)
     }
   }
 
   private def writeJSONVariants(genotypes: RDD[BDGGenotype]): Unit = {
     val out: OutputStream =
-      if (outputPathStr.isEmpty) {
-        progress("Writing genotypes to stdout.")
-        System.out
-      } else {
-        progress(s"Writing genotypes as JSON to: $outputPathStr")
-        val filesystem = FileSystem.get(new Configuration())
-        val path = new Path(outputPathStr)
-        filesystem.create(path, true)
+      outputPathOpt match {
+        case Some(outputPath) ⇒
+          progress(s"Writing genotypes as JSON to: $outputPath")
+          newOutputStream(outputPath)
+        case _ ⇒
+          progress("Writing genotypes to stdout.")
+          System.out
       }
 
     val coalescedGenotypes =

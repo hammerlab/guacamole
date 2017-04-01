@@ -15,9 +15,5 @@ abstract class GuacFunSuite
     with ClearContigNames {
   conf.setAppName("guacamole")
 
-  implicit def unwrapFiles(files: PerSample[File]): PerSample[String] = files.map(_.path)
-}
-
-object Foo {
-  def apply(n: Int, s: String = ""): Int = n * 2
+  implicit def unwrapFiles(files: PerSample[File]): PerSample[String] = files.map(_.pathStr)
 }

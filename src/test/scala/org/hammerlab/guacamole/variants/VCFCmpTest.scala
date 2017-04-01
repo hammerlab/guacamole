@@ -1,14 +1,24 @@
 package org.hammerlab.guacamole.variants
 
+import java.nio.file.Files.lines
+import java.nio.file.Path
+
+import org.hammerlab.test.resources.File
 import org.scalatest.Matchers
 
-trait VCFCmpTest
-  extends Matchers {
+import scala.collection.JavaConverters._
 
-  def vcfContentsIgnoringHeaders(path: String): String =
-    scala.io.Source.fromFile(path).getLines().filterNot(_.startsWith("##")).mkString("\n")
+trait VCFCmpTest {
+  self: Matchers ⇒
 
-  def checkVCFs(actualPath: String, expectedPath: String): Unit = {
+  def vcfContentsIgnoringHeaders(path: Path): String =
+    lines(path)
+      .iterator()
+      .asScala
+      .filterNot(_.startsWith("##"))
+      .mkString("\n")
+
+  def checkVCFs(actualPath: Path, expectedPath: File): Unit = {
     vcfContentsIgnoringHeaders(actualPath) should be(vcfContentsIgnoringHeaders(expectedPath))
   }
 }

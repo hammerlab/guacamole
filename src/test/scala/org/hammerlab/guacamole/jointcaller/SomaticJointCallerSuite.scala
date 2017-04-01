@@ -2,24 +2,27 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.genomics.bases.Base.{ A, C, G, T }
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.loci.set.test.LociSetUtil
 import org.hammerlab.genomics.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
 import org.hammerlab.guacamole.data.{ CancerWGS, Celsr1 }
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.test.resources.File
+import org.hammerlab.test.resources.PathUtil
 
 class SomaticJointCallerSuite
   extends GuacFunSuite
     with ReadSetsUtil
+    with LociSetUtil
+    with PathUtil
     with ReferenceUtil {
 
-  val hg19PartialFasta = File("hg19.partial.fasta")
+  val hg19PartialFasta = "hg19.partial.fasta"
 
   def hg19PartialReference =
     ReferenceBroadcast(hg19PartialFasta, sc, partialFasta = true)
 
-  val b37Chromosome22Fasta = File("chr22.fa.gz")
+  val b37Chromosome22Fasta = "chr22.fa.gz"
 
   def b37Chromosome22Reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)

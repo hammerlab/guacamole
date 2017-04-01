@@ -1,6 +1,8 @@
 package org.hammerlab.guacamole.loci.args
 
-import org.hammerlab.args4s.StringOptionHandler
+import java.nio.file.Path
+
+import org.hammerlab.args4s.{ PathOptionHandler, StringOptionHandler }
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 trait ForceCallLociArgs {
@@ -14,7 +16,7 @@ trait ForceCallLociArgs {
   @Args4jOption(
     name = "--force-call-loci-file",
     usage = "Always call the given sites",
-    handler = classOf[StringOptionHandler]
+    handler = classOf[PathOptionHandler]
   )
-  var forceCallLociFileOpt: Option[String] = None
+  var forceCallLociFileOpt: Option[Path] = None
 }

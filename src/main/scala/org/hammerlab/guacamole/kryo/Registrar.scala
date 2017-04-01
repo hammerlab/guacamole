@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.kryo
 
+import java.nio.file.Path
+
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
 import org.bdgenomics.adam.models.{ SequenceDictionary, SequenceRecord, VariantContext }
@@ -75,5 +77,7 @@ class Registrar extends KryoRegistrator {
     new bases.Registrar().registerClasses(kryo)
     kryo.register(classOf[Base])
     kryo.register(classOf[Array[Base]])
+
+    kryo.register(classOf[Path], new PathSerializer)
   }
 }

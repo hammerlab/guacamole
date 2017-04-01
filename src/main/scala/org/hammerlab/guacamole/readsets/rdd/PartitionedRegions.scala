@@ -29,7 +29,9 @@ import scala.reflect.ClassTag
  * [[mapPartitions]] is called.
  */
 class PartitionedRegions[T: ClassTag, R <: Region: ClassTag] private(regions: RDD[T],
-                                                                     partitioning: LociPartitioning)(implicit toR: T ⇒ R)
+                                                                     partitioning: LociPartitioning)(
+    implicit toR: T ⇒ R
+)
   extends Serializable {
 
   @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)

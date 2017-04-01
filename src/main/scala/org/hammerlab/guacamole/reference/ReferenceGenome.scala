@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.reference
 
+import java.nio.file.Path
+
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
 
@@ -9,9 +11,8 @@ trait ReferenceGenome {
    * Path where this reference was loaded from, or other description of its provenance (optional).
    *
    * For provenance tracking only. Not guaranteed to be a valid path or on a filesystem that is currently accessible.
-   *
    */
-  val source: Option[String]
+  val source: Option[Path]
 
   /**
    * Retrieve a full contig/chromosome sequence

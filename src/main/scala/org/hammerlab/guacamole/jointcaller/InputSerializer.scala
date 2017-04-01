@@ -1,8 +1,9 @@
 package org.hammerlab.guacamole.jointcaller
 
+import java.nio.file.Paths
+
 import com.esotericsoftware.kryo.io.Output
 import com.esotericsoftware.kryo.{ Kryo, Serializer, io }
-import org.apache.hadoop.fs.Path
 import org.hammerlab.guacamole.jointcaller.Sample.{ Analyte, TissueType }
 
 class InputSerializer
@@ -12,7 +13,7 @@ class InputSerializer
     Input(
       input.readInt(true),
       input.readString(),
-      new Path(input.readString()),
+      Paths.get(input.readString()),
       TissueType(input.readByte()),
       Analyte(input.readByte())
     )

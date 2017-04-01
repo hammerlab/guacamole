@@ -1,14 +1,10 @@
 package org.hammerlab.guacamole.jointcaller
 
-//import org.apache.hadoop.fs.{ Path ⇒ HPath }
-import org.apache.hadoop.fs.Path
+import java.nio.file.Path
+
 import org.hammerlab.genomics.readsets
 import org.hammerlab.genomics.readsets.io.Sample.{ Id, Name }
 import org.hammerlab.guacamole.jointcaller.Sample.{ Analyte, TissueType }
-
-// Need a serializable Path
-//case class Path(path: String)
-//  extends HPath(path)
 
 case class Input(override val id: Id,
                  override val name: Name,

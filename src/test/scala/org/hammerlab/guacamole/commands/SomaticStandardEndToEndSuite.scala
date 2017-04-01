@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.variants.VCFCmpTest
+import org.hammerlab.paths.pathToString
 import org.hammerlab.test.Suite
 import org.hammerlab.test.resources.File
 
@@ -29,10 +30,9 @@ class SomaticStandardEndToEndSuite
       "--partial-reference",
       "--min-alignment-quality",
       "1",
-      "--out",
-      tmpOutputPath
+      "--out", tmpOutputPath
     )
 
-    checkVCFs(s"$tmpOutputPath/part-r-00000", File("tough.golden.vcf"))
+    checkVCFs(tmpOutputPath.resolve("part-r-00000"), "tough.golden.vcf")
   }
 }

@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.variants
 
 import java.io.File
+import java.nio.file.Path
 
 import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContextBuilder, Allele ⇒ HTSJDKAllele, VariantContext ⇒ HTSJDKVariantContext }
 import htsjdk.variant.vcf.VCFFileReader
@@ -12,7 +13,6 @@ import org.hammerlab.guacamole.util.VCFComparison
 import scala.collection.JavaConversions.{ collectionAsScalaIterable, seqAsJavaList }
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-
 import scala.math.max
 
 case class VariantFromVarlensCSV(
@@ -79,14 +79,16 @@ trait VariantComparisonTest {
   def printSamplePairs(pairs: Seq[(HTSJDKVariantContext, HTSJDKVariantContext)], num: Int = 20): Unit = {
     val sample = pairs.take(num)
     println("Showing %,d / %,d.".format(sample.size, pairs.size))
-    sample.zipWithIndex.foreach {
-      case (pair, num) ⇒
-        println("(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
-          num + 1,
+    for { (pair, idx) ← sample.zipWithIndex } {
+      println(
+        "(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
+          idx + 1,
           VCFComparison.variantToString(pair._1, verbose = false),
           VCFComparison.variantToString(pair._2, verbose = false),
           VCFComparison.variantToString(pair._1, verbose = true),
-          VCFComparison.variantToString(pair._2, verbose = true)))
+          VCFComparison.variantToString(pair._2, verbose = true)
+        )
+      )
     }
   }
 
@@ -176,11 +178,11 @@ trait VariantComparisonTest {
     printSamplePairs(comparisonFull.exactMatch, 400)
   }
 
-  def compareToVCF(experimentalFile: String, expectedFile: String): Unit = {
+  def compareToVCF(experimentalFile: Path, expectedPath: Path): Unit = {
 
-    val readerExpected = new VCFFileReader(new File(expectedFile), false)
+    val readerExpected = new VCFFileReader(expectedPath.toFile, false)
     val recordsExpected = vcfRecords(readerExpected)
-    val reader = new VCFFileReader(new File(experimentalFile), false)
+    val reader = new VCFFileReader(experimentalFile.toFile, false)
     val recordsGuacamole = vcfRecords(reader)
 
     println("Experimental calls: %,d. Gold calls: %,d.".format(recordsGuacamole.length, recordsExpected.length))
