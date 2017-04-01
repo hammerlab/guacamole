@@ -1,9 +1,8 @@
 package org.hammerlab.guacamole.reference
 
-import java.nio.file.Path
-
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
+import org.hammerlab.paths.Path
 
 trait ReferenceGenome {
 

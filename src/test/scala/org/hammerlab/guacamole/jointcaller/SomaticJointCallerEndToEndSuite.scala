@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.paths.pathToString
 import org.hammerlab.test.Suite
 import org.hammerlab.test.resources.File
 
@@ -36,6 +35,6 @@ class SomaticJointCallerEndToEndSuite
         cancerWGS1Bams
     )
 
-    checkVCFs(outDir.resolve("all.vcf"), "tiny-sjc-output/all.vcf")
+    checkVCFs(outDir / "all.vcf", "tiny-sjc-output/all.vcf")
   }
 }

@@ -4,6 +4,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.args4s.JPathHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.set.LociSet
@@ -15,6 +16,7 @@ import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ 
 import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object VariantSupport {
@@ -25,13 +27,24 @@ object VariantSupport {
       with PartitionedRegionsArgs
       with ReferenceArgs {
 
-    @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
-      usage = "")
-    var variants: String = ""
+    @Args4jOption(
+      name = "--input-variants",
+      aliases = Array("-v"),
+      required = true,
+      handler = classOf[JPathHandler],
+      usage = ""
+    )
+    var variants: Path = _
 
-    @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
-      usage = "Output path for CSV")
-    var output: String = ""
+    @Args4jOption(
+      name = "--output",
+      aliases = Array("-o"),
+      metaVar = "OUT",
+      required = true,
+      handler = classOf[JPathHandler],
+      usage = "Output path for CSV"
+    )
+    var output: Path = _
   }
 
   object Caller extends GuacCommand[Arguments] {
@@ -94,7 +107,7 @@ object VariantSupport {
           reference
         )
 
-      alleleCounts.saveAsTextFile(args.output)
+      alleleCounts.saveAsTextFile(args.output.toString)
     }
 
     /**

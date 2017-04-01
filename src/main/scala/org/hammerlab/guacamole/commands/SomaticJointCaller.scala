@@ -1,8 +1,5 @@
 package org.hammerlab.guacamole.commands
 
-
-import java.nio.file.Path
-
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -23,6 +20,7 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.paths.Path
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
@@ -79,13 +77,12 @@ object SomaticJoint {
 
       val forceCallLoci =
         LociSet(
-          ParsedLoci
-            .fromArgs(
-              args.forceCallLociStrOpt,
-              args.forceCallLociFileOpt,
-              sc.hadoopConfiguration
-            )
-            .getOrElse(ParsedLoci("")),
+          ParsedLoci(
+            args.forceCallLociStrOpt,
+            args.forceCallLociFileOpt,
+            sc.hadoopConfiguration
+          )
+          .getOrElse(ParsedLoci("")),
           readsets.contigLengths
         )
 
@@ -270,7 +267,7 @@ object SomaticJoint {
     outDirOpt foreach {
       outDir ⇒
 
-        def path(filename: String) = outDir.resolve(s"$filename.vcf")
+        def path(filename: String) = outDir / s"$filename.vcf"
 
         def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean =
           forceCallLoci.intersects(evidence.allele)

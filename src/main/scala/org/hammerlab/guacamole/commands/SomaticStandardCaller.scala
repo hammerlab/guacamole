@@ -4,6 +4,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.args4s.PathOptionHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.impl.ReferenceArgs
@@ -19,6 +20,7 @@ import org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller }
+import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 import scala.math.{ exp, max }
@@ -67,8 +69,13 @@ object SomaticStandard {
     )
     var minTumorVariantAlleleFrequency: Int = 3
 
-    @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
-    var dbSnpVcf: String = ""
+    @Args4jOption(
+      name = "--dbsnp-vcf",
+      required = false,
+      handler = classOf[PathOptionHandler],
+      usage = "VCF file to identify DBSNP variants"
+    )
+    var dbSnpVcfOpt: Option[Path] = None
   }
 
   object Caller extends GenotypeOutputCaller[Arguments, CalledSomaticAllele] {
@@ -122,21 +129,22 @@ object SomaticStandard {
       potentialGenotypes.persist()
       progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
-      if (args.dbSnpVcf != "") {
-        val adamContext: ADAMContext = sc
-        val dbSnpVariants = adamContext.loadVariants(args.dbSnpVcf)
+      args.dbSnpVcfOpt foreach {
+        dbSnpVcf ⇒
+          val adamContext: ADAMContext = sc
+          val dbSnpVariants = adamContext.loadVariants(dbSnpVcf)
 
-        potentialGenotypes =
-          potentialGenotypes
-            .keyBy(_.bdgVariant)
-            .leftOuterJoin(dbSnpVariants.rdd.keyBy(x ⇒ x))
-            .values
-            .map {
-              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[Variant]) ⇒
-                calledAllele.copy(
-                  rsID = dbSnpVariantOpt.map(_.getNames.get(0).toInt)
-                )
-            }
+          potentialGenotypes =
+            potentialGenotypes
+              .keyBy(_.bdgVariant)
+              .leftOuterJoin(dbSnpVariants.rdd.keyBy(x ⇒ x))
+              .values
+              .map {
+                case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[Variant]) ⇒
+                  calledAllele.copy(
+                    rsID = dbSnpVariantOpt.map(_.getNames.get(0).toInt)
+                  )
+              }
       }
 
       (

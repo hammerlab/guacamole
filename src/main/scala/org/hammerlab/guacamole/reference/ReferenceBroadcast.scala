@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.reference
 
-import java.nio.file.Path
 import java.util.NoSuchElementException
 
 import grizzled.slf4j.Logging
@@ -11,11 +10,12 @@ import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRa
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.args.base.HasReference
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.paths.Path
 
 import scala.collection.mutable
 
 case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence],
-                              source: Option[Path])
+                              @transient source: Option[Path])
   extends ReferenceGenome {
 
   override def getContig(contigName: ContigName): ContigSequence =

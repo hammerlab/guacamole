@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.pileup
 
-import java.nio.file.Path
-
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.reads.MappedRead
@@ -9,6 +7,7 @@ import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.paths.Path
 
 trait Util
   extends ReadsRDDUtil {

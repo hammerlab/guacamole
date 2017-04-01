@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.paths.pathToString
 import org.hammerlab.test.Suite
 import org.hammerlab.test.resources.File
 
@@ -33,6 +32,6 @@ class SomaticStandardEndToEndSuite
       "--out", tmpOutputPath
     )
 
-    checkVCFs(tmpOutputPath.resolve("part-r-00000"), "tough.golden.vcf")
+    checkVCFs(tmpOutputPath / "part-r-00000", "tough.golden.vcf")
   }
 }

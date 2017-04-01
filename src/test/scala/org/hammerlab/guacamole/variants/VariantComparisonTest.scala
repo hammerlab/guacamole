@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.variants
 
 import java.io.File
-import java.nio.file.Path
 
 import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContextBuilder, Allele ⇒ HTSJDKAllele, VariantContext ⇒ HTSJDKVariantContext }
 import htsjdk.variant.vcf.VCFFileReader
@@ -9,6 +8,7 @@ import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.VCFComparison
+import org.hammerlab.paths.Path
 
 import scala.collection.JavaConversions.{ collectionAsScalaIterable, seqAsJavaList }
 import scala.collection.mutable.ArrayBuffer

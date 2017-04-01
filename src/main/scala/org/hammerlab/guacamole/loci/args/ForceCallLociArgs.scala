@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.loci.args
 
-import java.nio.file.Path
-
 import org.hammerlab.args4s.{ PathOptionHandler, StringOptionHandler }
+import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 trait ForceCallLociArgs {

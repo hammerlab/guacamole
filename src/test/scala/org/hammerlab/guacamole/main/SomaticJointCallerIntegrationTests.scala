@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.main
 
-import java.nio.file.{ Path, Paths }
-
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.{ Locus, Region }
@@ -10,6 +8,7 @@ import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
 import org.hammerlab.guacamole.data.{ CancerWGS, NA12878 }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.VariantComparisonTest
+import org.hammerlab.paths.Path
 import org.hammerlab.test.resources.File
 
 /**
@@ -28,13 +27,13 @@ object SomaticJointCallerIntegrationTests
 
   def tempFile: Path = {
     tempFileNum += 1
-    Paths.get(s"/tmp/test-somatic-joint-caller-$tempFileNum.vcf")
+    Path(s"/tmp/test-somatic-joint-caller-$tempFileNum.vcf")
   }
 
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  val outDir = Paths.get("/tmp/guacamole-somatic-joint-test")
+  val outDir = Path("/tmp/guacamole-somatic-joint-test")
 
   // The NA12878 tests use a 100MB BAM and ship all reads to executors, which makes for too-large tasks if we don't
   // increase the parallelism.

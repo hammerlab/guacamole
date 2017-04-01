@@ -1,10 +1,9 @@
 package org.hammerlab.guacamole.data
 
-import java.nio.file.Path
-
 import org.hammerlab.genomics.readsets.args.base.HasReference
 import org.hammerlab.guacamole.jointcaller.Inputs
 import org.hammerlab.guacamole.jointcaller.Inputs.Arguments
+import org.hammerlab.paths.Path
 import org.hammerlab.test.resources.{ File, PathUtil }
 
 object CancerWGS

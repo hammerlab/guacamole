@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.commands
 
-import java.nio.file.{ Path, Paths }
-
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
@@ -13,7 +11,8 @@ import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.hammerlab.test.resources.{ File, PathUtil }
+import org.hammerlab.test.resources.PathUtil
+import org.seqdoop.hadoop_bam.util.SAMHeaderReader.VALIDATION_STRINGENCY_PROPERTY
 
 class GermlineAssemblyCallerSuite
   extends GuacFunSuite
@@ -24,10 +23,17 @@ class GermlineAssemblyCallerSuite
 
   var reference: ReferenceBroadcast = _
 
-  implicit def fileToPath(file: File): Path = Paths.get(file)
-
   override def beforeAll() {
     super.beforeAll()
+
+    /**
+     * Test BAM has incorrect "bin" fields, presumably due to having been subsetted from a larger BAM; error is at
+     * [[htsjdk.samtools.SAMRecord]]:2057.
+     *
+     * [[htsjdk.samtools.ValidationStringency.LENIENT]] stringency ignores them.
+     */
+    sc.hadoopConfiguration.set(VALIDATION_STRINGENCY_PROPERTY, "LENIENT")
+
     reference = ReferenceBroadcast(chr1PrefixFasta, sc)
   }
 

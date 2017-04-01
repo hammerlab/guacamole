@@ -42,7 +42,8 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
 
     println("Germline assembly calling on subset of illumina platinum NA12878")
 
-    val resultFile = args.outputPathOpt.get.resolve("part-r-00000")
+    val resultFile = args.outputPathOpt.get / "part-r-00000"
+
     println("************* GUACAMOLE GermlineAssembly *************")
     compareToVCF(resultFile, expectedCallsVCF)
 

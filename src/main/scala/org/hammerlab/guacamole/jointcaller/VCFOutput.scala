@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.jointcaller
 
-import java.nio.file.Path
 import java.util
 
 import htsjdk.samtools.SAMSequenceDictionary
@@ -14,6 +13,7 @@ import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, 
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.AlleleMixture
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.paths.Path
 
 import scala.collection.JavaConversions.{ asJavaCollection, seqAsJavaList }
 import scala.collection.mutable

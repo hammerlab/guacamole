@@ -1,8 +1,6 @@
 package org.hammerlab.guacamole.variants
 
 import java.io.OutputStream
-import java.nio.file.Files.{ exists, newOutputStream }
-import java.nio.file.Path
 
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
@@ -16,6 +14,7 @@ import org.codehaus.jackson.JsonFactory
 import org.hammerlab.args4s.PathOptionHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
@@ -58,7 +57,7 @@ trait GenotypeOutputArgs
   override def validate(sc: SparkContext): Unit = {
     outputPathOpt foreach {
       outputPath ⇒
-        if (exists(outputPath)) {
+        if (outputPath.exists) {
           throw new FileAlreadyExistsException(s"Output directory $outputPath already exists")
         }
     }
@@ -119,7 +118,7 @@ trait GenotypeOutputArgs
       outputPathOpt match {
         case Some(outputPath) ⇒
           progress(s"Writing genotypes as JSON to: $outputPath")
-          newOutputStream(outputPath)
+          outputPath.outputStream
         case _ ⇒
           progress("Writing genotypes to stdout.")
           System.out
@@ -147,18 +146,18 @@ trait GenotypeOutputArgs
 
       val chunk =
         coalescedGenotypes
-          .mapPartitionsWithIndex((num, genotypes) ⇒ {
+          .mapPartitionsWithIndex { (num, genotypes) ⇒
             if (num == partitionNum)
               genotypes
             else
               Iterator.empty
-          })
+          }
           .collect
 
-      chunk.foreach(genotype ⇒ {
+      chunk.foreach { genotype ⇒
         writer.write(genotype, encoder)
         encoder.flush()
-      })
+      }
 
       partitionNum += 1
     }
