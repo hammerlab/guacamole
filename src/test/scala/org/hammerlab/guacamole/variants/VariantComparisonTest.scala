@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.variants
 
-import java.io.File
-
 import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContextBuilder, Allele ⇒ HTSJDKAllele, VariantContext ⇒ HTSJDKVariantContext }
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.genomics.bases.Bases
@@ -12,7 +10,6 @@ import org.hammerlab.paths.Path
 
 import scala.collection.JavaConversions.{ collectionAsScalaIterable, seqAsJavaList }
 import scala.collection.mutable.ArrayBuffer
-import scala.io.Source
 import scala.math.max
 
 case class VariantFromVarlensCSV(
@@ -114,10 +111,9 @@ trait VariantComparisonTest {
     results
   }
 
-  def csvRecords(filename: String): Seq[VariantFromVarlensCSV] =
-    Source
-      .fromFile(filename)
-      .getLines
+  def csvRecords(path: Path): Seq[VariantFromVarlensCSV] =
+    path
+      .lines
       .map(_.split(",").map(_.trim).toSeq)
       .toList match {
         case header :: records ⇒
@@ -133,7 +129,8 @@ trait VariantComparisonTest {
                 Bases(fields("alt")),
                 fields("tumor"),
                 fields("normal"),
-                fields("validation"))
+                fields("validation")
+              )
           }
         case Nil ⇒
           throw new IllegalArgumentException("Empty file")
@@ -146,11 +143,11 @@ trait VariantComparisonTest {
    * @param referenceBroadcast Reference genome
    * @param samplesToCompare Sample names to compare against in the expected variants file
    */
-  def compareToCSV(experimentalFile: String,
-                   expectedFile: String,
+  def compareToCSV(experimentalFile: Path,
+                   expectedFile: Path,
                    referenceBroadcast: ReferenceBroadcast,
                    samplesToCompare: Set[String]): Unit = {
-    val readerExperimental = new VCFFileReader(new File(experimentalFile), false)
+    val readerExperimental = new VCFFileReader(experimentalFile.toFile, false)
     val recordsExperimental = vcfRecords(readerExperimental)
     val csvRecordsExpectedWithDecoys = csvRecords(expectedFile)
     val recordsExpected =

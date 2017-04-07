@@ -47,8 +47,6 @@ assemblyMergeStrategy in assembly := {
 
 main := "org.hammerlab.guacamole.Main"
 
-//logLevel in assembly := Level.Debug
-
 shadedDeps ++= Seq(
   "org.scalanlp" %% "breeze" % "0.12"
 )

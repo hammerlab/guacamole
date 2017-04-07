@@ -29,7 +29,7 @@ class SomaticStandardEndToEndSuite
       "--partial-reference",
       "--min-alignment-quality",
       "1",
-      "--out", tmpOutputPath
+      "--out", tmpOutputPath.toString
     )
 
     checkVCFs(tmpOutputPath / "part-r-00000", "tough.golden.vcf")

@@ -30,7 +30,7 @@ class SomaticJointCallerEndToEndSuite
         "--sample-names", "normal,primary,recurrence",
         "--include-duplicates",
         "--include-failed-quality-checks",
-        "--out-dir", outDir
+        "--out-dir", outDir.toString
       ) ++
         cancerWGS1Bams
     )

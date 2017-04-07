@@ -120,13 +120,13 @@ object LociPartitioning {
         progress(s"Loading loci partitioning from $lociPartitioningPath")
         load(fs.open(path))
       })
-      .getOrElse({
+      .getOrElse {
         // Otherwise, compute it.
         progress(s"Partitioning loci")
         args
           .getPartitioner(regions)
           .partition(loci)
-      })
+      }
 
     for (lociPartitioningPath ← args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")

@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.main
 
+import java.nio.file.Files.createTempDirectory
+
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.{ Locus, Region }
@@ -25,15 +27,17 @@ object SomaticJointCallerIntegrationTests
 
   var tempFileNum = 0
 
+  val tempDir = Path(createTempDirectory("sjc"))
+
   def tempFile: Path = {
     tempFileNum += 1
-    Path(s"/tmp/test-somatic-joint-caller-$tempFileNum.vcf")
+    tempDir / s"test-somatic-joint-caller-$tempFileNum.vcf"
   }
 
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  val outDir = Path("/tmp/guacamole-somatic-joint-test")
+  val outDir = tempDir / "out"
 
   // The NA12878 tests use a 100MB BAM and ship all reads to executors, which makes for too-large tasks if we don't
   // increase the parallelism.
@@ -89,7 +93,7 @@ object SomaticJointCallerIntegrationTests
       println("************* CANCER WGS1 SOMATIC CALLS *************")
 
       compareToCSV(
-        outDir + "/somatic.all_samples.vcf",
+        outDir / "somatic.all_samples.vcf",
         CancerWGS.expectedSomaticCallsCSV,
         ReferenceBroadcast(CancerWGS, sc),
         Set("primary", "recurrence")
