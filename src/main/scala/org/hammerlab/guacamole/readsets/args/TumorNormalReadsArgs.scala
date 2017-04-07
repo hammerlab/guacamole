@@ -15,7 +15,7 @@ trait TumorNormalReadsArgs
 
   @Args4jOption(
     name = "--normal-reads",
-    aliases = Array("-n"),
+    aliases = Array("-n", "--normal"),
     metaVar = "X",
     required = true,
     handler = classOf[UnprefixedPathHandler],
@@ -25,7 +25,7 @@ trait TumorNormalReadsArgs
 
   @Args4jOption(
     name = "--tumor-reads",
-    aliases = Array("-t"),
+    aliases = Array("-t", "--tumor"),
     metaVar = "X",
     required = true,
     handler = classOf[UnprefixedPathHandler],
