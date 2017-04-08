@@ -17,17 +17,17 @@ trait Util
   def makePileup(reads: Seq[MappedRead],
                  contigName: ContigName,
                  locus: Locus) =
-    Pileup(reads, "sample", contigName, locus, reference.getContig(contigName))
+    Pileup(reads, "sample", contigName, locus, reference(contigName))
 
   def makeNormalPileup(reads: Seq[MappedRead],
                        contigName: ContigName,
                        locus: Locus) =
-    Pileup(reads, "normal", contigName, locus, reference.getContig(contigName))
+    Pileup(reads, "normal", contigName, locus, reference(contigName))
 
   def makeTumorPileup(reads: Seq[MappedRead],
                       contigName: ContigName,
                       locus: Locus) =
-    Pileup(reads, "tumor", contigName, locus, reference.getContig(contigName))
+    Pileup(reads, "tumor", contigName, locus, reference(contigName))
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
@@ -35,8 +35,8 @@ trait Util
     val contig = tumorReads(0).contigName
     assume(normalReads(0).contigName == contig)
     (
-      Pileup(tumorReads.filter(_.overlapsLocus(locus)), "tumor", contig, locus, reference.getContig(contig)),
-      Pileup(normalReads.filter(_.overlapsLocus(locus)), "normal", contig, locus, reference.getContig(contig))
+      Pileup(tumorReads.filter(_.overlapsLocus(locus)), "tumor", contig, locus, reference(contig)),
+      Pileup(normalReads.filter(_.overlapsLocus(locus)), "normal", contig, locus, reference(contig))
     )
   }
 
@@ -71,7 +71,7 @@ trait Util
       path.toString,
       actualContig,
       locus,
-      reference.getContig(actualContig)
+      reference(actualContig)
     )
   }
 }

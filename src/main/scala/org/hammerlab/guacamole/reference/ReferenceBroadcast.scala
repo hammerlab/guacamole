@@ -18,19 +18,13 @@ case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence
                               @transient source: Option[Path])
   extends ReferenceGenome {
 
-  override def getContig(contigName: ContigName): ContigSequence =
+  override def apply(contigName: ContigName): ContigSequence =
     try {
       broadcastedContigs(contigName)
     } catch {
       case _: NoSuchElementException ⇒
         throw ContigNotFound(contigName, broadcastedContigs.keys)
     }
-
-  override def getReferenceBase(contigName: ContigName, locus: Locus): Base =
-    getContig(contigName)(locus)
-
-  override def getReferenceSequence(contigName: ContigName, start: Locus, length: Int): Bases =
-    getContig(contigName).slice(start, length)
 }
 
 object ReferenceBroadcast extends Logging {
@@ -173,8 +167,5 @@ object ReferenceBroadcast extends Logging {
       readFasta(path, sc)
 }
 
-case class ContigNotFound(contigName: ContigName, availableContigs: Iterable[ContigName])
-  extends Exception(
-    s"Contig $contigName does not exist in the current reference. Available contigs are ${availableContigs.mkString(",")}"
-  )
+
 

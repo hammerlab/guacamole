@@ -101,7 +101,7 @@ object MultiSampleMultiAlleleEvidence {
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
-    if (!reference.getReferenceBase(contig, locus.next).isStandardBase) {
+    if (!reference(contig, locus.next).isStandardBase) {
       return None
     }
 

@@ -32,14 +32,14 @@ case class VariantFromVarlensCSV(
       } else {
         val start = Locus(interbaseStart - 1)
         val length = ref.length
+
         // Deletion.
         val refSequence =
-          reference
-            .getReferenceSequence(
-              uncanonicalizedContig,
-              start,
-              length
-            )
+          reference(
+            uncanonicalizedContig,
+            start,
+            length
+          )
 
         (interbaseStart - 1, refSequence, refSequence.head +: alt: Bases)
       }

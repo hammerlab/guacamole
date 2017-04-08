@@ -11,7 +11,7 @@ trait ReferenceGenome {
    *
    * For provenance tracking only. Not guaranteed to be a valid path or on a filesystem that is currently accessible.
    */
-  val source: Option[Path]
+  def source: Option[Path]
 
   /**
    * Retrieve a full contig/chromosome sequence
@@ -19,7 +19,7 @@ trait ReferenceGenome {
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @return Full sequence associated with the contig
    */
-  def getContig(contigName: ContigName): ContigSequence
+  def apply(contigName: ContigName): ContigSequence
 
   /**
    * Retrieve a reference base on a given contig at a given locus
@@ -28,7 +28,7 @@ trait ReferenceGenome {
    * @param locus position in the sequence to retrieve
    * @return Base at the given reference position
    */
-  def getReferenceBase(contigName: ContigName, locus: Locus): Base
+  def apply(contigName: ContigName, locus: Locus): Base = apply(contigName)(locus)
 
   /**
    * Get the reference base at the given reference location
@@ -39,5 +39,5 @@ trait ReferenceGenome {
    *               k-mer/assembly-window-type calculations.
    * @return Array of bases for the reference sequence
    */
-  def getReferenceSequence(contigName: ContigName, start: Locus, length: Int): Bases
+  def apply(contigName: ContigName, start: Locus, length: Int): Bases = apply(contigName).slice(start, length)
 }

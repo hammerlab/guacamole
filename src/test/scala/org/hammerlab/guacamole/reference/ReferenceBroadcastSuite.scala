@@ -22,29 +22,29 @@ class ReferenceBroadcastSuite
   test("retrieving reference sequences") {
     val reference = ReferenceBroadcast(testFastaPath, sc)
 
-    reference.getReferenceBase("1", 0) should ===(N)
-    reference.getReferenceBase("1", 80) should ===(C)
-    reference.getReferenceBase("1", 160) should ===(T)
-    reference.getReferenceBase("1", 240) should ===(G)
-    reference.getReferenceBase("1", 320) should ===(A)
+    reference("1", 0) should ===(N)
+    reference("1", 80) should ===(C)
+    reference("1", 160) should ===(T)
+    reference("1", 240) should ===(G)
+    reference("1", 320) should ===(A)
 
-    reference.getReferenceBase("2", 0) should ===(N)
-    reference.getReferenceBase("2", 80) should ===(T)
-    reference.getReferenceBase("2", 160) should ===(C)
-    reference.getReferenceBase("2", 240) should ===(G)
+    reference("2", 0) should ===(N)
+    reference("2", 80) should ===(T)
+    reference("2", 160) should ===(C)
+    reference("2", 240) should ===(G)
 
     assert(
-      reference.getReferenceSequence("1", 80, 80) ===
+      reference("1", 80, 80) ===
         "CATCAAAATACCACCATCATTCTTCACAGAACTAGAAAAAACAAGGCTAAAATTCACATGGAACCAAAAAAGAGCCCACA"
     )
 
     assert(
-      reference.getReferenceSequence("2", 240, 80) ===
+      reference("2", 240, 80) ===
         "GACGTTCATTCAGAATGCCACCTAACTAGGCCAGTTTTTGGACTGTATGCCAGCCTCTTTCTGCGGGATGTAATCTCAAT"
     )
 
     assert(
-      reference.getReferenceSequence("2", 720, 80) ===
+      reference("2", 720, 80) ===
         "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA"
     )
   }

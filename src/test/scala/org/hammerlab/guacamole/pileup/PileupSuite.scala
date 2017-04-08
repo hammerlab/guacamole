@@ -34,7 +34,7 @@ class PileupSuite
   def testAdamRecords = loadReadsRDD(sc, "different_start_reads.sam").mappedReads.collect()
 
   def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement =
-    PileupElement(read, locus, reference.getContig(read.contigName))
+    PileupElement(read, locus, reference(read.contigName))
 
   test("create pileup from long insert reads") {
     val reads =
@@ -175,7 +175,7 @@ class PileupSuite
     val pileup = PileupElement(
       read = contigStartInsertionRead,
       locus = 1,
-      contigSequence = reference.getContig("chr1"),
+      contigSequence = reference("chr1"),
       readPosition = 0,
       cigarElementIndex = 0,
       cigarElementLocus = 1,
@@ -239,15 +239,15 @@ class PileupSuite
     val read = makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "sample", "chr4", 0, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr4", 0, reference("chr4"))
     }
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "sample", "chr4", 12, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr4", 12, reference("chr4"))
     }
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "sample", "chr5", 1, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr5", 1, reference("chr4"))
     }
   }
 
@@ -392,7 +392,7 @@ class PileupSuite
         chr = "1"
       )
 
-    val rnaPileupElement = PileupElement(rnaRead, start, reference.getContig("1"))
+    val rnaPileupElement = PileupElement(rnaRead, start, reference("1"))
 
     // Second base
     assert(rnaPileupElement.advanceToLocus(start + 1).sequencedBases === C)

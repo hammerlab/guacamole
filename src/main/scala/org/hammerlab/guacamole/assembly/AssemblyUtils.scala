@@ -69,7 +69,7 @@ object AssemblyUtils extends Logging {
     val end = start + length
 
     val currentReference: Bases =
-      reference.getReferenceSequence(
+      reference(
         currentWindow.contigName,
         start,
         length

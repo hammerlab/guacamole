@@ -89,7 +89,7 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
       try {
         val paddedStart = start - padding
         val paddedEnd = end + padding
-        val sequence = reference.getContig(contig.name).slice(paddedStart, length)
+        val sequence = reference(contig.name).slice(paddedStart, length)
         writer.write(">%s:%s-%s/%s\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
         writer.write(sequence.toString())
         writer.write("\n")
