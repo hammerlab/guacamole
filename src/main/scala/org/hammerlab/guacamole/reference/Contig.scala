@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.reference
 
 import java.io.ByteArrayInputStream
-import java.nio.ByteBuffer
 import java.nio.file.Files
 
 import grizzled.slf4j.Logging
@@ -19,28 +18,13 @@ case class Contig(contigName: ContigName,
   extends ContigSequence
     with Logging {
 
-  lazy val channel = {
+  @transient lazy val channel = {
     val fileChannel = Files.newByteChannel(path)
     CachingChannel(fileChannel, blockSize)
   }
 
   val newlineBytes = entry.newlineBytes
   val bytesPerLine = entry.bytesPerLine
-
-  val _buffers = collection.concurrent.TrieMap[Int, ByteBuffer]()
-
-  def buffer(size: Int): ByteBuffer = {
-    val buf =
-      _buffers.getOrElseUpdate(
-        size,
-        ByteBuffer.allocate(size)
-      )
-
-    buf.clear()
-    buf
-  }
-
-  val newlineBuffer = buffer(newlineBytes)
 
   override def apply(locus: Locus): Base = slice(locus, 1).head
 

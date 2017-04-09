@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.reference
 
-import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 
@@ -18,9 +17,10 @@ object FastaIndex {
                    bytesPerLine: Int) {
     val newlineBytes = bytesPerLine - basesPerLine
 
-    def offset(locus: Locus): Long = {
-      start + (locus.locus / basesPerLine) * bytesPerLine + (locus.locus % basesPerLine)
-    }
+    def offset(locus: Locus): Long =
+      start +
+        (locus.locus / basesPerLine) * bytesPerLine +
+        (locus.locus % basesPerLine)
   }
 
   object Entry {

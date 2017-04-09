@@ -1,4 +1,5 @@
 package org.hammerlab.guacamole.reference
+
 import grizzled.slf4j.Logging
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence }
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
@@ -10,7 +11,8 @@ case class ReferenceFile(path: Path, entries: Map[ContigName, Entry])
 
   override def source: Option[Path] = Some(path)
 
-  val contigs = collection.concurrent.TrieMap[ContigName, Contig]()
+  @transient lazy val contigs = collection.concurrent.TrieMap[ContigName, Contig]()
+
   override def apply(contigName: ContigName): ContigSequence =
     contigs.getOrElseUpdate(
       contigName,
