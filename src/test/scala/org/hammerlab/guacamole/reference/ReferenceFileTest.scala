@@ -27,9 +27,7 @@ class ReferenceFileTest
 
   test("chr1") {
     hg19("1", 10000, 80) should ===("TAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTA")
-    hg19.contigs("1").nextLocus should ===(10080)
     hg19("1", 10080, 80) should ===("ACCCTAACCCTAACCCTAACCCTAACCCAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCTAACCCTAAC")
-    hg19.contigs("1").nextLocus should ===(10160)
     hg19("1", 10160,  1) should ===("C")
     hg19("1", 10161,  1) should ===( "C")
     hg19("1", 10162,  1) should ===(  "T")
