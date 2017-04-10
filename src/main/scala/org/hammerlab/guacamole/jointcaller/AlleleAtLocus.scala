@@ -78,7 +78,7 @@ object AlleleAtLocus {
     assume(pileups.forall(_.contigName == pileups.head.contigName))
     assume(pileups.nonEmpty)
 
-    val contigSequence = pileups.head.contigSequence
+    val contigSequence = pileups.head.contig
 
     val contig = pileups.head.contigName
     val variantStart = pileups.head.locus.next

@@ -138,7 +138,7 @@ object MultiSampleMultiAlleleEvidence {
             val referenceSequence =
               filteredPileups
                 .head
-                .contigSequence
+              .contig
                 .slice(start, length)
 
             val stats =

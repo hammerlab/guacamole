@@ -4,13 +4,15 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.SeekableByteChannel
 
+import scala.collection.concurrent
 import scala.math.{ max, min }
 
 /**
+ * Cache all reads from a [[SeekableByteChannel]] in blocks of size [[blockSize]].
  *
  * @param channel Underlying channel to buffer/cache bytes from.
  * @param blockSize Break the interval [0,channel.size) into blocks of this size, which are fetched+cached on demand.
- * @param maxReadAttempts Allow the underlying channel this many calls to [[SeekableByteChannel.read]] to fill
+ * @param maxReadAttempts Allow the underlying channel this many calls to `SeekableByteChannel.read` to fill
  *                        [[blockSize]] bytes of buffer.
  */
 case class CachingChannel(channel: SeekableByteChannel,
@@ -21,7 +23,7 @@ case class CachingChannel(channel: SeekableByteChannel,
 
   private var _position = 0L
 
-  val blocks = collection.concurrent.TrieMap[Long, ByteBuffer]()
+  val blocks = concurrent.TrieMap[Long, ByteBuffer]()
 
   def position(newPosition: Long): SeekableByteChannel = {
     _position = newPosition
@@ -49,7 +51,6 @@ case class CachingChannel(channel: SeekableByteChannel,
         val dupe = ByteBuffer.allocate(_buffer.capacity())
         _buffer.clear()
         dupe.put(_buffer)
-        dupe
       }
     )
 

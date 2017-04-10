@@ -5,7 +5,7 @@ import htsjdk.samtools.CigarOperator
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.cigar.Element
 import org.hammerlab.genomics.reads.MappedRead
-import org.hammerlab.genomics.reference.{ ContigSequence, KmerLength, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ Contig, KmerLength, Locus, NumLoci }
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Sequence, discoverPathsFromReads, mergeOverlappingSequences }
 import org.hammerlab.guacamole.pileup.PileupElement
@@ -22,18 +22,18 @@ object AssemblyUtils extends Logging {
    * This is based on reads with multiple mismatches or insertion / deletion alignments
    *
    * @param reads Set of reads in a reference region
-   * @param referenceContig Reference contig for the region
+   * @param contig Reference contig for the region
    * @param minAreaVaf Minimum fraction of reads needed
    * @return True if the 'active' region
    */
   def isActiveRegion(reads: Seq[MappedRead],
-                     referenceContig: ContigSequence,
+                     contig: Contig,
                      minAreaVaf: Float): Boolean = {
 
     // Count reads with more than one mismatch or possible insertion/deletions
     val numReadsWithMismatches =
       reads.count(r ⇒
-        PileupElement(r, referenceContig).countOfMismatches > 1 ||
+        PileupElement(r, contig).countOfMismatches > 1 ||
           r.cigar.numCigarElements() > 1
       )
 
@@ -122,7 +122,7 @@ object AssemblyUtils extends Logging {
    *
    * @param path          Possible paths through the reads
    * @param start   Start locus on the reference contig or chromosome
-   * @param referenceContig Reference sequence overlapping the reference region
+   * @param contig Reference sequence overlapping the reference region
    * @param alignPath Function that returns a ReadAlignment from the path
    * @param buildVariant Function to build a called variant from the (Locus, ReferenceAllele, Alternate)
    * @param allowReferenceVariant If true, output variants where the reference and alternate are the same
@@ -130,7 +130,7 @@ object AssemblyUtils extends Logging {
    */
   def buildVariantsFromPath[T <: ReferenceVariant](path: Sequence,
                                                    start: Locus,
-                                                   referenceContig: ContigSequence,
+                                                   contig: Contig,
                                                    alignPath: Sequence ⇒ ReadAlignment,
                                                    buildVariant: (Locus, Bases, Bases) ⇒ T,
                                                    allowReferenceVariant: Boolean = false): Seq[T] = {
@@ -158,7 +158,7 @@ object AssemblyUtils extends Logging {
           val possibleVariant =
             cigarOperator match {
               case CigarOperator.X ⇒
-                val referenceAllele = referenceContig.slice(locus, referenceLength)
+                val referenceAllele = contig.slice(locus, referenceLength)
                 val alternateAllele: Bases = path.slice(pathIndex, pathIndex + pathLength)
 
                 if (referenceAllele.nonEmpty &&
@@ -170,7 +170,7 @@ object AssemblyUtils extends Logging {
 
               case (CigarOperator.I | CigarOperator.D) if cigarIdx != 0 && cigarIdx != (numCigarElements - 1) ⇒
                 // For insertions and deletions, report the variant with the last reference base attached
-                val referenceAllele = referenceContig.slice(locus.prev, referenceLength + 1)
+                val referenceAllele = contig.slice(locus.prev, referenceLength + 1)
                 val alternateAllele: Bases = path.slice(pathIndex - 1, pathIndex + pathLength)
 
                 if (referenceAllele.nonEmpty &&

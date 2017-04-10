@@ -4,16 +4,16 @@ import java.util.NoSuchElementException
 
 import org.apache.spark.broadcast.Broadcast
 import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus, NumLoci }
 
 /**
- * The standard ContigSequence implementation, which is an Array of bases.
+ * The standard Contig implementation, which is an Array of bases.
  *
  * TODO: Arrays can't be more than 2³¹ long, use 2bit instead?
  */
 case class ArrayBackedReferenceSequence(contigName: ContigName,
                                         wrapped: Broadcast[Array[Byte]])
-  extends ContigSequence {
+  extends Contig {
 
   /**
    * This is basically a hack that bakes in the clumsy injecting of [[Locus]] into [[Array]]-indexes ([[Int]]s).

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus }
 import org.hammerlab.paths.Path
 
 trait ReferenceGenome {
@@ -19,7 +19,7 @@ trait ReferenceGenome {
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @return Full sequence associated with the contig
    */
-  def apply(contigName: ContigName): ContigSequence
+  def apply(contigName: ContigName): Contig
 
   /**
    * Retrieve a reference base on a given contig at a given locus

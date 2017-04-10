@@ -1,28 +1,25 @@
 package org.hammerlab.guacamole.reference
 
-import java.util.NoSuchElementException
-
 import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
-import org.hammerlab.genomics.bases.{ Base, Bases }
+import org.hammerlab.genomics.bases.Base
 import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRange }
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.args.base.HasReference
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus, NumLoci }
 import org.hammerlab.paths.Path
 
 import scala.collection.mutable
 
-case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence],
+case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, Contig],
                               @transient source: Option[Path])
   extends ReferenceGenome {
 
-  override def apply(contigName: ContigName): ContigSequence =
-    try {
-      broadcastedContigs(contigName)
-    } catch {
-      case _: NoSuchElementException ⇒
+  override def apply(contigName: ContigName): Contig =
+    broadcastedContigs.get(contigName) match {
+      case Some(contig) ⇒ contig
+      case None ⇒
         throw ContigNotFound(contigName, broadcastedContigs.keys)
     }
 }
@@ -45,7 +42,7 @@ object ReferenceBroadcast extends Logging {
   def readFasta(path: Path, sc: SparkContext): ReferenceBroadcast = {
     val referenceFasta = new FastaSequenceFile(path, true)
     var nextSequence = referenceFasta.nextSequence()
-    val broadcastedSequences = Map.newBuilder[ContigName, ContigSequence]
+    val broadcastedSequences = Map.newBuilder[ContigName, Contig]
     while (nextSequence != null) {
       val contigName = nextSequence.getName
       val sequence = nextSequence.getBases

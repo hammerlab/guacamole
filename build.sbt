@@ -3,8 +3,6 @@ import sbtassembly.PathList
 name := "guacamole"
 version := "0.1.0-SNAPSHOT"
 
-hadoopVersion := "2.7.2"
-
 addSparkDeps
 
 deps ++= Seq(
@@ -20,6 +18,7 @@ deps ++= Seq(
   libs.value('htsjdk),
   libs.value('iterators),
   libs.value('magic_rdds),
+  libs.value('paths),
   libs.value('scalautils),
   libs.value('slf4j),
   libs.value('spark_commands),

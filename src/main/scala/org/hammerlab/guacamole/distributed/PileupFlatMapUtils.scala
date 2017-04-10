@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.distributed
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.reads.MappedRead
 import org.hammerlab.genomics.readsets.{ PerSample, SampleName, SampleRead }
-import org.hammerlab.genomics.reference.ContigSequence
+import org.hammerlab.genomics.reference.Contig
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PartitionedReads
@@ -23,7 +23,7 @@ object PileupFlatMapUtils {
   private def initOrMovePileup(existing: Option[Pileup],
                                sampleName: SampleName,
                                window: SlidingWindow[MappedRead],
-                               contigSequence: ContigSequence): Pileup = {
+                               contig: Contig): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
       case None ⇒
@@ -32,7 +32,7 @@ object PileupFlatMapUtils {
           sampleName,
           window.contigName,
           window.currentLocus,
-          contigSequence
+          contig
         )
       case Some(pileup) ⇒
         pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)

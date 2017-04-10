@@ -5,17 +5,17 @@ import java.nio.file.Files
 
 import grizzled.slf4j.Logging
 import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus, NumLoci }
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 
 import scala.math.min
 
-case class Contig(contigName: ContigName,
-                  entry: Entry,
-                  path: Path,
-                  blockSize: Int = 2 * 1024 * 1024)
-  extends ContigSequence
+case class FileContig(contigName: ContigName,
+                      entry: Entry,
+                      path: Path,
+                      blockSize: Int = 2 * 1024 * 1024)
+  extends Contig
     with Logging {
 
   @transient lazy val channel = {
@@ -24,7 +24,6 @@ case class Contig(contigName: ContigName,
   }
 
   val newlineBytes = entry.newlineBytes
-  val bytesPerLine = entry.bytesPerLine
 
   override def apply(locus: Locus): Base = slice(locus, 1).head
 

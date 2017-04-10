@@ -18,6 +18,7 @@ class SomaticStandardEndToEndSuite
 
     caller.setDefaultConf("spark.kryo.registrationRequired", "true")
     caller.setDefaultConf("spark.driver.host", "localhost")
+    caller.setDefaultConf("spark.ui.enabled", "false")
 
     caller.run(
       "--normal-reads",
@@ -25,7 +26,8 @@ class SomaticStandardEndToEndSuite
       "--tumor-reads",
       File("tumor.chr20.tough.sam"),
       "--reference",
-      File("grch37.partial.fasta"),
+      "/Users/ryan/data/refs/hg19.fasta",
+      //File("grch37.partial.fasta"),
       "--partial-reference",
       "--min-alignment-quality",
       "1",

@@ -1,22 +1,28 @@
 package org.hammerlab.guacamole.reference
 
-import grizzled.slf4j.Logging
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence }
+import org.hammerlab.genomics.reference.ContigName
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 
+import scala.collection.concurrent
+
 case class ReferenceFile(path: Path, entries: Map[ContigName, Entry])
-  extends ReferenceGenome
-    with Logging {
+  extends ReferenceGenome {
 
   override def source: Option[Path] = Some(path)
 
-  @transient lazy val contigs = collection.concurrent.TrieMap[ContigName, Contig]()
+  @transient lazy val contigs = concurrent.TrieMap[ContigName, FileContig]()
 
-  override def apply(contigName: ContigName): ContigSequence =
+  override def apply(contigName: ContigName): FileContig =
     contigs.getOrElseUpdate(
       contigName,
-      Contig(contigName, entries(contigName), path)
+      entries.get(contigName) match {
+        case Some(entry) ⇒
+          FileContig(contigName, entries(contigName), path)
+        case None ⇒
+          throw ContigNotFound(contigName, entries.keys)
+      }
+
     )
 }
 
@@ -24,6 +30,6 @@ object ReferenceFile {
   def apply(path: Path): ReferenceFile =
     ReferenceFile(
       path,
-      FastaIndex(Path(path.uri.toString + ".fai")).entries
+      FastaIndex(Path(path.toString + ".fai")).entries
     )
 }

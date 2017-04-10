@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.genomics.bases.BasesUtil
-import org.hammerlab.genomics.reference.test.LociConversions
+import org.hammerlab.genomics.reference.test.{ ClearContigNames, LociConversions }
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 import org.hammerlab.test.Suite
@@ -9,7 +9,8 @@ import org.hammerlab.test.Suite
 class ReferenceFileTest
   extends Suite
     with BasesUtil
-    with LociConversions {
+    with LociConversions
+    with ClearContigNames {
 
   lazy val hg19 = ReferenceFile(Path("/Users/ryan/data/refs/hg19.fasta"))
 

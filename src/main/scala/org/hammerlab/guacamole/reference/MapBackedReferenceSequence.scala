@@ -4,16 +4,16 @@ import java.util.NoSuchElementException
 
 import org.apache.spark.broadcast.Broadcast
 import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus, NumLoci }
 
 /**
- * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
+ * A Contig implementation that uses a Map to store only a subset of bases. This is what you get if you load
  * a "partial fasta". This is used in tests.
  */
 case class MapBackedReferenceSequence(contigName: ContigName,
                                       length: NumLoci,
                                       wrapped: Broadcast[Map[Locus, Base]])
-  extends ContigSequence {
+  extends Contig {
 
   override def apply(locus: Locus): Base =
     try {

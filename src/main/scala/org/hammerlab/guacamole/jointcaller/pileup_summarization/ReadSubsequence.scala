@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.jointcaller.pileup_summarization
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.bases.Bases._
 import org.hammerlab.genomics.reads.MappedRead
-import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
+import org.hammerlab.genomics.reference.{ Contig, Locus }
 import org.hammerlab.guacamole.pileup.PileupElement
 
 /**
@@ -49,8 +49,7 @@ case class ReadSubsequence(read: MappedRead,
   }
 
   /** The reference sequence at this locus. */
-  def refSequence(contigReferenceSequence: ContigSequence): Bases =
-    contigReferenceSequence.slice(start, length)
+  def refSequence(contig: Contig): Bases = contig.slice(start, length)
 }
 
 object ReadSubsequence {

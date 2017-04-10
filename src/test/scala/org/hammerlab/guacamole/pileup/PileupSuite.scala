@@ -175,7 +175,7 @@ class PileupSuite
     val pileup = PileupElement(
       read = contigStartInsertionRead,
       locus = 1,
-      contigSequence = reference("chr1"),
+      contig = reference("chr1"),
       readPosition = 0,
       cigarElementIndex = 0,
       cigarElementLocus = 1,

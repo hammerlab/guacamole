@@ -4,16 +4,16 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.args4s.JPathHandler
+import org.hammerlab.args4s.PathHandler
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleName }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.paths.Path
@@ -31,7 +31,7 @@ object VariantSupport {
       name = "--input-variants",
       aliases = Array("-v"),
       required = true,
-      handler = classOf[JPathHandler],
+      handler = classOf[PathHandler],
       usage = ""
     )
     var variants: Path = _
@@ -41,7 +41,7 @@ object VariantSupport {
       aliases = Array("-o"),
       metaVar = "OUT",
       required = true,
-      handler = classOf[JPathHandler],
+      handler = classOf[PathHandler],
       usage = "Output path for CSV"
     )
     var output: Path = _

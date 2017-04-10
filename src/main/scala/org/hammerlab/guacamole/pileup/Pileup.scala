@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.genomics.bases.Base
 import org.hammerlab.genomics.reads.MappedRead
 import org.hammerlab.genomics.readsets.SampleName
-import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
+import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus }
 import org.hammerlab.guacamole.variants.Allele
 
 /**
@@ -13,17 +13,17 @@ import org.hammerlab.guacamole.variants.Allele
  *
  * @param contigName The contig name for all elements in this pileup.
  * @param locus The locus on the reference genome
- * @param contigSequence The reference for this contig
+ * @param contig The reference for this contig
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
  */
 case class Pileup(sampleName: SampleName,
                   contigName: ContigName,
                   locus: Locus,
-                  contigSequence: ContigSequence,
+                  contig: Contig,
                   elements: Seq[PileupElement]) {
 
-  val referenceBase: Base = contigSequence(locus)
+  val referenceBase: Base = contig(locus)
 
   assume(elements.forall(_.read.contigName == contigName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(
@@ -70,7 +70,7 @@ case class Pileup(sampleName: SampleName,
     if (elements.isEmpty && newReads.isEmpty)
       // Optimization for common case.
       // If there are no reads, we won't know what the reference base is
-      Pileup(sampleName, contigName, newLocus, contigSequence, Vector.empty[PileupElement])
+      Pileup(sampleName, contigName, newLocus, contig, Vector.empty[PileupElement])
     else {
       // This code gets called many times. We are using while loops for performance.
       val builder = Vector.newBuilder[PileupElement]
@@ -87,11 +87,11 @@ case class Pileup(sampleName: SampleName,
 
       // Add elements for new reads.
       while (newReads.hasNext) {
-        builder += PileupElement(newReads.next(), newLocus, contigSequence)
+        builder += PileupElement(newReads.next(), newLocus, contig)
       }
 
       val newPileupElements = builder.result
-      Pileup(sampleName, contigName, newLocus, contigSequence, newPileupElements)
+      Pileup(sampleName, contigName, newLocus, contig, newPileupElements)
     }
   }
 
@@ -117,15 +117,15 @@ object Pileup {
    * @param reads Sequence of reads, in any order, that must overlap the locus.
    * @param contigName The contig these reads lie on.
    * @param locus The locus to return a [[Pileup]] at.
-   * @param contigSequence The reference for this pileup's contig
+   * @param contig The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
   def apply(reads: Seq[MappedRead],
             sampleName: SampleName,
             contigName: ContigName,
             locus: Locus,
-            contigSequence: ContigSequence): Pileup = {
-    val elements = reads.map(PileupElement(_, locus, contigSequence))
-    Pileup(sampleName, contigName, locus, contigSequence, elements.toIndexedSeq)
+            contig: Contig): Pileup = {
+    val elements = reads.map(PileupElement(_, locus, contig))
+    Pileup(sampleName, contigName, locus, contig, elements.toIndexedSeq)
   }
 }

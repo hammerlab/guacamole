@@ -5,7 +5,7 @@ import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.cigar.Element
 import org.hammerlab.genomics.reads.MappedRead
-import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
+import org.hammerlab.genomics.reference.{ Contig, Locus }
 import org.hammerlab.guacamole.variants.Allele
 
 import scala.annotation.tailrec
@@ -22,19 +22,18 @@ import scala.annotation.tailrec
  *                          If the element is an INSERTION this the PRECEDING reference base
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
-case class PileupElement(
-    read: MappedRead,
-    locus: Locus,
-    readPosition: Int,
-    cigarElementIndex: Int,
-    cigarElementLocus: Locus,
-    indexWithinCigarElement: Int,
-    contigSequence: ContigSequence) {
+case class PileupElement(read: MappedRead,
+                         locus: Locus,
+                         readPosition: Int,
+                         cigarElementIndex: Int,
+                         cigarElementLocus: Locus,
+                         indexWithinCigarElement: Int,
+                         contig: Contig) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  val referenceBase = contigSequence(locus)
+  val referenceBase = contig(locus)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
 
@@ -108,7 +107,7 @@ case class PileupElement(
       case (CigarOperator.I, _) ⇒ throw InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) ⇒
-        val deletedBases = contigSequence.slice(locus, nextCigarElement.get.getLength + 1)
+        val deletedBases = contig.slice(locus, nextCigarElement.get.getLength + 1)
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) ⇒
@@ -205,7 +204,7 @@ case class PileupElement(
       cigarElementLocus + cigarElementReferenceLength,
       // Even if we are somewhere in the middle of the current cigar element, lock to the beginning of the next one.
       indexWithinCigarElement = 0,
-      contigSequence
+      contig
     )
   }
 
@@ -268,14 +267,14 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, contigSequence: ContigSequence): PileupElement =
+  def apply(read: MappedRead, contig: Contig): PileupElement =
     apply(
       read,
       read.start,
-      contigSequence
+      contig
     )
 
-  def apply(read: MappedRead, locus: Locus, contigSequence: ContigSequence): PileupElement =
+  def apply(read: MappedRead, locus: Locus, contig: Contig): PileupElement =
     PileupElement(
       read = read,
       locus = read.start,
@@ -283,7 +282,7 @@ object PileupElement {
       cigarElementIndex = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0,
-      contigSequence
+      contig
     )
     .advanceToLocus(locus)
 }
@@ -291,10 +290,6 @@ object PileupElement {
 case class InvalidCigarElementException(elem: PileupElement)
   extends Exception(
     "Should not have a PileupElement at non-reference-consuming cigar-operator I. " +
-      "Locus: %s, readPosition: %d, cigar: %s (elem idx %d)".format(
-        elem.locus,
-        elem.readPosition,
-        elem.read.cigar.toString,
-        elem.cigarElementIndex
-      )
+      s"Locus: ${elem.locus}, readPosition: ${elem.readPosition}, " +
+      s"cigar: ${elem.read.cigar} (elem idx ${elem.cigarElementIndex})"
   )
