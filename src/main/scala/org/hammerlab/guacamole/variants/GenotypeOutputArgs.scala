@@ -30,6 +30,7 @@ trait GenotypeOutputArgs
   @Args4jOption(
     name = "--out",
     metaVar = "VARIANTS_OUT",
+    aliases = Array("-o"),
     required = false,
     handler = classOf[PathOptionHandler],
     usage = "Variant output path. If not specified, print to screen."

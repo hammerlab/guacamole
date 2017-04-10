@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-export JAR=gs://hammerlab-lib/guacamole-ce1e8034.jar
+if [ -z "$JAR" ]; then
+	sha="$(git --no-pager log --no-walk --format="%h" HEAD)"
+	export JAR="gs://hammerlab-lib/guacamole-$sha.jar"
+fi
+
 export MAIN=org.hammerlab.guacamole.Main
-export CLUSTER=guacamole
+
+if [ -z "$CLUSTER" ]; then
+	export CLUSTER=guacamole
+fi
+
 "$(dirname "${BASH_SOURCE[0]}")"/../dataproc/dataproc "$@"

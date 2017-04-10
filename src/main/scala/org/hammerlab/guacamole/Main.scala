@@ -5,9 +5,8 @@ import java.util.logging.Level
 
 import grizzled.slf4j.Logging
 import org.bdgenomics.adam.util.ParquetLogger
-import org.hammerlab.commands.Command
+import org.hammerlab.commands.{ Command, FileSystems }
 import org.hammerlab.guacamole.commands._
-import org.hammerlab.guacamole.logging.LoggingUtils.progress
 
 import scala.collection.JavaConverters._
 
@@ -32,24 +31,10 @@ object Main extends Logging {
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
     println("Available commands:")
-    commands.foreach { caller ⇒
-      println("%25s: %s".format(caller.name, caller.description))
+    for { command ← commands } {
+      println("%25s: %s".format(command.name, command.description))
     }
     println("\nTry java ... <command> -h for help on a particular variant caller.")
-  }
-
-  def loadFileSystems(): Unit = {
-    /** Hack to pick up [[FileSystemProvider]] implementations; see https://issues.scala-lang.org/browse/SI-10247. */
-    val scl = classOf[ClassLoader].getDeclaredField("scl")
-    scl.setAccessible(true)
-    val prevClassLoader = ClassLoader.getSystemClassLoader
-    scl.set(null, Thread.currentThread().getContextClassLoader)
-
-    println(
-      s"Loaded filesystems for schemes: ${FileSystemProvider.installedProviders().asScala.map(_.getScheme).mkString(",")}"
-    )
-
-    scl.set(null, prevClassLoader)
   }
 
   /**
@@ -63,20 +48,18 @@ object Main extends Logging {
       System.exit(1)
     }
 
-    loadFileSystems()
+    FileSystems.load()
 
     val commandName = args(0)
     commands.find(_.name == commandName) match {
-      case Some(command) ⇒ {
-        progress("Guacamole starting.")
+      case Some(command) ⇒
+        logger.info(s"Guacamole starting: $commandName")
         ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
         command.run(args.drop(1))
-      }
-      case None ⇒ {
-        println("Unknown variant caller: %s".format(commandName))
+      case None ⇒
+        logger.error(s"Unknown variant caller: $commandName")
         printUsage()
         System.exit(1)
-      }
     }
   }
 }
