@@ -14,6 +14,8 @@ class FileViewReferenceTest
 
   lazy val hg19 = FileViewReference(Path("/Users/ryan/data/refs/hg19.fasta"))
 
+  lazy val chr1 = FileViewReference(Path("/Users/ryan/data/refs/chrs/1.fasta"))
+
   test("index") {
     hg19.entries("1") should be(Entry("1", 249250621, 52, 80, 81))
     val chr2 = hg19.entries("2")
@@ -60,6 +62,12 @@ class FileViewReferenceTest
         """NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
           |NNNNNNNNNNNNNNNNNNNN"""
       )
+    )
+  }
+
+  test("end of reference") {
+    chr1("1", chr1("1").length - 100, 100) should ===(
+      "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
     )
   }
 

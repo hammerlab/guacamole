@@ -9,6 +9,7 @@ import org.hammerlab.paths.Path
 trait SeekableReadable {
   def seek(pos: Long): this.type
   def read(buf: ByteBuffer): Int
+  def size: Long
 }
 
 trait IsSeekableReadable[T]
@@ -20,6 +21,7 @@ object SeekableReadable {
     extends SeekableReadable {
     override def seek(pos: Long): this.type = { channel.position(pos); this }
     override def read(buf: ByteBuffer): Int = channel.read(buf)
+    override def size: Long = channel.size
   }
 
   implicit object SeekableReadableByteChannel

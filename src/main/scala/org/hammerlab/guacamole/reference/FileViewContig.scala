@@ -17,10 +17,7 @@ case class FileViewContig(contigName: ContigName,
   extends Contig
     with Logging {
 
-  @transient lazy val channel = {
-    //val fileChannel = newByteChannel(path)
-    CachingChannel(path, blockSize)
-  }
+  @transient lazy val channel = CachingChannel(path, blockSize)
 
   val newlineBytes = entry.newlineBytes
 

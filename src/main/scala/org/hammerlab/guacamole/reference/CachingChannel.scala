@@ -25,11 +25,6 @@ case class CachingChannel(channel: SeekableReadable,
 
   val blocks = concurrent.TrieMap[Long, ByteBuffer]()
 
-//  def position(newPosition: Long): SeekableReadable = {
-//    _position = newPosition
-//    channel.seek(newPosition)
-//  }
-
   def getBlock(idx: Long): ByteBuffer =
     blocks.getOrElseUpdate(
       idx,
@@ -37,15 +32,18 @@ case class CachingChannel(channel: SeekableReadable,
         _buffer.clear()
         val position = idx * blockSize
         channel.seek(position)
+        val bytesToRead = min(_buffer.limit(), channel.size - position)
         var bytesRead = 0
         var attempts = 0
-        while (bytesRead < _buffer.limit() && attempts < maxReadAttempts) {
+        while (bytesRead < bytesToRead && attempts < maxReadAttempts) {
           bytesRead += channel.read(_buffer)
           attempts += 1
         }
 
-        if (bytesRead < _buffer.limit()) {
-          throw new IOException(s"Read $bytesRead of ${_buffer.limit()} bytes from $position")
+        if (bytesRead < bytesToRead) {
+          throw new IOException(
+            s"Read $bytesRead of $bytesToRead bytes from $position in $attempts attempts"
+          )
         }
 
         val dupe = ByteBuffer.allocate(_buffer.capacity())
