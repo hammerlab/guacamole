@@ -106,7 +106,7 @@ trait GenotypeOutputArgs
 
           variantsRDD
             .copy(rdd = sortedCoalescedRDD)
-            .saveAsVcf(outputPath)
+            .saveAsVcf(outputPath, asSingleFile = true)
 
         } else {
           progress(s"Writing genotypes to: $outputPath")

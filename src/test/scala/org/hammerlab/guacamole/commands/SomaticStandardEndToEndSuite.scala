@@ -34,6 +34,6 @@ class SomaticStandardEndToEndSuite
       "--out", tmpOutputPath.toString
     )
 
-    checkVCFs(tmpOutputPath / "part-r-00000", "tough.golden.vcf")
+    checkVCFs(tmpOutputPath, "tough.golden.vcf")
   }
 }
