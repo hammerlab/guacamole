@@ -86,20 +86,28 @@ trait GenotypeOutputArgs
   private def writeSortedSampledVariants(genotypes: GenotypeRDD): Unit = {
 
     outputPathOpt match {
-      case Some(outputPath) if !outputPath.toString.endsWith(".json") ⇒
-        if (outputPath.toString.endsWith(".vcf")) {
+      case Some(outputPath) if outputPath.extension != "json" ⇒
+        if (outputPath.extension == "vcf") {
           progress(s"Writing genotypes to VCF file: $outputPath")
           val variantsRDD = genotypes.toVariantContextRDD
           val sortedCoalescedRDD =
             variantsRDD
               .rdd
-              .keyBy(v ⇒ (v.variant.variant.getStart, v.variant.variant.getEnd))
+              .keyBy(
+                v ⇒
+                  (
+                    v.variant.variant.getContigName,
+                    v.variant.variant.getStart,
+                    v.variant.variant.getEnd
+                  )
+              )
               .repartitionAndSortWithinPartitions(new HashPartitioner(1))
               .values
 
           variantsRDD
             .copy(rdd = sortedCoalescedRDD)
             .saveAsVcf(outputPath)
+
         } else {
           progress(s"Writing genotypes to: $outputPath")
           genotypes.saveAsParquet(
