@@ -11,10 +11,10 @@ import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.args4s.PathOptionHandler
 import org.hammerlab.commands.Args
+import org.hammerlab.genomics.readsets.args.base.PrefixedPathsBase
+import org.hammerlab.genomics.readsets.args.path.{ UnprefixedPath, UnprefixedPathOptionHandler }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
@@ -25,17 +25,18 @@ import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 trait GenotypeOutputArgs
   extends ParquetArgs {
 
-  self: Args ⇒
+  self: Args with PrefixedPathsBase ⇒
 
   @Args4jOption(
     name = "--out",
     metaVar = "VARIANTS_OUT",
     aliases = Array("-o"),
     required = false,
-    handler = classOf[PathOptionHandler],
+    handler = classOf[UnprefixedPathOptionHandler],
     usage = "Variant output path. If not specified, print to screen."
   )
-  var outputPathOpt: Option[Path] = None
+  var _outputPathOpt: Option[UnprefixedPath] = None
+  def outputPathOpt = _outputPathOpt.map(_.buildPath)
 
   @Args4jOption(
     name = "--out-chunks",
