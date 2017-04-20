@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.readsets.rdd
 
-import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Accumulable, SparkContext }
 import org.hammerlab.genomics.loci.set.LociSet
@@ -9,6 +8,7 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.magic.accumulables.{ HistogramParam, HashMap ⇒ MagicHashMap }
 import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
+import org.hammerlab.paths.Path
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.spark.util.KeyPartitioner
 import org.hammerlab.stats.Stats
@@ -144,9 +144,8 @@ object PartitionedRegions {
       case Some(partitionedRegionsPath) ⇒
 
         val sc = regions.sparkContext
-        val fs = FileSystem.get(sc.hadoopConfiguration)
-        val path = new Path(partitionedRegionsPath)
-        if (fs.exists(path))
+        val path = Path(partitionedRegionsPath)
+        if (path.exists)
           load(sc, partitionedRegionsPath, lociPartitioning)
         else
           compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
