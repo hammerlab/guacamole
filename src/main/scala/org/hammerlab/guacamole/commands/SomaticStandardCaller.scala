@@ -18,7 +18,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PartitionedReads
 import org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
-import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceFile }
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, FileViewReference }
 import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller }
 import org.hammerlab.paths.Path
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
@@ -83,7 +83,7 @@ object SomaticStandard {
     override val description = "call somatic variants using independent callers on tumor and normal"
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
-      val reference = ReferenceFile(args.referencePath)
+      val reference = FileViewReference(args.referencePath)
 
       val (readsets, loci) = ReadSets(sc, args)
 

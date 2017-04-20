@@ -6,13 +6,13 @@ import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 import org.hammerlab.test.Suite
 
-class ReferenceFileTest
+class FileViewReferenceTest
   extends Suite
     with BasesUtil
     with LociConversions
     with ClearContigNames {
 
-  lazy val hg19 = ReferenceFile(Path("/Users/ryan/data/refs/hg19.fasta"))
+  lazy val hg19 = FileViewReference(Path("/Users/ryan/data/refs/hg19.fasta"))
 
   test("index") {
     hg19.entries("1") should be(Entry("1", 249250621, 52, 80, 81))

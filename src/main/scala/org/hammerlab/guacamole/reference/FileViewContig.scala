@@ -1,26 +1,25 @@
 package org.hammerlab.guacamole.reference
 
 import java.io.ByteArrayInputStream
-import java.nio.file.Files
 
 import grizzled.slf4j.Logging
 import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.{ ContigName, Contig, Locus, NumLoci }
+import org.hammerlab.genomics.reference.{ Contig, ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.reference.FastaIndex.Entry
 import org.hammerlab.paths.Path
 
 import scala.math.min
 
-case class FileContig(contigName: ContigName,
-                      entry: Entry,
-                      path: Path,
-                      blockSize: Int = 2 * 1024 * 1024)
+case class FileViewContig(contigName: ContigName,
+                          entry: Entry,
+                          path: Path,
+                          blockSize: Int = 2 * 1024 * 1024)
   extends Contig
     with Logging {
 
   @transient lazy val channel = {
-    val fileChannel = Files.newByteChannel(path)
-    CachingChannel(fileChannel, blockSize)
+    //val fileChannel = newByteChannel(path)
+    CachingChannel(path, blockSize)
   }
 
   val newlineBytes = entry.newlineBytes

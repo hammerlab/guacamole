@@ -15,7 +15,7 @@ import scala.math.{ max, min }
  * @param maxReadAttempts Allow the underlying channel this many calls to `SeekableByteChannel.read` to fill
  *                        [[blockSize]] bytes of buffer.
  */
-case class CachingChannel(channel: SeekableByteChannel,
+case class CachingChannel(channel: SeekableReadable,
                           blockSize: Int,
                           maxReadAttempts: Int = 2) {
 
@@ -25,10 +25,10 @@ case class CachingChannel(channel: SeekableByteChannel,
 
   val blocks = concurrent.TrieMap[Long, ByteBuffer]()
 
-  def position(newPosition: Long): SeekableByteChannel = {
-    _position = newPosition
-    channel.position(newPosition)
-  }
+//  def position(newPosition: Long): SeekableReadable = {
+//    _position = newPosition
+//    channel.seek(newPosition)
+//  }
 
   def getBlock(idx: Long): ByteBuffer =
     blocks.getOrElseUpdate(
@@ -36,7 +36,7 @@ case class CachingChannel(channel: SeekableByteChannel,
       {
         _buffer.clear()
         val position = idx * blockSize
-        channel.position(position)
+        channel.seek(position)
         var bytesRead = 0
         var attempts = 0
         while (bytesRead < _buffer.limit() && attempts < maxReadAttempts) {

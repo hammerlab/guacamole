@@ -6,30 +6,29 @@ import org.hammerlab.paths.Path
 
 import scala.collection.concurrent
 
-case class ReferenceFile(path: Path, entries: Map[ContigName, Entry])
+case class FileViewReference(path: Path, entries: Map[ContigName, Entry])
   extends ReferenceGenome {
 
   override def source: Option[Path] = Some(path)
 
-  @transient lazy val contigs = concurrent.TrieMap[ContigName, FileContig]()
+  @transient lazy val contigs = concurrent.TrieMap[ContigName, FileViewContig]()
 
-  override def apply(contigName: ContigName): FileContig =
+  override def apply(contigName: ContigName): FileViewContig =
     contigs.getOrElseUpdate(
       contigName,
       entries.get(contigName) match {
         case Some(entry) ⇒
-          FileContig(contigName, entries(contigName), path)
+          FileViewContig(contigName, entry, path)
         case None ⇒
           throw ContigNotFound(contigName, entries.keys)
       }
-
     )
 }
 
-object ReferenceFile {
-  def apply(path: Path): ReferenceFile =
-    ReferenceFile(
+object FileViewReference {
+  def apply(path: Path): FileViewReference =
+    FileViewReference(
       path,
-      FastaIndex(Path(path.toString + ".fai")).entries
+      FastaIndex(Path(path + ".fai")).entries
     )
 }
