@@ -10,7 +10,8 @@ import org.hammerlab.guacamole.commands._
 /**
  * Guacamole main class.
  */
-object Main extends Logging {
+object Main
+  extends Logging {
 
   /**
    * Commands (e.g. variant caller implementations) that are part of Guacamole. If you add a new command, update this.

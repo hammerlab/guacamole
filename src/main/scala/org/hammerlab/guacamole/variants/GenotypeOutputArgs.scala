@@ -101,7 +101,7 @@ trait GenotypeOutputArgs
             .copy(rdd = sortedCoalescedRDD)
             .saveAsVcf(outputPath)
         } else {
-          progress(s"Writing genotypes to: $outputPath.")
+          progress(s"Writing genotypes to: $outputPath")
           genotypes.saveAsParquet(
             outputPath,
             blockSize,

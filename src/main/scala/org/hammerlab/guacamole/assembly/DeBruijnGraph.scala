@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.assembly
 
 import breeze.stats.mean
+import grizzled.slf4j.Logging
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reads.{ MappedRead, Read }
 import org.hammerlab.genomics.reference.{ KmerLength, Locus }
@@ -9,7 +10,8 @@ import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Path, Sequence, Su
 import scala.collection.mutable.{ HashSet ⇒ MHashSet, Map ⇒ MMap, Set ⇒ MSet, Stack ⇒ MStack }
 
 class DeBruijnGraph(val kmerSize: KmerLength,
-                    val kmerCounts: MMap[Kmer, Int]) {
+                    val kmerCounts: MMap[Kmer, Int])
+  extends Logging {
 
   // Table to store prefix to kmers that share that prefix
   val prefixTable: MMap[SubKmer, List[Kmer]] =
@@ -177,8 +179,7 @@ class DeBruijnGraph(val kmerSize: KmerLength,
                        minPathLength: Int = 1,
                        maxPathLength: Int = Int.MaxValue,
                        maxPaths: Int = 10,
-                       avoidLoops: Boolean = true,
-                       debugPrint: Boolean = false): List[Path] = {
+                       avoidLoops: Boolean = true): List[Path] = {
 
     assume(source.length == kmerSize, s"Source kmer $source has size ${source.length} != $kmerSize")
     assume(sink.length == kmerSize, s"Sink kmer $sink has size ${sink.length} != $kmerSize")
@@ -227,11 +228,11 @@ class DeBruijnGraph(val kmerSize: KmerLength,
     while (frontier.nonEmpty && paths.size < maxPaths) {
       val next = frontier.pop()
 
-      if (debugPrint) {
+      if (logger.isDebugEnabled) {
         if (currentPath.isEmpty)
-          println(next)
+          logger.debug(next)
         else
-          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + next)
+          logger.debug(" " * (currentPath.map(_.length).sum - kmerSize + 1) + next)
       }
 
       // add the node on to the path
@@ -293,8 +294,8 @@ class DeBruijnGraph(val kmerSize: KmerLength,
       }
     }
 
-    if (debugPrint) {
-      println(s"Found ${paths.size} paths")
+    if (logger.isDebugEnabled) {
+      logger.debug(s"Found ${paths.size} paths")
     }
 
     paths
@@ -415,7 +416,6 @@ object DeBruijnGraph {
    * @param kmerSize Length of kmers to use to traverse the paths
    * @param minOccurrence Minimum number of occurrences of the each kmer
    * @param maxPaths Maximum number of paths to find
-   * @param debugPrint Print debug statements (default: false)
    * @return List of paths that traverse the region
    */
   def discoverPathsFromReads(reads: Seq[MappedRead],
@@ -424,8 +424,7 @@ object DeBruijnGraph {
                              kmerSize: KmerLength,
                              minOccurrence: Int,
                              maxPaths: Int,
-                             minMeanKmerBaseQuality: Int,
-                             debugPrint: Boolean = false): List[Path] = {
+                             minMeanKmerBaseQuality: Int): List[Path] = {
 
     val referenceKmerSource = referenceSequence.take(kmerSize)
     val referenceKmerSink = referenceSequence.takeRight(kmerSize)
@@ -442,8 +441,7 @@ object DeBruijnGraph {
     currentGraph.depthFirstSearch(
       referenceKmerSource,
       referenceKmerSink,
-      maxPaths = maxPaths,
-      debugPrint = debugPrint
+      maxPaths = maxPaths
     )
   }
 }

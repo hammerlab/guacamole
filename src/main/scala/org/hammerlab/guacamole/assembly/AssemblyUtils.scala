@@ -55,8 +55,7 @@ object AssemblyUtils extends Logging {
                          minOccurrence: Int,
                          minMeanKmerQuality: Int,
                          expectedPloidy: Int = 2,
-                         maxPathsToScore: Int = 16,
-                         debugPrint: Boolean = false): Seq[Sequence] = {
+                         maxPathsToScore: Int = 16): Seq[Sequence] = {
 
     val locus = currentWindow.currentLocus
     val reads = currentWindow.currentRegions
@@ -83,8 +82,7 @@ object AssemblyUtils extends Logging {
         kmerSize = kmerSize,
         minOccurrence = minOccurrence,
         maxPaths = maxPathsToScore + 1,
-        minMeanKmerBaseQuality = minMeanKmerQuality,
-        debugPrint
+        minMeanKmerBaseQuality = minMeanKmerQuality
       )
       .map(mergeOverlappingSequences(_, kmerSize))
       .toVector
