@@ -1,14 +1,11 @@
 package org.hammerlab.guacamole
 
-import java.nio.file.spi.FileSystemProvider
 import java.util.logging.Level
 
 import grizzled.slf4j.Logging
 import org.bdgenomics.adam.util.ParquetLogger
-import org.hammerlab.commands.{ Command, FileSystems }
+import org.hammerlab.commands.Command
 import org.hammerlab.guacamole.commands._
-
-import scala.collection.JavaConverters._
 
 /**
  * Guacamole main class.
@@ -47,8 +44,6 @@ object Main extends Logging {
       printUsage()
       System.exit(1)
     }
-
-    FileSystems.load()
 
     val commandName = args(0)
     commands.find(_.name == commandName) match {
