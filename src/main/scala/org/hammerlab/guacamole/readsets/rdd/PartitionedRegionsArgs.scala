@@ -15,7 +15,8 @@ import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
  * The `--partitioning-dir`, if present, specifies a location that both read- and loci- partitionings will be saved to;
  * each one can also be set individually via `--partitioning-dir` and `--loci-partitioning`.
  */
-trait PartitionedRegionsArgs extends LociPartitionerArgs {
+trait PartitionedRegionsArgs
+  extends LociPartitionerArgs {
   @Args4JOption(
     name = "--partitioning-dir",
     usage =
