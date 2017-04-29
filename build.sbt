@@ -13,7 +13,7 @@ deps ++= Seq(
   libs.value('bdg_utils_cli),
   libs.value('breeze),
   libs.value('commons_math),
-  libs.value('hadoop_bam),
+  libs.value('hadoop_bam).copy(revision = "7.8.1-SNAPSHOT"),
   "com.google.cloud" % "google-cloud-nio" % "0.10.0-alpha",
   libs.value('htsjdk),
   libs.value('iterators),
