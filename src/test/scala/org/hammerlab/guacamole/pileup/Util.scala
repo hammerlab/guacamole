@@ -3,14 +3,18 @@ package org.hammerlab.guacamole.pileup
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.reads.MappedRead
-import org.hammerlab.genomics.readsets.io.InputConfig
+import org.hammerlab.genomics.readsets.io.Config
 import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.hadoop.MaxSplitSize
 import org.hammerlab.paths.Path
+import org.hammerlab.spark.test.suite.SparkSuite
 
 trait Util
   extends ReadsRDDUtil {
+
+  self: SparkSuite ⇒
 
   def reference: ReferenceBroadcast
 
@@ -47,17 +51,16 @@ trait Util
                  reference: ReferenceBroadcast = reference): Pileup = {
     val records =
       loadReadsRDD(
-        sc,
         path,
-        config = InputConfig(
-          overlapsLociOpt = maybeContig.map(
+        config = Config(
+          overlapsLoci = maybeContig.map(
             contig ⇒ ParsedLoci(s"$contig:$locus-${locus + 1}")
           ),
           nonDuplicate = false,
           passedVendorQualityChecks = false,
           isPaired = false,
-          minAlignmentQualityOpt = None,
-          maxSplitSizeOpt = None
+          minAlignmentQuality = None,
+          maxSplitSize = MaxSplitSize()
         )
       )
       .mappedReads

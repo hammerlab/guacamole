@@ -67,7 +67,6 @@ class VariantSupportSuite
 
   def gatkReads(loci: String) =
     loadReadsRDD(
-      sc,
       "gatk_mini_bundle_extract.bam",
       TestInputConfig(
         nonDuplicate = false,
@@ -80,7 +79,6 @@ class VariantSupportSuite
 
   def nonDuplicateGatkReads(loci: String) =
     loadReadsRDD(
-      sc,
       "gatk_mini_bundle_extract.bam",
       TestInputConfig(
         nonDuplicate = true,

@@ -13,7 +13,10 @@ abstract class GuacFunSuite
     with BasesUtil
     with LociConversions
     with ClearContigNames {
-  conf.setAppName("guacamole")
+
+  sparkConf(
+    "spark.app.name" → "guacamole"
+  )
 
   implicit def unwrapFiles(files: PerSample[File]): PerSample[String] = files.map(_.pathStr)
 }

@@ -80,7 +80,6 @@ class SomaticStandardCallerRealDataSuite
   test("testing simple negative variants on syn1") {
     val (tumorReads, normalReads) =
       loadTumorNormalReads(
-        sc,
         "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.syn1fp.sam",
         "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam"
       )
@@ -104,7 +103,6 @@ class SomaticStandardCallerRealDataSuite
   test("testing complex region negative variants on syn1") {
     val (tumorReads, normalReads) =
       loadTumorNormalReads(
-        sc,
         "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
         "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam"
       )
@@ -134,7 +132,6 @@ class SomaticStandardCallerRealDataSuite
 
     val (tumorReads, normalReads) =
       loadTumorNormalReads(
-        sc,
         "tumor.chr20.simplefp.sam",
         "normal.chr20.simplefp.sam"
       )

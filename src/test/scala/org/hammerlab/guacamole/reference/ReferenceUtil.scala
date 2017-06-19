@@ -2,15 +2,15 @@ package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.bases.{ Base, Bases, BasesUtil }
-import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.genomics.reference.test.LociConversions.intToLocus
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 
 import scala.collection.mutable
 
 trait ReferenceUtil
   extends BasesUtil {
 
-  def sc: SparkContext
+  protected def sc: SparkContext
 
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.

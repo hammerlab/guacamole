@@ -7,7 +7,7 @@ import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.genomics.readsets.io.InputConfig
+import org.hammerlab.genomics.readsets.io.Config
 import org.hammerlab.genomics.reference.Interval
 import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
@@ -64,7 +64,7 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
       ReadSets(
         sc,
         args.inputs,
-        InputConfig.empty
+        Config.empty(sc.hadoopConfiguration)
       )
 
     val contigLengths = readsets.contigLengths

@@ -32,7 +32,7 @@ class GermlineAssemblyCallerSuite
      *
      * [[htsjdk.samtools.ValidationStringency.LENIENT]] stringency ignores them.
      */
-    sc.hadoopConfiguration.set(VALIDATION_STRINGENCY_PROPERTY, "LENIENT")
+    hadoopConf.set(VALIDATION_STRINGENCY_PROPERTY, "LENIENT")
 
     reference = ReferenceBroadcast(chr1PrefixFasta, sc)
   }

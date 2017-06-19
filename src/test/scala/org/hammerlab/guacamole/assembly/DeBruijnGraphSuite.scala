@@ -531,7 +531,7 @@ class DeBruijnGraphSuite
       )
 
     lazy val snpReads =
-      loadReadsRDD(sc, "assemble-reads-set3-chr2-73613071.sam")
+      loadReadsRDD("assemble-reads-set3-chr2-73613071.sam")
         .mappedReads
         .sortBy(_.start)
         .collect

@@ -10,7 +10,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.genomics.readsets.io.{ Input, Sample }
+import org.hammerlab.genomics.readsets.io.Input
 import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleId, SampleName }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
@@ -126,7 +126,7 @@ object VAFHistogram {
 
       val reference = ReferenceBroadcast(args, sc)
 
-      val (variantLoci, numVariantsPerSample) =
+      val variantLoci =
         variantLociFromReads(
           readsets.sampleNames,
           partitionedReads,
@@ -177,7 +177,10 @@ object VAFHistogram {
       }
 
       if (args.cluster) {
-        val variantsPerSample = variantLoci.keyBy(_.sampleId).splitByKey(numVariantsPerSample)
+        val variantsPerSample =
+          variantLoci
+            .keyBy(_.sampleId)
+            .splitByKey
         for {
           (sampleId, variants) ← variantsPerSample
         } {
@@ -231,7 +234,7 @@ object VAFHistogram {
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
                            minVariantAlleleFrequency: Int = 0,
-                           printStats: Boolean = false): (RDD[VariantLocus], Map[SampleId, Long]) = {
+                           printStats: Boolean = false): RDD[VariantLocus] = {
 
     val variantLoci =
       pileupFlatMapMultipleSamples[VariantLocus](
@@ -307,7 +310,7 @@ object VAFHistogram {
       }
     }
 
-    (variantLoci, numVariantsBySample)
+    variantLoci
   }
 
   /**

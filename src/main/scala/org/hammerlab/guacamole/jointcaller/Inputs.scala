@@ -13,8 +13,8 @@ case class Inputs(inputs: PerSample[Input])
 
 object Inputs {
 
-  implicit def make(inputs: PerSample[Input]): Inputs = Inputs(inputs)
-  implicit def unmake(inputs: Inputs): PerSample[Input] = inputs.inputs
+  implicit def makeInputs(inputs: PerSample[Input]): Inputs = Inputs(inputs)
+  implicit def unmakeInputs(inputs: Inputs): PerSample[Input] = inputs.inputs
 
   trait Arguments
     extends InputArgs {
