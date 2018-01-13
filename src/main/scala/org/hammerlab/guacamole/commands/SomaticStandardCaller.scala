@@ -5,7 +5,7 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.args4s.PathOptionHandler
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.impl.ReferenceArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples

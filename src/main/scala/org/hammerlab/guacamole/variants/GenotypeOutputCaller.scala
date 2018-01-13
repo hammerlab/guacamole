@@ -5,14 +5,14 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.Sample
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.readsets.{ PerSample, SampleName }
 import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 
 /**
  * Caller-interface that writes computed variants to disk according to a [[GenotypeOutputArgs]].
- * @tparam ArgsT [[org.hammerlab.commands.Args]] type.
+ * @tparam ArgsT [[org.hammerlab.cli.args4j.Args]] type.
  * @tparam V [[ReferenceVariant]] type.
  */
 trait GenotypeOutputCaller[ArgsT <: Args with GenotypeOutputArgs, V <: ReferenceVariant] extends GuacCommand[ArgsT] {

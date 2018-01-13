@@ -11,7 +11,7 @@ import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.readsets.args.base.PrefixedPathsBase
 import org.hammerlab.genomics.readsets.args.path.{ UnprefixedPath, UnprefixedPathOptionHandler }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress

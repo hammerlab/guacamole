@@ -8,7 +8,7 @@ import org.apache.spark.mllib.clustering.{ GaussianMixture, GaussianMixtureModel
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
 import org.hammerlab.genomics.readsets.io.Input
 import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleId, SampleName }
@@ -19,7 +19,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PartitionedReads
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
-import org.hammerlab.magic.rdd.keyed.SplitByKeyRDD._
+import magic_rdds.keyed._
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 import scala.math.min

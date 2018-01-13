@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.impl.{ Arguments ⇒ ReadSetsArgs }
 import org.hammerlab.guacamole.loci.partitioning.{ HalfWindowArgs, LociPartitionerArgs, LociPartitioning }

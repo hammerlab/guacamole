@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.main
 import java.io.{ BufferedWriter, File, FileWriter }
 
 import org.apache.spark.SparkContext
-import org.hammerlab.commands.Args
+import org.hammerlab.cli.args4j.Args
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.impl.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
